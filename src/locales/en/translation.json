@@ -1,0 +1,19 @@
+{
+  "home": {
+    "title": "Welcome",
+    "subTitle": "These are some random images",
+    "selectLanguage": "Select Language"
+  },
+  "common": {
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "analytics": "Analytics"
+  },
+  "collapsibleSidebar": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "analytics": "Analytics"
+  }
+}
