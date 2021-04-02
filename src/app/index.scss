@@ -17,8 +17,81 @@
   flex-direction: row-reverse;
 }
 
-.ant-menu-dark.ant-menu-horizontal > .ant-menu-item, .ant-menu-dark.ant-menu-horizontal > .ant-menu-submenu{
+.ant-menu-dark.ant-menu-horizontal > .ant-menu-item, .ant-menu-dark.ant-menu-horizontal > .ant-menu-submenu {
   .anticon svg {
     margin-bottom: 7px;
+  }
+}
+
+.pageLayout {
+  height: calc(100vh - 176px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.flexEqualSpacing {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.firstNav {
+  @extend .flexEqualSpacing;
+
+  .leftPlacement {
+    @extend .flexEqualSpacing;
+
+    .searchInput {
+      margin-right: 8px;
+    }
+  }
+
+  .rightPlacement {
+    .ant-btn {
+      padding: 2px;
+    }
+
+    .ant-btn > .anticon + span, .ant-btn > span + .anticon {
+      margin-left: 4px;
+    }
+
+    @extend .flexEqualSpacing;
+
+    .deleteBtn {
+      width: 80px;
+      margin-right: 8px;
+    }
+
+    .exportBtn {
+      width: 100px;
+      margin-right: 8px;
+    }
+
+    .addBtn {
+      width: 125px;
+    }
+  }
+}
+
+.thirdNav {
+  height: calc(100vh - 288px);
+}
+
+.anticon svg {
+  margin-bottom: 5px;
+}
+
+.ant-popover-audience {
+  width: 502px;
+
+  .ant-popover-message {
+    padding: 0;
+
+    .ant-popover-message-title {
+      p {
+        margin: 0;
+      }
+    }
   }
 }

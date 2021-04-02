@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import "./contacts.scss";
-import {Button, Cascader, Dropdown, Input, Menu, Popconfirm, Space, Table, Typography} from "antd";
+import {Button, Cascader, Dropdown, Input, Menu, message, Popconfirm, Space, Table, Typography} from "antd";
 import {DropDown} from "../../../utils/Interfaces";
 import {DeleteOutlined, EditOutlined, ExportOutlined} from '@ant-design/icons';
 import {ContactsInterface} from "../Interface";
@@ -111,16 +111,14 @@ export const ContactsPage: any = () => {
                 return <Space size="small">
                     <p className={"actionColumn"}
                        onClick={() => openContactEdit(record)}><EditOutlined/></p>
-                    <Popconfirm overlayClassName="ant-popover-contact" placement="left"
+                    <Popconfirm overlayClassName="ant-popover-audience" placement="left"
                                 title={<p><Title level={5}>Are you sure you want to delete?</Title>
                                     This will permanently delete these records and all associated data from your
                                     account. Deleting and re-adding records can alter your monthly contact limits. <a>Learn
                                         More</a></p>}
                                 okText="Delete" cancelText="Cancel"
                                 onConfirm={() => deleteContact(record)}>
-                        <p className={"actionColumn"}>
-                            <DeleteOutlined/>
-                        </p>
+                        <p><DeleteOutlined/></p>
                     </Popconfirm>
                 </Space>
             }),
@@ -186,8 +184,16 @@ export const ContactsPage: any = () => {
     const navigateToLandingPage = () => {
         dispatch(updateBreadcrumb(['Audience', 'Contacts']));
         setEditPage(false);
-    }
-    return !editPage ? (<div className="contacts">
+    };
+
+    const deleteAllContact = () => {
+        if (emailIdSelected.length === 0) {
+            message.warning("Please use the checkbox to select contact for deletion", 0.8);
+        }
+        console.log(emailIdSelected);
+    };
+    return !editPage ? (
+        <div className="contacts pageLayout">
             <div className="firstNav">
                 <div className="leftPlacement">
                     <div className="searchInput">
@@ -200,9 +206,18 @@ export const ContactsPage: any = () => {
                     </div>
                 </div>
                 <div className="rightPlacement">
-                    <Button className="deleteBtn" icon={<DeleteOutlined/>} type="primary" danger>Delete</Button>
+                    <Popconfirm overlayClassName="ant-popover-audience" placement="left"
+                                title={<p><Title level={5}>Are you sure you want to delete?</Title>
+                                    This will permanently delete these records and all associated data from your
+                                    account. Deleting and re-adding records can alter your monthly contact limits.
+                                    <a href={"https://www.google.com"} target={'_blank'} rel={'noreferrer'}>Learn
+                                        More</a></p>}
+                                okText="Delete" cancelText="Cancel"
+                                onConfirm={deleteAllContact}>
+                        <Button className="deleteBtn" icon={<DeleteOutlined/>} type="primary" danger>Delete</Button>
+                    </Popconfirm>
                     <Button className="exportBtn" onClick={exportCsv} icon={<ExportOutlined/>}>Export CSV</Button>
-                    <Dropdown.Button type={'primary'} className="addContactBtn" overlay={addContactMenu}>Add
+                    <Dropdown.Button type={'primary'} overlay={addContactMenu}>Add
                         Contact</Dropdown.Button>
                 </div>
             </div>
@@ -210,8 +225,7 @@ export const ContactsPage: any = () => {
                 <Title level={4}>{tableLabel}</Title>
             </div>
             <div className="thirdNav">
-                <Table rowSelection={{...contactRowSelection}} dataSource={contactDS}
-                       columns={columns} bordered/>
+                <Table rowSelection={{...contactRowSelection}} dataSource={contactDS} columns={columns} bordered/>
             </div>
         </div>
     ) : <EditContactPage contactObj={contactObj} routeToOverview={navigateToLandingPage}/>
