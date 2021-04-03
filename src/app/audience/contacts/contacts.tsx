@@ -1,15 +1,15 @@
 import React, {useState} from "react";
 import "./contacts.scss";
-import {Button, Cascader, Dropdown, Input, Menu, message, Popconfirm, Space, Table, Typography} from "antd";
+import {Button, Cascader, Dropdown, Input, Menu, message, Modal, Popconfirm, Space, Table, Typography} from "antd";
 import {DropDown} from "../../../utils/Interfaces";
-import {DeleteOutlined, EditOutlined, ExportOutlined} from '@ant-design/icons';
+import {CloseOutlined, DeleteOutlined, DownloadOutlined, EditOutlined, ExportOutlined} from '@ant-design/icons';
 import {ContactsInterface} from "../Interface";
 import Tag from "antd/es/tag";
 import {exportCSVFile} from "../../../utils/common";
-import {getDate, getMonth, getYear} from 'date-fns';
 import {EditContactPage} from "./edit/EditContactLoadable";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
+import {UploadPage} from "../../common/upload/UploadLoadable";
 
 export const ContactsPage: any = () => {
     const {Search} = Input;
@@ -49,7 +49,7 @@ export const ContactsPage: any = () => {
             lastName: 'Pandey',
             emailMarketing: 'Not Subscribed',
             tags: 'Zoho Campaign'
-        },
+        }
     ]);
     const [contactDSOps, setContactDSOps] = useState<ContactsInterface[]>([
         {
@@ -127,6 +127,12 @@ export const ContactsPage: any = () => {
     const [tableLabel, setTableLabel] = useState<string>('All Contacts');
     const [editPage, setEditPage] = useState(false);
     const [contactObj, setContactObj] = useState({});
+    const [uploadModal, setUploadModal] = useState(false);
+    const [uploadFileInfo, setUploadFileInfo] = useState({
+        file: {},
+        fileList: [{}]
+    });
+
     const dispatch = useDispatch();
 
     const handleSegmentChange = (value: any) => {
@@ -157,21 +163,21 @@ export const ContactsPage: any = () => {
     }
 
     const exportCsv = () => {
-        let str = columns.map(itr => {
-            return itr.title !== 'Action' ? itr.title : null;
-        }).join(",");
+        let str = columns.map(itr => itr.title !== 'Action' ? itr.title : null).join(",");
         contactDSOps.forEach(item => {
-            let currentRow = item.email + "," + item.firstName + "," +
-                item.lastName + "," + item.emailMarketing + "," + item.tags;
+            let currentRow = item.email + "," + item.firstName + "," + item.lastName + "," + item.emailMarketing + "," + item.tags;
             str = str + "\n" + currentRow;
         });
-        let day = getDate(new Date()) + '_' + (getMonth(new Date()) + 1) + '_' + getYear(new Date());
-        const fileName = `${day}_${tableLabel}.csv`;
-        exportCSVFile(str, fileName);
+        exportCSVFile(str, tableLabel);
     };
 
     const handleAddContactMenuClick = (e: any) => {
-        console.log('click', e.key);
+        if (e.key === 'addManually') {
+            setEditPage(true);
+            setContactObj({});
+        } else {
+            setUploadModal(true);
+        }
     };
 
     const addContactMenu = (
@@ -183,15 +189,25 @@ export const ContactsPage: any = () => {
 
     const navigateToLandingPage = () => {
         dispatch(updateBreadcrumb(['Audience', 'Contacts']));
+        setContactObj({});
         setEditPage(false);
     };
 
     const deleteAllContact = () => {
         if (emailIdSelected.length === 0) {
-            message.warning("Please use the checkbox to select contact for deletion", 0.8);
+            message.warning("Please use the checkbox to select contact for deletion", 0.8).then(() => {
+            });
         }
         console.log(emailIdSelected);
     };
+
+    const cancelUploadProcess = () => {
+        setUploadModal(false);
+        setUploadFileInfo({file: {}, fileList: [{}]});
+    }
+    const processUploadedFile = () => {
+        console.log(uploadFileInfo.fileList);
+    }
     return !editPage ? (
         <div className="contacts pageLayout">
             <div className="firstNav">
@@ -220,6 +236,16 @@ export const ContactsPage: any = () => {
                     <Dropdown.Button type={'primary'} overlay={addContactMenu}>Add
                         Contact</Dropdown.Button>
                 </div>
+                <Modal title="Upload Contacts" centered visible={uploadModal} width={'75%'} footer={[
+                    <Button key="cancel" onClick={cancelUploadProcess} icon={<CloseOutlined/>}>
+                        Cancel
+                    </Button>,
+                    <Button key="upload" type="primary" icon={<DownloadOutlined/>} onClick={processUploadedFile}>
+                        Upload
+                    </Button>
+                ]} onCancel={cancelUploadProcess}>
+                    <UploadPage fileInfo={(fileInfo: any) => setUploadFileInfo(fileInfo)}/>
+                </Modal>
             </div>
             <div className="secondNav">
                 <Title level={4}>{tableLabel}</Title>

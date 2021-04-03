@@ -7,7 +7,6 @@ export const SegmentsPage: any = () => {
     const {Search} = Input;
     const {Title} = Typography;
 
-
     const [segmentNameSelected, setSegmentNameSelected] = useState<string[]>([]);
     const [segmentDS, setSegmentDS] = useState<SegmentInterface[]>([
         {

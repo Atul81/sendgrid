@@ -102,7 +102,7 @@ export function App() {
             </Sider>
             <Layout className="site-layout">
                 <Header className="header">
-                    <Menu theme="dark" mode="horizontal" selectable={false}>
+                    <Menu mode="horizontal" selectable={false}>
                         <Menu.Item key="1"><Clock format={'h:mm:ss a'} ticking={true}
                                                   timezone={'Asia/Kolkata'}/></Menu.Item>
                         <SubMenu key="user" icon={<UserOutlined/>} title="Atul Pandey">

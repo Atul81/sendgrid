@@ -18,9 +18,25 @@ export interface CustomFields {
     fieldType: string
 }
 
-export interface SegmentInterface{
+export interface SegmentInterface {
     key: string,
     name: string,
     contacts: number,
     conditions: number
+}
+
+export interface UploadInterface {
+    key: string,
+    fileName: string,
+    uploadTimestamp: string,
+    rowsFraction: string
+}
+
+export interface UploadDetailsInterface {
+    key: string,
+    email: string,
+    firstName: string,
+    lastName: string,
+    city: string,
+    postalCode: string
 }

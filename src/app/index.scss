@@ -22,7 +22,13 @@
     margin-bottom: 7px;
   }
 }
-
+.ant-layout-header {
+   padding: 0;
+   color: #ffffff;
+   background: #ffffff;
+  display: flex;
+  flex-direction: row-reverse;
+}
 .pageLayout {
   height: calc(100vh - 176px);
   display: flex;

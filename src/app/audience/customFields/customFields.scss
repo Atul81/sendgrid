@@ -14,9 +14,11 @@
 
   .reservedBox {
     display: grid;
-    grid-template-columns: 88% auto;
+    grid-template-columns: 70% auto;
     grid-column-gap: 16px;
 
-
+    .value {
+      justify-self: end;
+    }
   }
 }
