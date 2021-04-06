@@ -2,7 +2,7 @@
 export default {
     root: {
         selectedBreadCrum: ['Analytics', 'Sending Statistics'],
-        activeContent: '1',
+        activeContent: 'statistics',
         activeMenuContent: 'analytics'
     }
 };

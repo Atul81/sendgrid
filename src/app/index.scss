@@ -22,13 +22,15 @@
     margin-bottom: 7px;
   }
 }
+
 .ant-layout-header {
-   padding: 0;
-   color: #ffffff;
-   background: #ffffff;
+  padding: 0;
+  color: #ffffff;
+  background: #ffffff;
   display: flex;
   flex-direction: row-reverse;
 }
+
 .pageLayout {
   height: calc(100vh - 176px);
   display: flex;
@@ -85,7 +87,7 @@
 }
 
 .anticon svg {
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
 
 .ant-popover-audience {
@@ -100,4 +102,13 @@
       }
     }
   }
+}
+
+.actionColumn {
+  cursor: pointer;
+}
+
+.reverseFlex {
+  display: flex;
+  flex-direction: row-reverse;
 }

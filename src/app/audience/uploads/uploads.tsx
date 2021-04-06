@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Table, Typography} from "antd";
-import {UploadInterface} from "../Interface";
+import {UploadInterface} from "../contactInterface";
 import {RowDetailsPage} from "./details/RowDetailsLoadable";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
@@ -24,7 +24,7 @@ export const UploadsPage: any = () => {
             rowsFraction: '143/167'
         },
         {
-            key: '1',
+            key: '2',
             fileName: 'omni_campaign_subscribers_list.csv',
             uploadTimestamp: new Date().toLocaleTimeString('kok-IN', {
                 hour12: false,

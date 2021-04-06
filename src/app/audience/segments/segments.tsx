@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Button, Input, message, Popconfirm, Space, Table, Typography} from "antd";
-import {SegmentInterface} from "../Interface";
+import {SegmentInterface} from "../contactInterface";
 import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
 
 export const SegmentsPage: any = () => {
@@ -97,6 +97,7 @@ export const SegmentsPage: any = () => {
     const openSegmentEdit = (record: any) => {
         setSegmentObj(record);
         setNewSegmentMoal(true);
+        message.warn("Work in progress", 0.2).then(() => {});
     };
 
     const deleteContact = (record: any) => {

@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Button, Table, Typography} from "antd";
 import {useDispatch} from "react-redux";
-import {UploadDetailsInterface} from "../../Interface";
+import {UploadDetailsInterface} from "../../contactInterface";
 import Title from "antd/lib/typography/Title";
 import {DownOutlined, StepBackwardOutlined} from "@ant-design/icons";
 import {exportCSVFile} from "../../../../utils/common";

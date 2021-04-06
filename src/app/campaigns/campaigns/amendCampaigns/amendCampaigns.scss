@@ -1,0 +1,53 @@
+.amendCampaign {
+  .flexColumn {
+    display: flex;
+    flex-direction: column;
+  }
+
+
+  @extend .flexColumn;
+
+  .cancelNav {
+    display: flex;
+    flex-direction: row-reverse;
+    padding-bottom: 16px;
+  }
+
+  .screenBifurcation {
+    //border: 2px solid #141414;
+    display: grid;
+    grid-template-columns: 14% auto;
+    padding: 8px;
+    .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-description {
+      color: rgba(0, 0, 0, 0.85);
+      font-weight: 500;
+      font-size: 16px;
+    }
+
+    .contentDisplay {
+      padding: 24px;
+
+      .nextBtn {
+        width: 70px;
+      }
+
+      .prevBtn {
+        width: 80px;
+      }
+
+      .doneBtn {
+        @extend .nextBtn;
+        background: darkgreen;
+      }
+
+      .formContainer {
+        @extend .flexColumn;
+        padding-top: 16px;
+      }
+    }
+  }
+
+  .ant-steps-vertical {
+    height: calc(100vh - 228px);
+  }
+}

@@ -3,13 +3,13 @@ import "./contacts.scss";
 import {Button, Cascader, Dropdown, Input, Menu, message, Modal, Popconfirm, Space, Table, Typography} from "antd";
 import {DropDown} from "../../../utils/Interfaces";
 import {CloseOutlined, DeleteOutlined, DownloadOutlined, EditOutlined, ExportOutlined} from '@ant-design/icons';
-import {ContactsInterface} from "../Interface";
 import Tag from "antd/es/tag";
 import {exportCSVFile} from "../../../utils/common";
-import {EditContactPage} from "./edit/EditContactLoadable";
+import {ContactEditPage} from "./edit/ContactEditLoadable";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 import {UploadPage} from "../../common/upload/UploadLoadable";
+import {ContactsInterface} from "../contactInterface";
 
 export const ContactsPage: any = () => {
     const {Search} = Input;
@@ -33,6 +33,7 @@ export const ContactsPage: any = () => {
             ],
         }]);
     const [emailIdSelected, setEmailIdSelected] = useState<string[]>([]);
+
     const [contactDS, setContactDS] = useState<ContactsInterface[]>([
         {
             key: '1',
@@ -109,8 +110,7 @@ export const ContactsPage: any = () => {
             width: '75px',
             render: ((text: string, record: any) => {
                 return <Space size="small">
-                    <p className={"actionColumn"}
-                       onClick={() => openContactEdit(record)}><EditOutlined/></p>
+                    <p className={"actionColumn"} onClick={() => openContactEdit(record)}><EditOutlined/></p>
                     <Popconfirm overlayClassName="ant-popover-audience" placement="left"
                                 title={<p><Title level={5}>Are you sure you want to delete?</Title>
                                     This will permanently delete these records and all associated data from your
@@ -118,7 +118,7 @@ export const ContactsPage: any = () => {
                                         More</a></p>}
                                 okText="Delete" cancelText="Cancel"
                                 onConfirm={() => deleteContact(record)}>
-                        <p><DeleteOutlined/></p>
+                        <p className={"actionColumn"}><DeleteOutlined/></p>
                     </Popconfirm>
                 </Space>
             }),
@@ -254,5 +254,5 @@ export const ContactsPage: any = () => {
                 <Table rowSelection={{...contactRowSelection}} dataSource={contactDS} columns={columns} bordered/>
             </div>
         </div>
-    ) : <EditContactPage contactObj={contactObj} routeToOverview={navigateToLandingPage}/>
+    ) : <ContactEditPage contactObj={contactObj} routeToOverview={navigateToLandingPage}/>
 }

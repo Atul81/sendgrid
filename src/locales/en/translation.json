@@ -1,19 +1,35 @@
 {
-  "home": {
-    "title": "Welcome",
-    "subTitle": "These are some random images",
-    "selectLanguage": "Select Language"
-  },
-  "common": {
-  },
   "breadcrumb": {
-    "home": "Home",
-    "dashboard": "Dashboard",
-    "analytics": "Analytics"
+    "analytics": "Analytics",
+    "statistics": "Sending Statistics",
+    "suppression": "Suppression",
+    "audience": "Audience",
+    "contacts": "Contacts",
+    "customField": "Custom Fields",
+    "segments": "Segments",
+    "uploads": "Uploads",
+    "automation": "Uploads",
+    "campaigns": "Campaigns",
+    "senders": "Senders",
+    "templates": "Templates",
+    "template-editor": "Template Editor",
+    "delivery-testing": "Delivery Testing",
+    "groups": "Groups",
+    "customize-form": "Customize Form",
+    "unsubscription": "Unsubscription",
+    "settings": "Settings",
+    "domain": "Domain Settings",
+    "dedicated-ip": "Dedicated IPs",
+    "custom-events": "Custom Events",
+    "preference": "Preferences",
+    "users": "Users"
   },
-  "collapsibleSidebar": {
-    "home": "Home",
-    "dashboard": "Dashboard",
-    "analytics": "Analytics"
+  "defaultSidebar": {
+    "analytics": "statistics",
+    "audience": "contacts",
+    "campaigns": "automation",
+    "templates": "Templates",
+    "unsubscription": "groups",
+    "settings": "domain"
   }
 }

@@ -1,0 +1,26 @@
+.amendAutomation {
+
+  .flexWrap {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .flexSpaceBw {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .flexCol {
+    @extend .flexSpaceBw;
+    flex-direction: column;
+  }
+
+  .leftMargin {
+    margin-left: 16px;
+  }
+
+  .greenLeftMargin {
+    @extend .leftMargin;
+    background: darkgreen;
+  }
+}

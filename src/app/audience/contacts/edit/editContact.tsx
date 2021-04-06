@@ -2,37 +2,24 @@ import React, {useEffect, useState} from "react";
 import './editContact.scss';
 import {updateBreadcrumb} from "../../../../store/actions/root";
 import {useDispatch} from "react-redux";
-import './../contacts.scss';
-import {Button, Form, Input, message, Modal, Popconfirm, Select, Space, Table, Tabs} from "antd";
+import '../contacts.scss';
+import {Button, Form, message, Modal, Popconfirm, Select, Space, Table, Tabs} from "antd";
 import Title from "antd/lib/typography/Title";
 import {DeleteOutlined, PlusOutlined, StepBackwardOutlined} from '@ant-design/icons';
-import {AddSegment} from "../../Interface";
+import {AddSegment} from "../../contactInterface";
+import {FormEditPage} from "../../../common/formEdit/formEdit";
+import {populateFormObj} from "../../../../utils/common";
 
 export const EditContactPage: any = (props: any) => {
     const dispatch = useDispatch();
     const {TabPane} = Tabs;
-    const [generalForm] = Form.useForm();
+    const [contactForm] = Form.useForm();
+    const {Option} = Select;
 
     useEffect(() => {
         dispatch(updateBreadcrumb(['Audience', 'Contacts', 'Edit Contact']));
-        generalForm.setFieldsValue({
-            addContact: {
-                email: (props.contactObj && props.contactObj.email) ? props.contactObj.email : undefined,
-                firstName: (props.contactObj && props.contactObj.firstName) ? props.contactObj.firstName : undefined,
-                lastName: (props.contactObj && props.contactObj.lastName) ? props.contactObj.lastName : undefined,
-                address: undefined,
-                city: undefined,
-                postalCode: undefined,
-                country: undefined,
-                location: undefined,
-            }
-        });
-    }, [dispatch, generalForm, props.contactObj]);
-    const {Option} = Select;
-
-    const onCountryChange = (value: string) => {
-        console.log(`selected ${value}`);
-    };
+        populateFormObj(props.contactObj, contactForm);
+    }, [dispatch, contactForm, props.contactObj]);
 
     const filterCountryOption = (input: string, option: any) => {
         return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -116,9 +103,10 @@ export const EditContactPage: any = (props: any) => {
         setSegmentSelected({key: '', segment: ''});
     };
 
-    const modifyContactService = (values: any) =>{
+    const modifyContactService = (values: any) => {
         console.log(values);
-    }
+    };
+
     return (
         <div className="editContact contacts pageLayout">
             <div className="firstNav">
@@ -134,56 +122,7 @@ export const EditContactPage: any = (props: any) => {
             <div className="tabsNav">
                 <Tabs defaultActiveKey="1">
                     <TabPane tab="General" key="1">
-                        <Form form={generalForm} layout={'vertical'} onFinish={modifyContactService}>
-                            <Form.Item label="Email" required>
-                                <Form.Item name={['addContact', 'email']}
-                                           noStyle rules={[{required: true, message: 'Email required'}]}>
-                                    <Input placeholder="tony@testing.com" type={"email"}/>
-                                </Form.Item>
-                            </Form.Item>
-                            <div style={{
-                                display: "grid",
-                                gridTemplateColumns: "49% auto",
-                                gridColumnGap: '24px',
-                            }}>
-                                <Form.Item label="First Name">
-                                    <Form.Item name={['addContact', 'firstName']}
-                                               noStyle rules={[{required: true, message: 'First Name required'}]}>
-                                        <Input placeholder="Enter first name"/>
-                                    </Form.Item>
-                                </Form.Item>
-                                <Form.Item label="Last Name">
-                                    <Form.Item name={['addContact', 'lastName']}
-                                               noStyle rules={[{required: true, message: 'Last Name required'}]}>
-                                        <Input placeholder="Enter Last Name"/>
-                                    </Form.Item>
-                                </Form.Item>
-                                <Form.Item label="Address">
-                                    <Input placeholder="input placeholder"/>
-                                </Form.Item>
-                                <Form.Item label="City">
-                                    <Input placeholder="input placeholder"/>
-                                </Form.Item>
-                                <Form.Item label="Postal">
-                                    <Input placeholder="input placeholder"/>
-                                </Form.Item>
-                                <Form.Item label="Country">
-                                    <Select
-                                        showSearch
-                                        placeholder="Country"
-                                        optionFilterProp="children"
-                                        onChange={onCountryChange}
-                                        filterOption={(input, option) => filterCountryOption(input, option)}>
-                                        <Option value="ind">India</Option>
-                                        <Option value="usa">United States</Option>
-                                        <Option value="uk">United Kingdom</Option>
-                                    </Select>
-                                </Form.Item>
-                            </div>
-                            <Form.Item>
-                                <Button type="primary" htmlType={'submit'}>Save</Button>
-                            </Form.Item>
-                        </Form>
+                        <FormEditPage generalForm={contactForm} saveFormValues={modifyContactService}/>
                     </TabPane>
                     <TabPane tab="Custom Fields" key="2">
                         Content of Tab Pane 2

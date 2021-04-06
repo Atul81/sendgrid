@@ -3,11 +3,9 @@ import './customFields.scss';
 import {Button, Card, Input, message, Modal, Popconfirm, Radio, Space, Table} from "antd";
 import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import Search from "antd/lib/input/Search";
-import {CustomFields} from "../Interface";
+import {CustomFields} from "../contactInterface";
 import Title from "antd/lib/typography/Title";
 import Paragraph from "antd/lib/typography/Paragraph";
-import Text from "antd/es/typography/Text";
-
 
 export const CustomFieldsPage: any = () => {
 
@@ -118,7 +116,8 @@ export const CustomFieldsPage: any = () => {
 
     const deleteSelectFields = () => {
         if (selectedFieldKeys.length === 0) {
-            message.warning("Please use the checkbox to select contact for deletion", 0.8);
+            message.warning("Please use the checkbox to select contact for deletion", 0.8).then(() => {
+            });
         }
         console.log(selectedFieldKeys);
     };
@@ -135,7 +134,8 @@ export const CustomFieldsPage: any = () => {
                                         title={<p><Title level={5}>Are you sure you want to delete?</Title>
                                             This will permanently delete these records and all associated data from your
                                             account. Deleting and re-adding records can alter your monthly contact
-                                            limits. <a href={"https://www.google.com"} target={'_blank'} rel={'noreferrer'}>Learn More</a></p>}
+                                            limits. <a href={"https://www.google.com"} target={'_blank'}
+                                                       rel={'noreferrer'}>Learn More</a></p>}
                                         okText="Delete" cancelText="Cancel"
                                         onConfirm={deleteSelectFields}>
                                 <Button className="deleteBtn" icon={<DeleteOutlined/>} type="primary"
