@@ -112,3 +112,15 @@
   display: flex;
   flex-direction: row-reverse;
 }
+
+.contentListing {
+  p {
+    @extend .actionColumn;
+    color: #1890ff;
+  }
+}
+
+.ant-popover-inner-content {
+  padding: 8px 12px;
+  color: rgba(0, 0, 0, 0.85);
+}

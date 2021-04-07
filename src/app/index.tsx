@@ -20,6 +20,7 @@ import {AutomationPage} from "./campaigns/automation/AutomationLoadable";
 import {SendersPage} from "./campaigns/senders/SendersLoadable";
 import translation from './../locales/en/translation.json'
 import {routes} from "./routes";
+import {TemplatesPage} from "./templates/TemplatesLoadable";
 
 export function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -59,7 +60,8 @@ export function App() {
                         <SubMenu onTitleClick={() => onMenuTitleClick(value.name, value.key)} key={value.name}
                                  icon={value.icon} title={translation.breadcrumb[value.name]}>
                             {value.children.map((childItr) => (
-                                <Menu.Item key={childItr.key}><Link to={value.route.concat(childItr.key)}>{translation.breadcrumb[childItr.key]}</Link></Menu.Item>
+                                <Menu.Item key={childItr.key}><Link
+                                    to={value.route.concat(childItr.key)}>{translation.breadcrumb[childItr.key]}</Link></Menu.Item>
                             ))}
                         </SubMenu>
                     ))}
@@ -87,13 +89,12 @@ export function App() {
                         <Switch>
                             <Switch>
                                 <Route path="/analytics" component={AnalyticsPage}/>
-                                <Route path="/audience/contacts" component={ContactsPage}/>
                                 <Route path="/audience/customField" component={CustomFieldsPage}/>
                                 <Route path="/audience/segments" component={SegmentsPage}/>
                                 <Route path="/audience/uploads" component={UploadsPage}/>
-                                <Route path="/campaigns/automation" component={AutomationPage}/>
                                 <Route path="/campaigns/campaigns" component={CampaignPage}/>
                                 <Route path="/campaigns/senders" component={SendersPage}/>
+                                <Route path="/templates" component={TemplatesPage}/>
                                 <Route path="/audience" component={ContactsPage}/>
                                 <Route path="/campaigns" component={AutomationPage}/>
                                 <Route path="/" component={AnalyticsPage}/>

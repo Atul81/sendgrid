@@ -1,5 +1,5 @@
 import React, {useRef, useState} from "react";
-import {Button, DatePicker, Form, Input, message, Radio, Select, Steps} from 'antd';
+import {Button, DatePicker, Form, Input, message, Radio, Select, Space, Steps, Switch} from 'antd';
 import './amendCampaigns.scss';
 import {
     CheckOutlined,
@@ -75,6 +75,14 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             endTime: (propsObj.step4 && propsObj.step4.endTime) ? propsObj.step4.endTime : undefined,
             rangePicker: undefined,
             timeZone: (propsObj.step4 && propsObj.step4.timeZone) ? propsObj.step4.timeZone : undefined,
+        },
+        step5: {
+            msgPerEP: (propsObj.step5 && propsObj.step5.msgPerEP) ? propsObj.step5.msgPerEP : undefined,
+            overrideMsgPerEPSet: (propsObj.step5 && propsObj.step5.overrideMsgPerEPSet) ? propsObj.step5.overrideMsgPerEPSet : undefined,
+            msgPerDayPerEP: (propsObj.step5 && propsObj.step5.msgPerDayPerEP) ? propsObj.step5.msgPerDayPerEP : undefined,
+            overrideMsgPerDayPerEPSet: (propsObj.step5 && propsObj.step5.overrideMsgPerDayPerEPSet) ? propsObj.step5.overrideMsgPerDayPerEPSet : undefined,
+            campRunTime: (propsObj.step5 && propsObj.step5.campRunTime) ? propsObj.step5.campRunTime : undefined,
+            overrideCampRunTimeSet: (propsObj.step5 && propsObj.step5.overrideCampRunTimeSet) ? propsObj.step5.overrideCampRunTimeSet : undefined,
         }
     });
     const [campaignForm] = Form.useForm();
@@ -105,6 +113,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             values.step4.endTime = values.step4.rangePicker[1]._d.getTime();
         }
         currentFormValues.current = {
+            step5: values.step5 ? values.step5 : currentFormValues.current.step5,
             step4: values.step4 ? values.step4 : currentFormValues.current.step4,
             step3: values.step3 ? values.step3 : currentFormValues.current.step3,
             step2: values.step2 ? values.step2 : currentFormValues.current.step2,
@@ -217,6 +226,46 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                     </Form.Item>
                 </>
             }
+            case 4: {
+                return <>
+                <Space key={'step5-1'} size={24} style={{display: 'flex', marginBottom: 8}} align="baseline">
+                    <Form.Item label="Max. Messages per End-Point" name={['step5', 'msgPerEP']}>
+                        <Select style={{width: '24vw'}} placeholder="Select Max Messages">
+                            <Option value="1000">1000</Option>
+                            <Option value="2000">2000</Option>
+                            <Option value="5000">5000</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Over-ride global Settings" name={['step5', 'overrideMsgPerEPSet']}>
+                        <Switch defaultChecked={false}/>
+                    </Form.Item>
+                </Space>
+                    <Space key={'step5-2'} size={24} style={{display: 'flex', marginBottom: 8}} align="baseline">
+                        <Form.Item label="Max. Messages per Day per End-Point" name={['step5', 'msgPerDayPerEP']}>
+                            <Select style={{width: '24vw'}} placeholder="Select Max Messages">
+                                <Option value="1000">1000</Option>
+                                <Option value="2000">2000</Option>
+                                <Option value="5000">5000</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label="Over-ride global Settings" name={['step5', 'overrideMsgPerDayPerEPSet']}>
+                            <Switch defaultChecked={false}/>
+                        </Form.Item>
+                    </Space>
+                    <Space key={'step5-3'} size={24} style={{display: 'flex', marginBottom: 8}} align="baseline">
+                        <Form.Item label="Max. Campaign Run time (minutes)" name={['step5', 'campRunTime']}>
+                            <Select style={{width: '24vw'}} placeholder="Select Max Messages">
+                                <Option value="1000">1000</Option>
+                                <Option value="2000">2000</Option>
+                                <Option value="5000">5000</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label="Over-ride global Settings" name={['step5', 'overrideCampRunTimeSet']}>
+                            <Switch defaultChecked={false}/>
+                        </Form.Item>
+                    </Space>
+                </>
+            }
         }
     }
     return (
@@ -245,9 +294,9 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                                 </Button>
                             )}
                             {current === steps.length - 1 && (
-                                <Button type="primary" className={'doneBtn'} icon={<CheckOutlined/>}
-                                        onClick={() => message.success(currentFormValues.current)}>
-                                    Done
+                                <Button type="primary" className={'submitBtn'} icon={<CheckOutlined/>}
+                                        onClick={() => message.success('Working')}>
+                                    Submit
                                 </Button>
                             )}
                             {current < steps.length - 1 && (

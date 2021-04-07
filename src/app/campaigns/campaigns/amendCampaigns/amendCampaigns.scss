@@ -35,8 +35,8 @@
         width: 80px;
       }
 
-      .doneBtn {
-        @extend .nextBtn;
+      .submitBtn {
+        width: 80px;
         background: darkgreen;
       }
 
