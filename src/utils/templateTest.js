@@ -1,7 +1,7 @@
-export const testHe = [
+export const templateTest = [
     {
         "bookID": 1,
-        "title": "Harry Potter and the Half-Blood Prince (Harry Potter  #6)",
+        "title": "Harry Potter Half-Blood Prince",
         "authors": "J.K. Rowling-Mary GrandPré",
         "average_rating": 4.56,
         "isbn": 439785960,
@@ -11,7 +11,7 @@ export const testHe = [
     },
     {
         "bookID": 2,
-        "title": "Harry Potter and the Order of the Phoenix (Harry Potter  #5)",
+        "title": "Harry Potter Order of the Phoenix",
         "authors": "J.K. Rowling-Mary GrandPré",
         "average_rating": 4.49,
         "isbn": 439358078,
@@ -21,7 +21,7 @@ export const testHe = [
     },
     {
         "bookID": 3,
-        "title": "Harry Potter and the Sorcerer's Stone (Harry Potter  #1)",
+        "title": "Harry Potter Sorcerer's Stone",
         "authors": "J.K. Rowling-Mary GrandPré",
         "average_rating": 4.47,
         "isbn": 439554934,
