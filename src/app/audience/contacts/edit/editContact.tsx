@@ -8,7 +8,7 @@ import Title from "antd/lib/typography/Title";
 import {DeleteOutlined, PlusOutlined, StepBackwardOutlined} from '@ant-design/icons';
 import {AddSegment} from "../../contactInterface";
 import {FormEditPage} from "../../../common/formEdit/formEdit";
-import {populateFormObj} from "../../../../utils/common";
+import {filterSelectOptions, populateFormObj} from "../../../../utils/common";
 
 export const EditContactPage: any = (props: any) => {
     const dispatch = useDispatch();
@@ -21,9 +21,7 @@ export const EditContactPage: any = (props: any) => {
         populateFormObj(props.contactObj, contactForm);
     }, [dispatch, contactForm, props.contactObj]);
 
-    const filterCountryOption = (input: string, option: any) => {
-        return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-    };
+
 
     const [allSegments, setAllSegments] = useState<AddSegment[]>(
         [{
@@ -144,7 +142,7 @@ export const EditContactPage: any = (props: any) => {
                                         value={segmentSelected.segment.length === 0 ? undefined : segmentSelected.segment}
                                         placeholder="Select Segments"
                                         optionFilterProp="children"
-                                        filterOption={(input, option) => filterCountryOption(input, option)}
+                                        filterOption={(input, option) => filterSelectOptions(input, option)}
                                         onChange={(value, option) => newSegmentSelectChange(option)}>
                                     {allSegments.map(value => {
                                         return <Option key={value.key} value={value.key}>{value.segment}</Option>

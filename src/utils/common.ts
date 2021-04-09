@@ -25,4 +25,8 @@ export const populateFormObj = (propsObj: any, formObj: any) => {
             location: undefined,
         }
     });
-}
+};
+
+export const filterSelectOptions = (input: string, option: any) => {
+    return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+};

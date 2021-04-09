@@ -1,7 +1,6 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import "./contacts.scss";
-import {Button, Cascader, Dropdown, Input, Menu, message, Modal, Popconfirm, Space, Table, Typography} from "antd";
-import {DropDown} from "../../../utils/Interfaces";
+import {Button, Dropdown, Input, Menu, message, Modal, Popconfirm, Space, Table, Typography} from "antd";
 import {CloseOutlined, DeleteOutlined, DownloadOutlined, EditOutlined, ExportOutlined} from '@ant-design/icons';
 import Tag from "antd/es/tag";
 import {exportCSVFile} from "../../../utils/common";
@@ -15,61 +14,27 @@ export const ContactsPage: any = () => {
     const {Search} = Input;
     const {Title} = Typography;
 
-    const [segmentSelect, setSegmentSelect] = useState<DropDown[]>([
-        {
-            value: 'allContacts',
-            label: 'All Contacts',
-            children: null
-        },
-        {
-            value: 'segments',
-            label: 'Segments',
-            children: [
-                {
-                    value: 'xennials',
-                    label: 'The Xennials',
-                    children: null
-                },
-            ],
-        }]);
+
     const [emailIdSelected, setEmailIdSelected] = useState<string[]>([]);
 
-    const [contactDS, setContactDS] = useState<ContactsInterface[]>([
-        {
-            key: '1',
-            email: 'atulkp.eee13@nituk.ac.in',
-            firstName: 'Atul',
-            lastName: 'Pandey',
-            emailMarketing: 'Subscribed',
-            tags: 'Prospect'
-        },
-        {
-            key: '2',
-            email: 'atul.pandey@solulever.com',
-            firstName: 'Atul Kumar',
-            lastName: 'Pandey',
-            emailMarketing: 'Not Subscribed',
-            tags: 'Zoho Campaign'
+    const [contactDS, setContactDS] = useState<ContactsInterface[]>([]);
+    const [contactDSOps, setContactDSOps] = useState<ContactsInterface[]>([]);
+
+    useEffect(() => {
+        let data: ContactsInterface[] = [];
+        for (let i = 0; i < 100; i++) {
+            data.push({
+                key: i.toString(10),
+                email: 'atulkp.eee13@nituk.ac.in',
+                firstName: `'Atul' ${i}`,
+                lastName: 'Pandey',
+                emailMarketing: 'Subscribed',
+                tags: 'Prospect',
+            });
         }
-    ]);
-    const [contactDSOps, setContactDSOps] = useState<ContactsInterface[]>([
-        {
-            key: '1',
-            email: 'atulkp.eee13@nituk.ac.in',
-            firstName: 'Atul',
-            lastName: 'Pandey',
-            emailMarketing: 'Subscribed',
-            tags: 'Prospect'
-        },
-        {
-            key: '2',
-            email: 'atul.pandey@solulever.com',
-            firstName: 'Atul Kumar',
-            lastName: 'Pandey',
-            emailMarketing: 'Not Subscribed',
-            tags: 'Zoho Campaign'
-        },
-    ]);
+        setContactDS(data);
+        setContactDSOps(data);
+    }, []);
     const columns = [
         {
             title: 'Email Address',
@@ -135,14 +100,13 @@ export const ContactsPage: any = () => {
 
     const dispatch = useDispatch();
 
-    const handleSegmentChange = (value: any) => {
-        setTableLabel(value[value.length - 1].label);
-    }
+
     const onSearch = (searchParam: string) => {
         setContactDS(contactDSOps.filter(value => {
             return value.email.includes(searchParam);
         }));
     };
+    const [showDelBtn, setShowDelBtn] = useState(false);
 
     const contactRowSelection = {
         onChange: (selectedRowKeys: React.Key[], selectedRows: ContactsInterface[]) => {
@@ -151,6 +115,11 @@ export const ContactsPage: any = () => {
                 rowsSelected.push(contactsData.email);
             });
             setEmailIdSelected(rowsSelected);
+            if (rowsSelected.length > 0) {
+                setShowDelBtn(true);
+            } else {
+                setShowDelBtn(false);
+            }
         }
     };
 
@@ -207,7 +176,12 @@ export const ContactsPage: any = () => {
     }
     const processUploadedFile = () => {
         console.log(uploadFileInfo.fileList);
-    }
+    };
+
+    const handleTablePaginationChange = (pagination: any) => {
+        console.log(pagination);
+    };
+
     return !editPage ? (
         <div className="contacts pageLayout">
             <div className="firstNav">
@@ -215,28 +189,25 @@ export const ContactsPage: any = () => {
                     <div className="searchInput">
                         <Search placeholder="input search text" onSearch={onSearch} enterButton/>
                     </div>
-                    <div>
-                        <Cascader options={segmentSelect}
-                                  onChange={(value, selectedOptions) => handleSegmentChange(selectedOptions)}
-                                  placeholder="Select Segment"/>
-                    </div>
                 </div>
                 <div className="rightPlacement">
-                    <Popconfirm overlayClassName="ant-popover-audience" placement="left"
-                                title={<p><Title level={5}>Are you sure you want to delete?</Title>
-                                    This will permanently delete these records and all associated data from your
-                                    account. Deleting and re-adding records can alter your monthly contact limits.
-                                    <a href={"https://www.google.com"} target={'_blank'} rel={'noreferrer'}>Learn
-                                        More</a></p>}
-                                okText="Delete" cancelText="Cancel"
-                                onConfirm={deleteAllContact}>
-                        <Button className="deleteBtn" icon={<DeleteOutlined/>} type="primary" danger>Delete</Button>
-                    </Popconfirm>
+                    {showDelBtn ?
+                        <Popconfirm overlayClassName="ant-popover-audience" placement="left"
+                                    title={<p><Title level={5}>Are you sure you want to delete?</Title>
+                                        This will permanently delete these records and all associated data
+                                        from your account. Deleting and re-adding records can alter your
+                                        monthly contact limits.
+                                        <a href={"https://www.google.com"} target={'_blank'}
+                                           rel={'noreferrer'}> Learn More</a></p>}
+                                    okText="Delete" cancelText="Cancel"
+                                    onConfirm={deleteAllContact}>
+                            <Button className="deleteBtn" icon={<DeleteOutlined/>} type="primary" danger>Delete</Button>
+                        </Popconfirm> : null}
                     <Button className="exportBtn" onClick={exportCsv} icon={<ExportOutlined/>}>Export CSV</Button>
                     <Dropdown.Button type={'primary'} overlay={addContactMenu}>Add
                         Contact</Dropdown.Button>
                 </div>
-                <Modal title="Upload Contacts" centered visible={uploadModal} width={'75%'} footer={[
+                <Modal title="Upload Contacts" centered visible={uploadModal} width={'65%'} footer={[
                     <Button key="cancel" onClick={cancelUploadProcess} icon={<CloseOutlined/>}>
                         Cancel
                     </Button>,
@@ -251,7 +222,8 @@ export const ContactsPage: any = () => {
                 <Title level={4}>{tableLabel}</Title>
             </div>
             <div className="thirdNav">
-                <Table rowSelection={{...contactRowSelection}} dataSource={contactDS} columns={columns} bordered/>
+                <Table scroll={{y: 'calc(100vh - 400px)'}} onChange={handleTablePaginationChange}
+                       rowSelection={{...contactRowSelection}} dataSource={contactDS} columns={columns} bordered/>
             </div>
         </div>
     ) : <ContactEditPage contactObj={contactObj} routeToOverview={navigateToLandingPage}/>

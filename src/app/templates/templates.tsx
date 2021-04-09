@@ -5,6 +5,7 @@ import {EllipsisOutlined, PlusOutlined} from "@ant-design/icons";
 import {templateTest} from '../../utils/templateTest'
 import Meta from "antd/es/card/Meta";
 import './templates.scss';
+import {TemplateIeFrame} from "./templateIeFrame";
 
 export const TemplatesPage: any = () => {
 
@@ -12,6 +13,7 @@ export const TemplatesPage: any = () => {
     const [ieFrameType, setIeFrameType] = useState('');
     const [openIeFrame, setOpenIeFrame] = useState(false);
     const [templateObj, setTemplateObj] = useState({});
+
     useEffect(() => {
         setIeFrameType(activeMenu);
         setOpenIeFrame(false);
@@ -20,15 +22,16 @@ export const TemplatesPage: any = () => {
         }
     }, [activeMenu]);
 
+
     const addNewSegment = () => {
-        setIeFrameType('newTemplate');
         setOpenIeFrame(true);
+        setIeFrameType('newTemplate');
     };
 
     const getIeFrameSource = () => {
         switch (ieFrameType) {
             case 'newTemplate' :
-                return 'https://www.google.com';
+                return 'https://ant.design';
             case 'template-editor' :
                 return 'https://ant.design/';
             case 'delivery-testing' :
@@ -42,6 +45,7 @@ export const TemplatesPage: any = () => {
             <p>Duplicate</p>
         </div>
     );
+
 
     return !openIeFrame ? (
         <div className="templates pageLayout">
@@ -75,7 +79,5 @@ export const TemplatesPage: any = () => {
                 </div>
             </div>
         </div>
-    ) : <iframe title={"Analytics Dashboard"}
-                style={{margin: -24, height: 'calc(100vh - 128px)', width: 'calc(100vw - 232px)'}}
-                src={getIeFrameSource()}/>;
+    ) : <TemplateIeFrame ieFrameSrc={getIeFrameSource()} exitTemplateEdit={() => setOpenIeFrame(false)}/>;
 }

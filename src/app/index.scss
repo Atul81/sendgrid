@@ -33,8 +33,7 @@
 
 .pageLayout {
   height: calc(100vh - 176px);
-  display: flex;
-  flex-direction: column;
+  @extend .columnFlex;
   justify-content: space-between;
 }
 
@@ -123,4 +122,14 @@
 .ant-popover-inner-content {
   padding: 8px 12px;
   color: rgba(0, 0, 0, 0.85);
+}
+
+.columnFlex {
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-upload-hint {
+  @extend .columnFlex;
+  justify-content: space-evenly;
 }
