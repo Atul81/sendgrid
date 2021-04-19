@@ -40,3 +40,10 @@ export interface UploadDetailsInterface {
     city: string,
     postalCode: string
 }
+
+export interface QuickAddContactInterface {
+    key: string,
+    email: string,
+    firstName: string,
+    lastName: string
+}

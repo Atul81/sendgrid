@@ -51,7 +51,7 @@ export function App() {
         <Layout style={{minHeight: "100vh"}}>
             <Sider collapsible collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)}>
                 <div className="logo">
-                    <img style={collapsed ? {marginTop: -8} : {marginTop: -68}} src={`/${"assets/images/logo.svg"}`}
+                    <img style={collapsed ? {marginTop: -8} : {marginTop: -68}} src={`/assets/images/logo.svg`}
                          alt="icon"/>
                 </div>
                 <Menu theme="dark" openKeys={[rootState.activeMenuContent]} selectedKeys={[rootState.activeContent]}
@@ -72,7 +72,7 @@ export function App() {
                     <Menu mode="horizontal" selectable={false}>
                         <Menu.Item key="1"><Clock format={'h:mm:ss a'} ticking={true}
                                                   timezone={'Asia/Kolkata'}/></Menu.Item>
-                        <SubMenu key="user" icon={<UserOutlined/>} title="Atul Pandey">
+                        <SubMenu key="user" icon={<UserOutlined/>} title="John Pandey">
                             <Menu.Item key="1">Log Out</Menu.Item>
                             <Menu.Item key="2"><a rel={'noreferrer'} href={"https://www.gmail.com"} target={"_blank"}>Change
                                 Password</a></Menu.Item>

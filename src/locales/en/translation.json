@@ -1,8 +1,7 @@
 {
   "breadcrumb": {
     "analytics": "Analytics",
-    "statistics": "Sending Statistics",
-    "suppression": "Suppression",
+    "dashboard": "Dashboard",
     "audience": "Audience",
     "contacts": "Contacts",
     "customField": "Custom Fields",

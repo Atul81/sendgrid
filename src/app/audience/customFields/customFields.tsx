@@ -13,25 +13,25 @@ export const CustomFieldsPage: any = () => {
     const [customFieldsDS, setCustomFieldsDS] = useState<CustomFields[]>([
         {
             key: '1',
-            fieldName: 'atulkp.eee13@nituk.ac.in',
+            fieldName: 'test+email@gmail.com',
             fieldType: 'Text',
         },
         {
             key: '2',
             fieldName: 'info@solulever.com',
-            fieldType: 'Pandey',
+            fieldType: 'Doe',
         }
     ]);
     const [customFieldsDSOps, setCustomFieldsDSOps] = useState<CustomFields[]>([
         {
             key: '1',
-            fieldName: 'atulkp.eee13@nituk.ac.in',
+            fieldName: 'test+email@gmail.com',
             fieldType: 'Text',
         },
         {
             key: '2',
             fieldName: 'info@solulever.com',
-            fieldType: 'Pandey',
+            fieldType: 'Doe',
         }
     ]);
     const [selectedFieldKeys, setFieldKeys] = useState<string[]>([]);

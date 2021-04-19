@@ -11,8 +11,8 @@ export const SegmentsPage: any = () => {
     const [segmentDS, setSegmentDS] = useState<SegmentInterface[]>([
         {
             key: '1',
-            name: 'Atul Pandey',
-            contacts: 9411355956,
+            name: 'John Pandey',
+            contacts: 123456789,
             conditions: 1
         },
         {
@@ -25,8 +25,8 @@ export const SegmentsPage: any = () => {
     const [segmentDSOps, setSegmentDSOps] = useState<SegmentInterface[]>([
         {
             key: '1',
-            name: 'Atul Pandey',
-            contacts: 9411355956,
+            name: 'John Pandey',
+            contacts: 123456789,
             conditions: 1
         },
         {

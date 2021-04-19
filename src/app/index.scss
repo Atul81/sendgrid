@@ -107,9 +107,21 @@
   cursor: pointer;
 }
 
+.noMarginIcon {
+  margin: 0;
+  .anticon svg {
+    margin-bottom: 0;
+  }
+}
+
 .reverseFlex {
   display: flex;
   flex-direction: row-reverse;
+  flex-wrap: wrap-reverse;
+
+  .ant-form-item {
+    margin-bottom: 8px;
+  }
 }
 
 .contentListing {

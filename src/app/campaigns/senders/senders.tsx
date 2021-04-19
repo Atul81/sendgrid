@@ -14,15 +14,15 @@ export const SendersPage: any = () => {
     const [segmentDS, setSegmentDS] = useState<SendersInterface[]>([
         {
             key: '1',
-            email: 'atulkp.eee13@nituk.ac.in',
-            firstName: 'Atul',
+            email: 'test+email@gmail.com',
+            firstName: 'John',
             lastName: 'Pandey',
             domainVerified: 'Yes'
         },
         {
             key: '2',
-            email: 'atul.pandey@solulever.com',
-            firstName: 'Atul Kumar',
+            email: 'John.pandey@solulever.com',
+            firstName: 'John Kumar',
             lastName: 'Pandey',
             domainVerified: 'No'
         }
@@ -30,15 +30,15 @@ export const SendersPage: any = () => {
     const [segmentDSOps, setSegmentDSOps] = useState<SendersInterface[]>([
         {
             key: '1',
-            email: 'atulkp.eee13@nituk.ac.in',
-            firstName: 'Atul',
+            email: 'test+email@gmail.com',
+            firstName: 'John',
             lastName: 'Pandey',
             domainVerified: 'Yes'
         },
         {
             key: '2',
-            email: 'atul.pandey@solulever.com',
-            firstName: 'Atul Kumar',
+            email: 'John.pandey@solulever.com',
+            firstName: 'John Kumar',
             lastName: 'Pandey',
             domainVerified: 'No'
         }

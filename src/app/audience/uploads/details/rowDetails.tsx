@@ -12,16 +12,16 @@ export const RowDetailsPage: any = (props: any) => {
     const [uploadDetailsDS, setUploadDetailsDS] = useState<UploadDetailsInterface[]>([
         {
             key: '1',
-            email: 'atulkp.eee13@nituk.ac.in',
-            firstName: 'Atul',
+            email: 'test+email@gmail.com',
+            firstName: 'John',
             lastName: 'Pandey',
             city: 'Subscribed',
             postalCode: 'Prospect'
         },
         {
             key: '2',
-            email: 'atul.pandey@solulever.com',
-            firstName: 'Atul Kumar',
+            email: 'John.pandey@solulever.com',
+            firstName: 'John Kumar',
             lastName: 'Pandey',
             city: 'Not Subscribed',
             postalCode: 'Zoho Campaign'

@@ -16,11 +16,8 @@ export const routes = [
         route: '/analytics/',
         children: [
             {
-                key: 'statistics',
-            },
-            {
-                key: 'suppression'
-            },
+                key: 'dashboard',
+            }
         ]
     },
     {

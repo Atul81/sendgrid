@@ -1,22 +1,29 @@
 import React, {useEffect, useState} from "react";
 import "./contacts.scss";
-import {Button, Dropdown, Input, Menu, message, Modal, Popconfirm, Space, Table, Typography} from "antd";
-import {CloseOutlined, DeleteOutlined, DownloadOutlined, EditOutlined, ExportOutlined} from '@ant-design/icons';
+import {Button, Dropdown, Form, Input, Menu, message, Modal, Popconfirm, Space, Table, Typography} from "antd";
+import {
+    CloseOutlined,
+    DeleteOutlined,
+    DownloadOutlined,
+    EditOutlined,
+    ExportOutlined,
+    PlusOutlined
+} from '@ant-design/icons';
 import Tag from "antd/es/tag";
 import {exportCSVFile} from "../../../utils/common";
 import {ContactEditPage} from "./edit/ContactEditLoadable";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 import {UploadPage} from "../../common/upload/UploadLoadable";
-import {ContactsInterface} from "../contactInterface";
+import {ContactsInterface, QuickAddContactInterface} from "../contactInterface";
 
 export const ContactsPage: any = () => {
     const {Search} = Input;
     const {Title} = Typography;
+    const [addContact] = Form.useForm();
 
 
     const [emailIdSelected, setEmailIdSelected] = useState<string[]>([]);
-
     const [contactDS, setContactDS] = useState<ContactsInterface[]>([]);
     const [contactDSOps, setContactDSOps] = useState<ContactsInterface[]>([]);
 
@@ -25,9 +32,9 @@ export const ContactsPage: any = () => {
         for (let i = 0; i < 100; i++) {
             data.push({
                 key: i.toString(10),
-                email: 'atulkp.eee13@nituk.ac.in',
-                firstName: `'Atul' ${i}`,
-                lastName: 'Pandey',
+                email: `email+test@gmail.com ${i}`,
+                firstName: `John`,
+                lastName: `Doe ${i}`,
                 emailMarketing: 'Subscribed',
                 tags: 'Prospect',
             });
@@ -35,6 +42,7 @@ export const ContactsPage: any = () => {
         setContactDS(data);
         setContactDSOps(data);
     }, []);
+
     const columns = [
         {
             title: 'Email Address',
@@ -89,6 +97,41 @@ export const ContactsPage: any = () => {
             }),
         },
     ];
+
+    const quickAddColumns = [
+        {
+            title: 'Email Address',
+            dataIndex: 'email',
+            key: 'email',
+        },
+        {
+            title: 'First Name',
+            dataIndex: 'firstName',
+            key: 'firstName',
+        },
+        {
+            title: 'Last Name',
+            dataIndex: 'lastName',
+            key: 'lastName',
+        },
+        {
+            title: 'Action',
+            dataIndex: '',
+            key: 'action',
+            width: '75px',
+            render: ((text: string, record: any) => {
+                return <Space size="small">
+                    <p className={"actionColumn noMarginIcon"} onClick={() => deleteQuickContact(record)}><DeleteOutlined/></p>
+                </Space>
+            }),
+        },
+    ];
+
+    const deleteQuickContact = (record: any) => {
+       let tempObj = quickAddContactDS.filter(value => record.key !== value.key);
+       setQuickAddContactDS(tempObj);
+    }
+    const [quickAddContactDS, setQuickAddContactDS] = useState<QuickAddContactInterface[]>([]);
     const [tableLabel, setTableLabel] = useState<string>('All Contacts');
     const [editPage, setEditPage] = useState(false);
     const [contactObj, setContactObj] = useState({});
@@ -139,18 +182,26 @@ export const ContactsPage: any = () => {
         });
         exportCSVFile(str, tableLabel);
     };
+    const [quickAddModal, setQuickAddModal] = useState(false);
 
     const handleAddContactMenuClick = (e: any) => {
         if (e.key === 'addManually') {
             setEditPage(true);
             setContactObj({});
+        } else if (e.key === 'quickAdd') {
+            setQuickAddModal(true);
         } else {
             setUploadModal(true);
         }
     };
 
+    const cancelQuickAdd = () => {
+        setQuickAddModal(false);
+    }
+
     const addContactMenu = (
         <Menu onClick={handleAddContactMenuClick}>
+            <Menu.Item key="quickAdd">Quick Add</Menu.Item>
             <Menu.Item key="addManually">Add Manually</Menu.Item>
             <Menu.Item key="uploadCSV">Upload .CSV</Menu.Item>
         </Menu>
@@ -181,6 +232,12 @@ export const ContactsPage: any = () => {
     const handleTablePaginationChange = (pagination: any) => {
         console.log(pagination);
     };
+
+    const quickAddContactService = (values: any) => {
+        let tempData = [...quickAddContactDS];
+        tempData.push({...values.formObj, key: Math.random()});
+        setQuickAddContactDS(tempData);
+    }
 
     return !editPage ? (
         <div className="contacts pageLayout">
@@ -216,6 +273,46 @@ export const ContactsPage: any = () => {
                     </Button>
                 ]} onCancel={cancelUploadProcess}>
                     <UploadPage fileInfo={(fileInfo: any) => setUploadFileInfo(fileInfo)}/>
+                </Modal>
+                <Modal title="Add Contact" centered visible={quickAddModal} width={408} footer={null}
+                       onCancel={cancelQuickAdd}>
+                    <div className='columnFlex'>
+                        <Form form={addContact} layout={'vertical'} onFinish={quickAddContactService}>
+                            <Form.Item label="Email Address">
+                                <Form.Item name={['formObj', 'email']}
+                                           noStyle rules={[{required: true, message: 'Email Address required'}]}>
+                                    <Input placeholder="email+test@gmail.com" type={"email"}/>
+                                </Form.Item>
+                            </Form.Item>
+                            <div className='flexEqualSpacing'>
+                                <Form.Item label="First Name">
+                                    <Form.Item name={['formObj', 'firstName']} noStyle>
+                                        <Input placeholder="Text Only" type={'text'}/>
+                                    </Form.Item>
+                                </Form.Item>
+                                <Form.Item label="Last Name">
+                                    <Form.Item name={['formObj', 'lastName']} noStyle>
+                                        <Input placeholder="Text Only" type={'text'}/>
+                                    </Form.Item>
+                                </Form.Item>
+                            </div>
+                            <div className='reverseFlex'>
+                                <Form.Item>
+                                    <Button key="cancel" htmlType={'reset'} onClick={cancelQuickAdd}
+                                            icon={<CloseOutlined/>}>
+                                        Cancel
+                                    </Button>
+                                </Form.Item>
+                                <Form.Item>
+                                    <Button style={{marginRight: 8}} key="quickAdd" htmlType={'submit'} type="primary"
+                                            icon={<PlusOutlined/>}>
+                                        Add
+                                    </Button>
+                                </Form.Item>
+                            </div>
+                        </Form>
+                    </div>
+                    <Table dataSource={quickAddContactDS} columns={quickAddColumns} bordered/>
                 </Modal>
             </div>
             <div className="secondNav">
