@@ -11,14 +11,10 @@ import {
 export const routes = [
     {
         key: '1',
-        name: 'analytics',
+        name: 'dashboard',
         icon: <MacCommandOutlined/>,
-        route: '/analytics/',
-        children: [
-            {
-                key: 'dashboard',
-            }
-        ]
+        route: '/dashboard',
+        children: null
     },
     {
         key: '2',

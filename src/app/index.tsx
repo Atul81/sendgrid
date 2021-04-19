@@ -7,7 +7,6 @@ import Sider from "antd/es/layout/Sider";
 import SubMenu from "antd/es/menu/SubMenu";
 import {Content, Header} from "antd/es/layout/layout";
 import {Link, Route, Switch, useLocation,} from "react-router-dom";
-import {AnalyticsPage} from "./analytics/AnalyticsLoadable";
 import Clock from 'react-live-clock';
 import {ContactsPage} from "./audience/contacts/ContactsLoadable";
 import {CustomFieldsPage} from "./audience/customFields/CustomFieldsLoadable";
@@ -21,6 +20,7 @@ import {SendersPage} from "./campaigns/senders/SendersLoadable";
 import translation from './../locales/en/translation.json'
 import {routes} from "./routes";
 import {TemplatesPage} from "./templates/TemplatesLoadable";
+import {DashboardPage} from "./dashboard/DashboardLoadable";
 
 export function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -57,13 +57,15 @@ export function App() {
                 <Menu theme="dark" openKeys={[rootState.activeMenuContent]} selectedKeys={[rootState.activeContent]}
                       mode="inline">
                     {routes.map((value) => (
-                        <SubMenu onTitleClick={() => onMenuTitleClick(value.name, value.key)} key={value.name}
-                                 icon={value.icon} title={translation.breadcrumb[value.name]}>
-                            {value.children.map((childItr) => (
-                                <Menu.Item key={childItr.key}><Link
-                                    to={value.route.concat(childItr.key)}>{translation.breadcrumb[childItr.key]}</Link></Menu.Item>
-                            ))}
-                        </SubMenu>
+                        value.children != null ?
+                            <SubMenu onTitleClick={() => onMenuTitleClick(value.name, value.key)} key={value.name}
+                                     icon={value.icon} title={translation.breadcrumb[value.name]}>
+                                {value.children.map((childItr) => (
+                                    <Menu.Item key={childItr.key}><Link
+                                        to={value.route.concat(childItr.key)}>{translation.breadcrumb[childItr.key]}</Link></Menu.Item>
+                                ))}
+                            </SubMenu> :
+                            <Menu.Item icon={value.icon} key={value.key}><Link to={value.route}>{translation.breadcrumb[value.name]}</Link></Menu.Item>
                     ))}
                 </Menu>
             </Sider>
@@ -88,7 +90,7 @@ export function App() {
                     <div className="site-layout-background" style={{padding: 24, minHeight: "calc(100vh - 128px)"}}>
                         <Switch>
                             <Switch>
-                                <Route path="/analytics" component={AnalyticsPage}/>
+                                <Route path="/dashboard" component={DashboardPage}/>
                                 <Route path="/audience/customField" component={CustomFieldsPage}/>
                                 <Route path="/audience/segments" component={SegmentsPage}/>
                                 <Route path="/audience/uploads" component={UploadsPage}/>
@@ -97,7 +99,7 @@ export function App() {
                                 <Route path="/templates" component={TemplatesPage}/>
                                 <Route path="/audience" component={ContactsPage}/>
                                 <Route path="/campaigns" component={AutomationPage}/>
-                                <Route path="/" component={AnalyticsPage}/>
+                                <Route path="/" component={DashboardPage}/>
                             </Switch>
                         </Switch>
                     </div>
