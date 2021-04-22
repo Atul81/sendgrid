@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {Button, Card, Popover, Skeleton} from "antd";
 import {EllipsisOutlined, PlusOutlined} from "@ant-design/icons";
 import {templateTest} from '../../utils/templateTest'
 import Meta from "antd/es/card/Meta";
 import './templates.scss';
 import {TemplateIeFrame} from "./templateIeFrame";
+import {useHistory} from "react-router-dom";
+import {updateActiveContent} from "../../store/actions/root";
 
 export const TemplatesPage: any = () => {
 
@@ -13,11 +15,12 @@ export const TemplatesPage: any = () => {
     const [ieFrameType, setIeFrameType] = useState('');
     const [openIeFrame, setOpenIeFrame] = useState(false);
     const [templateObj, setTemplateObj] = useState({});
+    const history = useHistory();
 
     useEffect(() => {
         setIeFrameType(activeMenu);
         setOpenIeFrame(false);
-        if (activeMenu !== 'templates') {
+        if (activeMenu === 'template-editor' || activeMenu === 'delivery-testing') {
             setOpenIeFrame(true);
         }
     }, [activeMenu]);
@@ -31,11 +34,11 @@ export const TemplatesPage: any = () => {
     const getIeFrameSource = () => {
         switch (ieFrameType) {
             case 'newTemplate' :
-                return 'https://ant.design';
+                return 'https://programmablesearchengine.google.com';
             case 'template-editor' :
-                return 'https://ant.design/';
+                return 'https://programmablesearchengine.google.com';
             case 'delivery-testing' :
-                return 'https://pro.ant.design/';
+                return 'https://programmablesearchengine.google.com';
         }
     };
 
@@ -46,6 +49,10 @@ export const TemplatesPage: any = () => {
         </div>
     );
 
+    const exitTemplate = () => {
+        setOpenIeFrame(false);
+        history.push("/templates/templates");
+    };
 
     return !openIeFrame ? (
         <div className="templates pageLayout">
@@ -79,5 +86,5 @@ export const TemplatesPage: any = () => {
                 </div>
             </div>
         </div>
-    ) : <TemplateIeFrame ieFrameSrc={getIeFrameSource()} exitTemplateEdit={() => setOpenIeFrame(false)}/>;
+    ) : <TemplateIeFrame ieFrameSrc={getIeFrameSource()} exitTemplateEdit={exitTemplate}/>;
 }

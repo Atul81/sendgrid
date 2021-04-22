@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Button, Table, Typography} from "antd";
 import {useDispatch} from "react-redux";
-import {UploadDetailsInterface} from "../../contactInterface";
+import {ImportsDetailsInterface} from "../../contactInterface";
 import Title from "antd/lib/typography/Title";
 import {DownOutlined, StepBackwardOutlined} from "@ant-design/icons";
 import {exportCSVFile} from "../../../../utils/common";
@@ -9,7 +9,7 @@ import {exportCSVFile} from "../../../../utils/common";
 export const RowDetailsPage: any = (props: any) => {
     const {Title} = Typography;
     const dispatch = useDispatch();
-    const [uploadDetailsDS, setUploadDetailsDS] = useState<UploadDetailsInterface[]>([
+    const [uploadDetailsDS, setUploadDetailsDS] = useState<ImportsDetailsInterface[]>([
         {
             key: '1',
             email: 'test+email@gmail.com',

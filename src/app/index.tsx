@@ -11,7 +11,6 @@ import Clock from 'react-live-clock';
 import {ContactsPage} from "./audience/contacts/ContactsLoadable";
 import {CustomFieldsPage} from "./audience/customFields/CustomFieldsLoadable";
 import {SegmentsPage} from "./audience/segments/SegmentsLoadable";
-import {UploadsPage} from "./audience/uploads/UploadsLoadable";
 import {useDispatch, useSelector} from "react-redux";
 import {updateActiveContent, updateActiveMenuContent, updateBreadcrumb} from "../store/actions/root";
 import {CampaignPage} from "./campaigns/campaigns/CampaignLoadable";
@@ -21,6 +20,9 @@ import translation from './../locales/en/translation.json'
 import {routes} from "./routes";
 import {TemplatesPage} from "./templates/TemplatesLoadable";
 import {DashboardPage} from "./dashboard/DashboardLoadable";
+import {ImportsPage} from "./audience/imports/ImportsLoadable";
+import {ExportPage} from "./audience/exports/ExportsLoadable";
+import {GroupsPage} from "./unsubcription/groups/GroupsLoadable";
 
 export function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -93,12 +95,15 @@ export function App() {
                                 <Route path="/dashboard" component={DashboardPage}/>
                                 <Route path="/audience/customField" component={CustomFieldsPage}/>
                                 <Route path="/audience/segments" component={SegmentsPage}/>
-                                <Route path="/audience/uploads" component={UploadsPage}/>
+                                <Route path="/audience/imports" component={ImportsPage}/>
+                                <Route path="/audience/exports" component={ExportPage}/>
                                 <Route path="/campaigns/campaigns" component={CampaignPage}/>
                                 <Route path="/campaigns/senders" component={SendersPage}/>
+                                <Route path="/unsubscription/groups" component={GroupsPage}/>
                                 <Route path="/templates" component={TemplatesPage}/>
                                 <Route path="/audience" component={ContactsPage}/>
                                 <Route path="/campaigns" component={AutomationPage}/>
+                                <Route path="/unsubscription" component={GroupsPage}/>
                                 <Route path="/" component={DashboardPage}/>
                             </Switch>
                         </Switch>

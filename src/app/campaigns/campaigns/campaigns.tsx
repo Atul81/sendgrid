@@ -1,49 +1,36 @@
 import React, {useState} from "react";
-import {CampaignsInterface, SendersInterface} from "../campaignInterface";
 import {Button, message, Popconfirm, Space, Table} from "antd";
-import {DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, CopyOutlined} from "@ant-design/icons";
+import {CopyOutlined, DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import Search from "antd/lib/input/Search";
-import {AmendAutomationPage} from "../automation/amendAutomation/AmendAutomationLoadable";
 import {AmendCampaignsPage} from "./amendCampaigns/AmendCampaignsLoadable";
+import {CampaignInterface} from "../campaignInterface";
 
 export const CampaignPage: any = () => {
     const [openAutomationAmend, setOpenAutomationAmend] = useState(false);
     const [automationOpenType, setOpenType] = useState('view');
     const [automationObj, setAutomationObj] = useState({});
-    const [customFieldsDS, setCustomFieldsDS] = useState<CampaignsInterface[]>([
+    const [customFieldsDS, setCustomFieldsDS] = useState<CampaignInterface[]>([
         {
             key: '1',
             name: 'Name of the automation',
-            delivered: '560',
-            uniqueOpens: '421',
-            uniqueClicks: '389',
             status: 'Scheduled'
         },
         {
             key: '2',
             name: 'Exit Intent Flow',
-            delivered: '230',
-            uniqueOpens: '214',
-            uniqueClicks: '198',
             status: 'Sent'
         }
     ]);
-    const [customFieldsDSOps, setCustomFieldsDSOps] = useState<CampaignsInterface[]>([
+    const [customFieldsDSOps, setCustomFieldsDSOps] = useState<CampaignInterface[]>([
         {
             key: '1',
             name: 'Name of the automation',
-            delivered: '560',
-            uniqueOpens: '421',
-            uniqueClicks: '389',
             status: 'Scheduled'
         },
         {
             key: '2',
             name: 'Exit Intent Flow',
-            delivered: '230',
-            uniqueOpens: '214',
-            uniqueClicks: '198',
             status: 'Sent'
         }
     ]);
@@ -54,21 +41,6 @@ export const CampaignPage: any = () => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-        },
-        {
-            title: 'Delivered',
-            dataIndex: 'delivered',
-            key: 'delivered',
-        },
-        {
-            title: 'Unique Opens',
-            dataIndex: 'uniqueOpens',
-            key: 'uniqueOpens',
-        },
-        {
-            title: 'Unique Clicks',
-            dataIndex: 'uniqueClicks',
-            key: 'uniqueClicks',
         },
         {
             title: 'Status',
@@ -117,7 +89,7 @@ export const CampaignPage: any = () => {
     };
 
     const customFieldRowSelection = {
-        onChange: (selectedRowKeys: React.Key[], selectedRows: CampaignsInterface[]) => {
+        onChange: (selectedRowKeys: React.Key[], selectedRows: CampaignInterface[]) => {
             let rowsSelected: string[] = [];
             selectedRows.forEach(customFieldItr => {
                 rowsSelected.push(customFieldItr.key);

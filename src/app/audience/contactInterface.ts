@@ -25,14 +25,15 @@ export interface SegmentInterface {
     conditions: number
 }
 
-export interface UploadInterface {
+export interface ImportsInterface {
     key: string,
     fileName: string,
-    uploadTimestamp: string,
-    rowsFraction: string
+    importTimestamp: string,
+    rowsFraction: string,
+    status: string
 }
 
-export interface UploadDetailsInterface {
+export interface ImportsDetailsInterface {
     key: string,
     email: string,
     firstName: string,
@@ -46,4 +47,10 @@ export interface QuickAddContactInterface {
     email: string,
     firstName: string,
     lastName: string
+}
+
+export interface ExportContactInterface{
+    key: string,
+    fileName: string,
+    exportTimestamp: string,
 }

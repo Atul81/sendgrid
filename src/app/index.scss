@@ -109,6 +109,7 @@
 
 .noMarginIcon {
   margin: 0;
+
   .anticon svg {
     margin-bottom: 0;
   }
@@ -144,4 +145,11 @@
 .ant-upload-hint {
   @extend .columnFlex;
   justify-content: space-evenly;
+}
+
+.fullScreenModal {
+  top: 0;
+  padding: 0;
+  margin: 0;
+  max-width: 100vw;
 }

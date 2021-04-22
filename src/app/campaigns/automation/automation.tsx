@@ -3,43 +3,35 @@ import {Button, message, Popconfirm, Space, Table} from "antd";
 import {DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import Search from "antd/lib/input/Search";
-import {AutomationInterfaces} from "../campaignInterface";
+import {CampaignInterface} from "../campaignInterface";
 import {AmendAutomationPage} from "./amendAutomation/AmendAutomationLoadable";
 
 export const AutomationPage: any = () => {
     const [openAutomationAmend, setOpenAutomationAmend] = useState(false);
     const [automationOpenType, setOpenType] = useState('view');
     const [automationObj, setAutomationObj] = useState({});
-    const [customFieldsDS, setCustomFieldsDS] = useState<AutomationInterfaces[]>([
+    const [customFieldsDS, setCustomFieldsDS] = useState<CampaignInterface[]>([
         {
             key: '1',
             name: 'Name of the automation',
-            delivered: 560,
-            uniqueOpens: 421,
-            uniqueClicks: 389
+            status: 'Scheduled',
         },
         {
             key: '2',
             name: 'Exit Intent Flow',
-            delivered: 230,
-            uniqueOpens: 214,
-            uniqueClicks: 198
+            status: 'Sent',
         }
     ]);
-    const [customFieldsDSOps, setCustomFieldsDSOps] = useState<AutomationInterfaces[]>([
+    const [customFieldsDSOps, setCustomFieldsDSOps] = useState<CampaignInterface[]>([
         {
             key: '1',
             name: 'Name of the automation',
-            delivered: 560,
-            uniqueOpens: 421,
-            uniqueClicks: 389
+            status: 'Scheduled'
         },
         {
             key: '2',
             name: 'Exit Intent Flow',
-            delivered: 230,
-            uniqueOpens: 214,
-            uniqueClicks: 198
+            status: 'Sent'
         }
     ]);
     const [selectedAutomationKeys, setAutomationKeys] = useState<string[]>([]);
@@ -51,19 +43,9 @@ export const AutomationPage: any = () => {
             key: 'name',
         },
         {
-            title: 'Delivered',
-            dataIndex: 'delivered',
-            key: 'delivered',
-        },
-        {
-            title: 'Unique Opens',
-            dataIndex: 'uniqueOpens',
-            key: 'uniqueOpens',
-        },
-        {
-            title: 'Unique Clicks',
-            dataIndex: 'uniqueClicks',
-            key: 'uniqueClicks',
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
         },
         {
             title: 'Action',
@@ -106,7 +88,7 @@ export const AutomationPage: any = () => {
     };
 
     const customFieldRowSelection = {
-        onChange: (selectedRowKeys: React.Key[], selectedRows: AutomationInterfaces[]) => {
+        onChange: (selectedRowKeys: React.Key[], selectedRows: CampaignInterface[]) => {
             let rowsSelected: string[] = [];
             selectedRows.forEach(customFieldItr => {
                 rowsSelected.push(customFieldItr.key);

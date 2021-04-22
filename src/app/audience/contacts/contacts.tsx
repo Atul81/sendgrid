@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from "react";
 import "./contacts.scss";
-import {Button, Dropdown, Form, Input, Menu, message, Modal, Popconfirm, Space, Table, Typography} from "antd";
+import {Button, Dropdown, Form, Input, Menu, message, Modal, Popconfirm, Result, Space, Table, Typography} from "antd";
 import {
     CloseOutlined,
     DeleteOutlined,
     DownloadOutlined,
     EditOutlined,
     ExportOutlined,
+    HistoryOutlined,
     PlusOutlined
 } from '@ant-design/icons';
 import Tag from "antd/es/tag";
-import {exportCSVFile} from "../../../utils/common";
 import {ContactEditPage} from "./edit/ContactEditLoadable";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
@@ -22,11 +22,11 @@ export const ContactsPage: any = () => {
     const {Title} = Typography;
     const [addContact] = Form.useForm();
 
+    const [exportReqModal, setExportModalReq] = useState(false);
 
     const [emailIdSelected, setEmailIdSelected] = useState<string[]>([]);
     const [contactDS, setContactDS] = useState<ContactsInterface[]>([]);
     const [contactDSOps, setContactDSOps] = useState<ContactsInterface[]>([]);
-
     useEffect(() => {
         let data: ContactsInterface[] = [];
         for (let i = 0; i < 100; i++) {
@@ -121,15 +121,16 @@ export const ContactsPage: any = () => {
             width: '75px',
             render: ((text: string, record: any) => {
                 return <Space size="small">
-                    <p className={"actionColumn noMarginIcon"} onClick={() => deleteQuickContact(record)}><DeleteOutlined/></p>
+                    <p className={"actionColumn noMarginIcon"} onClick={() => deleteQuickContact(record)}>
+                        <DeleteOutlined/></p>
                 </Space>
             }),
-        },
+        }
     ];
 
     const deleteQuickContact = (record: any) => {
-       let tempObj = quickAddContactDS.filter(value => record.key !== value.key);
-       setQuickAddContactDS(tempObj);
+        let tempObj = quickAddContactDS.filter(value => record.key !== value.key);
+        setQuickAddContactDS(tempObj);
     }
     const [quickAddContactDS, setQuickAddContactDS] = useState<QuickAddContactInterface[]>([]);
     const [tableLabel, setTableLabel] = useState<string>('All Contacts');
@@ -175,12 +176,7 @@ export const ContactsPage: any = () => {
     }
 
     const exportCsv = () => {
-        let str = columns.map(itr => itr.title !== 'Action' ? itr.title : null).join(",");
-        contactDSOps.forEach(item => {
-            let currentRow = item.email + "," + item.firstName + "," + item.lastName + "," + item.emailMarketing + "," + item.tags;
-            str = str + "\n" + currentRow;
-        });
-        exportCSVFile(str, tableLabel);
+        setExportModalReq(true);
     };
     const [quickAddModal, setQuickAddModal] = useState(false);
 
@@ -312,7 +308,19 @@ export const ContactsPage: any = () => {
                             </div>
                         </Form>
                     </div>
-                    <Table dataSource={quickAddContactDS} columns={quickAddColumns} bordered/>
+                    {quickAddContactDS.length > 0 ?
+                        <Table dataSource={quickAddContactDS} columns={quickAddColumns} bordered/> : null}
+                </Modal>
+                <Modal centered visible={exportReqModal} width={'50%'} footer={null} closable={false}>
+                    <Result icon={<HistoryOutlined/>}
+                            title="Your export is being processed"
+                            subTitle={
+                                <span>You can view exported contacts in the <strong>{'"Audience > Contacts"'}</strong> section after receiving a confirmation email</span>}
+                            extra={<Button type="primary" key="done" onClick={() => setExportModalReq(false)}>
+                                Done
+                            </Button>
+                            }
+                    />
                 </Modal>
             </div>
             <div className="secondNav">

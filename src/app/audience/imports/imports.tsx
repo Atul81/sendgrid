@@ -1,18 +1,18 @@
 import React, {useState} from "react";
 import {Table, Typography} from "antd";
-import {UploadInterface} from "../contactInterface";
+import {ImportsInterface} from "../contactInterface";
 import {RowDetailsPage} from "./details/RowDetailsLoadable";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 
-export const UploadsPage: any = () => {
+export const ImportsPage: any = () => {
     const {Title} = Typography;
     const dispatch = useDispatch();
-    const [uploadDS, setUploadDS] = useState<UploadInterface[]>([
+    const [importContactDS, setImportContactDS] = useState<ImportsInterface[]>([
         {
             key: '1',
             fileName: 'Chicago_contacts.csv',
-            uploadTimestamp: new Date().toLocaleTimeString('kok-IN', {
+            importTimestamp: new Date().toLocaleTimeString('kok-IN', {
                 hour12: false,
                 day: '2-digit',
                 month: '2-digit',
@@ -21,12 +21,13 @@ export const UploadsPage: any = () => {
                 minute: '2-digit',
                 second: '2-digit'
             }),
-            rowsFraction: '143/167'
+            rowsFraction: '143/167',
+            status: 'Uploaded'
         },
         {
             key: '2',
             fileName: 'omni_campaign_subscribers_list.csv',
-            uploadTimestamp: new Date().toLocaleTimeString('kok-IN', {
+            importTimestamp: new Date().toLocaleTimeString('kok-IN', {
                 hour12: false,
                 day: '2-digit',
                 month: '2-digit',
@@ -35,7 +36,8 @@ export const UploadsPage: any = () => {
                 minute: '2-digit',
                 second: '2-digit'
             }),
-            rowsFraction: '2451/2839'
+            rowsFraction: '2451/2839',
+            status: 'In progress'
         }
     ]);
     const columns = [
@@ -50,6 +52,11 @@ export const UploadsPage: any = () => {
             title: 'Upload Date & Time',
             dataIndex: 'uploadTimestamp',
             key: 'uploadTimestamp',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
         },
         {
             title: 'Row Imported/Total Rows',
@@ -74,7 +81,7 @@ export const UploadsPage: any = () => {
                 <Title level={4}>All Uploads</Title>
             </div>
             <div className="thirdNav" style={{height: 'calc(100vh - 228px)'}}>
-                <Table columns={columns} dataSource={uploadDS} bordered/>
+                <Table columns={columns} dataSource={importContactDS} bordered/>
             </div>
         </div>
     ) : <RowDetailsPage rowObj={uploadObj} routeToOverview={navigateToLandingPage}/>

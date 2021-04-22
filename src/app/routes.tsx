@@ -32,7 +32,10 @@ export const routes = [
                 key: 'segments'
             },
             {
-                key: 'uploads'
+                key: 'imports'
+            },
+            {
+                key: 'exports'
             }
         ]
     },
