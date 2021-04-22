@@ -49,9 +49,9 @@ export const ImportsPage: any = () => {
                                                          onClick={() => openRowDetails(record)}>{text}</span>,
         },
         {
-            title: 'Upload Date & Time',
-            dataIndex: 'uploadTimestamp',
-            key: 'uploadTimestamp',
+            title: 'Import Date & Time',
+            dataIndex: 'importTimestamp',
+            key: 'importTimestamp',
         },
         {
             title: 'Status',
