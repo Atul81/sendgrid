@@ -23,6 +23,10 @@ import {DashboardPage} from "./dashboard/DashboardLoadable";
 import {ImportsPage} from "./audience/imports/ImportsLoadable";
 import {ExportPage} from "./audience/exports/ExportsLoadable";
 import {GroupsPage} from "./unsubcription/groups/GroupsLoadable";
+import {DomainSettingsPage} from "./settings/domain/DomainLoadable";
+import {DedicatedIpsPage} from "./settings/dedicatedIps/DedicatedIpsLoadable";
+import {CustomEventsPage} from "./settings/customEvents/CustomEventsLoadable";
+import {UsersPage} from "./settings/users/UsersLoadable";
 
 export function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -45,8 +49,19 @@ export function App() {
     }, [dispatch, urlPath.pathname]);
 
     const onMenuTitleClick = (activeMenuContent: string, activeContent: string) => {
-        dispatch(updateActiveContent(rootState.activeMenuContent !== activeMenuContent ? activeContent : null));
-        dispatch(updateActiveMenuContent(rootState.activeMenuContent !== activeMenuContent ? activeMenuContent : null))
+        dispatch(updateActiveContent(activeContent));
+        dispatch(updateActiveMenuContent(activeMenuContent));
+    };
+
+    const resetDrawerMenu = (drawerVal: any[]) => {
+        if (drawerVal.length === 0) {
+            dispatch(updateActiveContent(null));
+            dispatch(updateActiveMenuContent(null));
+        } else {
+            let urlRoute = urlPath.pathname.split("/");
+            dispatch(updateActiveContent(urlRoute[2]));
+            dispatch(updateBreadcrumb([translation.breadcrumb[urlRoute[1]], translation.breadcrumb[urlRoute[2]]]));
+        }
     };
 
     return (
@@ -56,7 +71,8 @@ export function App() {
                     <img style={collapsed ? {marginTop: -8} : {marginTop: -68}} src={`/assets/images/logo.svg`}
                          alt="icon"/>
                 </div>
-                <Menu theme="dark" openKeys={[rootState.activeMenuContent]} selectedKeys={[rootState.activeContent]}
+                <Menu theme="dark" openKeys={[rootState.activeMenuContent]} onOpenChange={resetDrawerMenu}
+                      selectedKeys={[rootState.activeContent]}
                       mode="inline">
                     {routes.map((value) => (
                         value.children != null ?
@@ -67,7 +83,9 @@ export function App() {
                                         to={value.route.concat(childItr.key)}>{translation.breadcrumb[childItr.key]}</Link></Menu.Item>
                                 ))}
                             </SubMenu> :
-                            <Menu.Item icon={value.icon} key={value.key}><Link to={value.route}>{translation.breadcrumb[value.name]}</Link></Menu.Item>
+                            <Menu.Item onClick={() => onMenuTitleClick('dashboard', '1')} icon={value.icon}
+                                       key={value.key}><Link
+                                to={value.route}>{translation.breadcrumb[value.name]}</Link></Menu.Item>
                     ))}
                 </Menu>
             </Sider>
@@ -93,17 +111,22 @@ export function App() {
                         <Switch>
                             <Switch>
                                 <Route path="/dashboard" component={DashboardPage}/>
-                                <Route path="/audience/customField" component={CustomFieldsPage}/>
+                                <Route path="/audience/custom-field" component={CustomFieldsPage}/>
                                 <Route path="/audience/segments" component={SegmentsPage}/>
                                 <Route path="/audience/imports" component={ImportsPage}/>
                                 <Route path="/audience/exports" component={ExportPage}/>
                                 <Route path="/campaigns/campaigns" component={CampaignPage}/>
                                 <Route path="/campaigns/senders" component={SendersPage}/>
-                                <Route path="/unsubscription/groups" component={GroupsPage}/>
                                 <Route path="/templates" component={TemplatesPage}/>
+                                <Route path="/unsubscription/groups" component={GroupsPage}/>
+                                <Route path="/settings/domain" component={DomainSettingsPage}/>
+                                <Route path="/settings/dedicated-ips" component={DedicatedIpsPage}/>
+                                <Route path="/settings/custom-events" component={CustomEventsPage}/>
+                                <Route path="/settings/users" component={UsersPage}/>
                                 <Route path="/audience" component={ContactsPage}/>
                                 <Route path="/campaigns" component={AutomationPage}/>
                                 <Route path="/unsubscription" component={GroupsPage}/>
+                                <Route path="/settings" component={DomainSettingsPage}/>
                                 <Route path="/" component={DashboardPage}/>
                             </Switch>
                         </Switch>

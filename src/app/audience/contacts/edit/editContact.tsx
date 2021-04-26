@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import './editContact.scss';
 import {updateBreadcrumb} from "../../../../store/actions/root";
 import {useDispatch} from "react-redux";
-import '../contacts.scss';
 import {Button, Form, message, Modal, Popconfirm, Select, Space, Table, Tabs} from "antd";
 import Title from "antd/lib/typography/Title";
 import {DeleteOutlined, PlusOutlined, StepBackwardOutlined} from '@ant-design/icons';
@@ -106,7 +105,7 @@ export const EditContactPage: any = (props: any) => {
     };
 
     return (
-        <div className="editContact contacts pageLayout">
+        <div className="editContact pageLayout">
             <div className="firstNav">
                 <div className="leftPlacement">
                     <Title

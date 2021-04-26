@@ -26,9 +26,6 @@ export const routes = [
                 key: 'contacts'
             },
             {
-                key: 'customField'
-            },
-            {
                 key: 'segments'
             },
             {
@@ -36,6 +33,9 @@ export const routes = [
             },
             {
                 key: 'exports'
+            },
+            {
+                key: 'custom-field'
             }
         ]
     },
@@ -97,7 +97,7 @@ export const routes = [
                 key: 'domain'
             },
             {
-                key: 'dedicated-ip'
+                key: 'dedicated-ips'
             },
             {
                 key: 'custom-events'

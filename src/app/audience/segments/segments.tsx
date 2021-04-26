@@ -115,7 +115,7 @@ export const SegmentsPage: any = () => {
         console.log(segmentNameSelected);
     };
     return (
-        <div className="contacts pageLayout">
+        <div className="pageLayout">
             <div className="firstNav">
                 <div className="leftPlacement">
                     <div className="searchInput">

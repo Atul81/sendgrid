@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import "./contacts.scss";
 import {Button, Dropdown, Form, Input, Menu, message, Modal, Popconfirm, Result, Space, Table, Typography} from "antd";
 import {
     CloseOutlined,
@@ -236,7 +235,7 @@ export const ContactsPage: any = () => {
     }
 
     return !editPage ? (
-        <div className="contacts pageLayout">
+        <div className="pageLayout">
             <div className="firstNav">
                 <div className="leftPlacement">
                     <div className="searchInput">
