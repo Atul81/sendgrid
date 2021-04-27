@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {Button, message, Space, Table, Tag} from "antd";
+import {Button, message, Popconfirm, Space, Table, Tag} from "antd";
 import {DedicatedIpsInterface} from "../settingsInterface";
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
+import Title from "antd/lib/typography/Title";
 
 export const DedicatedIpsPage: any = () => {
     const deleteDedicatedIps = (record: any) => {
@@ -36,10 +37,17 @@ export const DedicatedIpsPage: any = () => {
             width: '75px',
             render: ((text: string, record: any) => {
                 return <Space size="small">
-                    <p className={"actionColumn noMarginIcon"} onClick={() => deleteDedicatedIps(record)}>
-                        <DeleteOutlined/></p>
+                    <Popconfirm overlayClassName="ant-popover-audience" placement="left"
+                                title={<p><Title level={5}>Are you sure you want to delete?</Title>
+                                    This will permanently delete these records and all associated data from your
+                                    account. Deleting and re-adding records can alter your monthly contact limits. <a>Learn
+                                        More</a></p>}
+                                okText="Delete" cancelText="Cancel"
+                                onConfirm={() => deleteDedicatedIps(record)}>
+                        <p className={"actionColumn noMarginIcon"}><DeleteOutlined/></p>
+                    </Popconfirm>
                 </Space>
-            }),
+            })
         }
     ];
     const addNewDedicatedIp = () => {

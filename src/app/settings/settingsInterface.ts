@@ -23,4 +23,5 @@ export interface UsersInterface {
     key: string,
     email: string,
     type: string,
+    permission:string
 }

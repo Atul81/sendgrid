@@ -1,7 +1,6 @@
 .logo {
   height: 32px;
   margin: 16px;
-  background: rgba(255, 255, 255, 0.5);
 }
 
 .site-layout .site-layout-background {
@@ -152,4 +151,41 @@
   padding: 0;
   margin: 0;
   max-width: 100vw;
+}
+
+.site-layout .site-layout-background {
+  padding: 0;
+  margin: 0;
+  max-width: 100vw;
+}
+
+.ant-layout-sider, .ant-layout-sider-trigger, .ant-menu-dark {
+  background: #5C18FF;
+}
+
+.ant-menu {
+  &.ant-menu-dark {
+    background: #5C18FF;
+  }
+  &.ant-menu-inline {
+    &.ant-menu-sub {
+      background: #4300E4;
+    }
+  }
+}
+
+.ant-menu-item-selected {
+  background-color: #5C18FF;
+}
+
+.ant-menu-dark {
+  &.ant-menu-dark:not(.ant-menu-horizontal) {
+    .ant-menu-item-selected {
+      background-color: #00A3FF;
+    }
+  }
+}
+
+.ant-menu-horizontal {
+  border-bottom: 0;
 }

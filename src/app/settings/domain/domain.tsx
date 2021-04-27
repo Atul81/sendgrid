@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Button, Form, Input, Select} from "antd";
 import {CheckOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
@@ -6,8 +6,6 @@ import {filterSelectOptions} from "../../../utils/common";
 import {DropDown} from "../../../utils/Interfaces";
 import './domain.scss';
 import {DnsRecordsPage} from "./dnsRecords/DnsRecordsLoadable";
-import {ContactsInterface} from "../../audience/contactInterface";
-import {DnsRecordsInterface} from "../settingsInterface";
 
 export const DomainSettingsPage: any = () => {
 
@@ -15,14 +13,15 @@ export const DomainSettingsPage: any = () => {
     const {Option} = Select;
 
     const [allDnsHost, setAllDnsHost] = useState<DropDown[]>([{label: 'One', value: '1', children: null}]);
-    const [formProceed, setFormProceed] = useState(false);
+    const [newDomainSettings, setNewDomainSettings] = useState(false);
 
     const proceedDomainSettings = (values: any) => {
         console.log(values);
-        setFormProceed(true);
+        setNewDomainSettings(false);
+        domainForm.resetFields();
     };
 
-    return !formProceed ? (<div className={'domain'}>
+    return newDomainSettings ? (<div className={'domain'}>
         <Form className={'maxWidth'} form={domainForm} layout={'vertical'} onFinish={proceedDomainSettings}>
             <div className="pageLayout">
                 <div className="firstNav">
@@ -57,5 +56,5 @@ export const DomainSettingsPage: any = () => {
                 </div>
             </div>
         </Form>
-    </div>) : <DnsRecordsPage exitToLandingPage={() => setFormProceed(false)}/>
+    </div>) : <DnsRecordsPage exitToLandingPage={() => setNewDomainSettings(true)}/>
 }

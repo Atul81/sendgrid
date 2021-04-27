@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
 import './index.scss';
 import {Breadcrumb, Layout, Menu} from 'antd';
-import {UserOutlined} from '@ant-design/icons';
+import {MediumOutlined, UserOutlined} from '@ant-design/icons';
 import Sider from "antd/es/layout/Sider";
 import SubMenu from "antd/es/menu/SubMenu";
 import {Content, Header} from "antd/es/layout/layout";
@@ -13,6 +13,7 @@ import {CustomFieldsPage} from "./audience/customFields/CustomFieldsLoadable";
 import {SegmentsPage} from "./audience/segments/SegmentsLoadable";
 import {useDispatch, useSelector} from "react-redux";
 import {updateActiveContent, updateActiveMenuContent, updateBreadcrumb} from "../store/actions/root";
+
 import {CampaignPage} from "./campaigns/campaigns/CampaignLoadable";
 import {AutomationPage} from "./campaigns/automation/AutomationLoadable";
 import {SendersPage} from "./campaigns/senders/SendersLoadable";
@@ -27,6 +28,7 @@ import {DomainSettingsPage} from "./settings/domain/DomainLoadable";
 import {DedicatedIpsPage} from "./settings/dedicatedIps/DedicatedIpsLoadable";
 import {CustomEventsPage} from "./settings/customEvents/CustomEventsLoadable";
 import {UsersPage} from "./settings/users/UsersLoadable";
+import {PreferencePage} from "./settings/preferences/PreferenceLoadable";
 
 export function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -68,7 +70,8 @@ export function App() {
         <Layout style={{minHeight: "100vh"}}>
             <Sider collapsible collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)}>
                 <div className="logo">
-                    <img style={collapsed ? {marginTop: -8} : {marginTop: -68}} src={`/assets/images/logo.svg`}
+                    <img style={collapsed ? {marginTop: -8} : {}}
+                         src={!collapsed ? `/assets/images/logo.svg` : `/assets/images/logoCollapsed.svg`}
                          alt="icon"/>
                 </div>
                 <Menu theme="dark" openKeys={[rootState.activeMenuContent]} onOpenChange={resetDrawerMenu}
@@ -94,7 +97,7 @@ export function App() {
                     <Menu mode="horizontal" selectable={false}>
                         <Menu.Item key="1"><Clock format={'h:mm:ss a'} ticking={true}
                                                   timezone={'Asia/Kolkata'}/></Menu.Item>
-                        <SubMenu key="user" icon={<UserOutlined/>} title="John Pandey">
+                        <SubMenu key="user" icon={<UserOutlined/>} title="John Doe">
                             <Menu.Item key="1">Log Out</Menu.Item>
                             <Menu.Item key="2"><a rel={'noreferrer'} href={"https://www.gmail.com"} target={"_blank"}>Change
                                 Password</a></Menu.Item>
@@ -123,6 +126,7 @@ export function App() {
                                 <Route path="/settings/dedicated-ips" component={DedicatedIpsPage}/>
                                 <Route path="/settings/custom-events" component={CustomEventsPage}/>
                                 <Route path="/settings/users" component={UsersPage}/>
+                                <Route path="/settings/preference" component={PreferencePage}/>
                                 <Route path="/audience" component={ContactsPage}/>
                                 <Route path="/campaigns" component={AutomationPage}/>
                                 <Route path="/unsubscription" component={GroupsPage}/>

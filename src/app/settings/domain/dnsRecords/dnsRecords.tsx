@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Button, message, Table} from "antd";
 import Title from "antd/lib/typography/Title";
-import {CheckOutlined, StepBackwardOutlined} from "@ant-design/icons";
+import {CheckOutlined, PlusOutlined} from "@ant-design/icons";
 import {DnsRecordsInterface} from "../../settingsInterface";
 import './../domain.scss';
 
@@ -13,7 +13,8 @@ export const DnsRecordsPage: any = (props: any) => {
         document.body.appendChild(columnVal);
         columnVal.select();
         document.execCommand('copy');
-        message.success(text.concat(' has been copied on your clipboard'), 0.7).then(() => {});
+        message.success(text.concat(' has been copied on your clipboard'), 0.7).then(() => {
+        });
         document.body.removeChild(columnVal);
     }
     const columns = [
@@ -43,7 +44,8 @@ export const DnsRecordsPage: any = (props: any) => {
                 return (
                     <div className='flexEqualSpacing' style={{paddingRight: '12%'}}>
                         <div>{record.canonicalName} </div>
-                        <div className={'copyText'} onClick={() => generateCopiedMessage(record.canonicalName)}>Copy</div>
+                        <div className={'copyText'} onClick={() => generateCopiedMessage(record.canonicalName)}>Copy
+                        </div>
                     </div>
                 );
             })
@@ -76,8 +78,7 @@ export const DnsRecordsPage: any = (props: any) => {
             <div className="rightPlacement">
                 <Button style={{width: 88, marginRight: 8}} type={'primary'} onClick={verifyDomainSettings}
                         icon={<CheckOutlined/>}>Verify</Button>
-                <Button style={{width: 88}} icon={<StepBackwardOutlined/>}
-                        onClick={props.exitToLandingPage}>Cancel</Button>
+                <Button className={'addBtn'} icon={<PlusOutlined/>} onClick={props.exitToLandingPage}>Add Domain</Button>
             </div>
         </div>
         <div className="thirdNav" style={{height: 'calc(100vh - 238px)'}}>
