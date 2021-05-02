@@ -60,8 +60,6 @@ export const UploadPage: any = (props: any) => {
             <p className="ant-upload-hint">
                 <Radio.Group onChange={(event) => radioValueChange(event)}>
                     <Radio value='existingSegment'>Add Contact to Segment</Radio>
-                    <Radio.Button value='createSegment'>Add Contact to a new Segment</Radio.Button>
-                    <br/>
                 </Radio.Group>
                 <br/>
                 {showSegment ? <>

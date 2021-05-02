@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Button, Dropdown, Form, Input, Menu, message, Modal, Popconfirm, Result, Space, Table, Typography} from "antd";
 import {
+    CheckOutlined,
     CloseOutlined,
     DeleteOutlined,
     DownloadOutlined,
@@ -102,6 +103,7 @@ export const ContactsPage: any = () => {
             title: 'Email Address',
             dataIndex: 'email',
             key: 'email',
+            ellipsis: true
         },
         {
             title: 'First Name',
@@ -112,6 +114,7 @@ export const ContactsPage: any = () => {
             title: 'Last Name',
             dataIndex: 'lastName',
             key: 'lastName',
+            ellipsis: true
         },
         {
             title: 'Action',
@@ -192,6 +195,8 @@ export const ContactsPage: any = () => {
 
     const cancelQuickAdd = () => {
         setQuickAddModal(false);
+        addContact.resetFields();
+        setQuickAddContactDS([]);
     }
 
     const addContactMenu = (
@@ -228,10 +233,20 @@ export const ContactsPage: any = () => {
         console.log(pagination);
     };
 
-    const quickAddContactService = (values: any) => {
+    const quickAddContactFormFinish = (values: any) => {
         let tempData = [...quickAddContactDS];
-        tempData.push({...values.formObj, key: Math.random()});
-        setQuickAddContactDS(tempData);
+        let filteredItem = tempData.filter(itr => itr.email === values.formObj.email);
+        if (filteredItem.length > 0) {
+            message.warn('Email Address already in use', 0.6).then(() => {
+            });
+        } else {
+            tempData.push({...values.formObj, key: Math.random()});
+            setQuickAddContactDS(tempData);
+        }
+    };
+
+    const quickAddContactService = () => {
+        console.log(quickAddContactDS);
     }
 
     return !editPage ? (
@@ -269,10 +284,15 @@ export const ContactsPage: any = () => {
                 ]} onCancel={cancelUploadProcess}>
                     <UploadPage fileInfo={(fileInfo: any) => setUploadFileInfo(fileInfo)}/>
                 </Modal>
-                <Modal title="Add Contact" centered visible={quickAddModal} width={408} footer={null}
+                <Modal title="Add Contact" centered visible={quickAddModal} width={432}
+                       footer={quickAddContactDS.length > 0 ?
+                           <Button key="done" style={{background: 'darkgreen'}} type="primary" icon={<CheckOutlined/>}
+                                   onClick={quickAddContactService}>
+                               Done
+                           </Button> : null}
                        onCancel={cancelQuickAdd}>
                     <div className='columnFlex'>
-                        <Form form={addContact} layout={'vertical'} onFinish={quickAddContactService}>
+                        <Form form={addContact} layout={'vertical'} onFinish={quickAddContactFormFinish}>
                             <Form.Item label="Email Address">
                                 <Form.Item name={['formObj', 'email']}
                                            noStyle rules={[{required: true, message: 'Email Address required'}]}>
