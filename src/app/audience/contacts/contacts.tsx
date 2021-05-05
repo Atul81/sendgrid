@@ -184,7 +184,6 @@ export const ContactsPage: any = () => {
         });
     };
     const deleteContact = (record: any) => {
-        console.log(record);
         deleteContactById(record.id).then(async response => {
             let resBody = await response.json();
             if (resBody) {
@@ -202,7 +201,6 @@ export const ContactsPage: any = () => {
         if (e.key === 'addManually') {
             setEditPage(true);
             setContactObj({id: contactId});
-            setContactId(contactId + 1);
         } else if (e.key === 'quickAdd') {
             setQuickAddModal(true);
         } else {
@@ -229,6 +227,7 @@ export const ContactsPage: any = () => {
         populateAllContacts();
         setContactObj({});
         setEditPage(false);
+        setContactId(contactId + 1);
     };
 
     const deleteAllContact = () => {
@@ -279,7 +278,7 @@ export const ContactsPage: any = () => {
                     console.log(reason);
                 });
             });
-            setContactId(itrId);
+            setContactId(itrId++);
         }
         setServiceInProgress(false);
         populateAllContacts();

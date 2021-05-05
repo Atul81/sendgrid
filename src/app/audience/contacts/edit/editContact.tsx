@@ -33,7 +33,8 @@ export const EditContactPage: any = (props: any) => {
                 console.log(reason);
             });
         } else {
-            addNewContact({...values, id: props.contactObj.id}).then(async response => {
+            console.log(props.contactObj)
+            addNewContact({...values.formObj, id: props.contactObj.id + 1}).then(async response => {
                 let resBody = await response.json();
                 if (resBody) {
                     populateFormObj(resBody, contactForm);
@@ -41,6 +42,7 @@ export const EditContactPage: any = (props: any) => {
                 }
             }).catch(reason => {
                 console.log(reason);
+                message.error("Unable to create new contact", 0.6);
             });
         }
     };
