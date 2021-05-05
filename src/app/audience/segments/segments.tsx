@@ -1,41 +1,34 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Input, message, Popconfirm, Space, Table, Typography} from "antd";
 import {SegmentInterface} from "../contactInterface";
-import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
+import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
+import {getAllSegments} from "../serverCalls/segmentsFetch";
 
 export const SegmentsPage: any = () => {
+
+    useEffect(() => {
+        populateAllSegments();
+    }, []);
+
+    const populateAllSegments = () => {
+        getAllSegments().then(async response => {
+            let resBody = await response.json();
+            let data: SegmentInterface[] = [];
+            if (resBody && Array.isArray(resBody)) {
+                resBody.forEach((itr: any) => {
+                    data.push({...itr, key: itr.id});
+                });
+            }
+            setSegmentDS(data);
+            setSegmentDSOps(data);
+        });
+    }
     const {Search} = Input;
     const {Title} = Typography;
 
     const [segmentNameSelected, setSegmentNameSelected] = useState<string[]>([]);
-    const [segmentDS, setSegmentDS] = useState<SegmentInterface[]>([
-        {
-            key: '1',
-            name: 'John Pandey',
-            contacts: 123456789,
-            conditions: 1
-        },
-        {
-            key: '2',
-            name: 'Ejaz Ali',
-            contacts: 123456789,
-            conditions: 2
-        }
-    ]);
-    const [segmentDSOps, setSegmentDSOps] = useState<SegmentInterface[]>([
-        {
-            key: '1',
-            name: 'John Pandey',
-            contacts: 123456789,
-            conditions: 1
-        },
-        {
-            key: '2',
-            name: 'Ejaz Ali',
-            contacts: 123456789,
-            conditions: 2
-        }
-    ]);
+    const [segmentDS, setSegmentDS] = useState<SegmentInterface[]>([]);
+    const [segmentDSOps, setSegmentDSOps] = useState<SegmentInterface[]>([]);
     const columns = [
         {
             title: 'Name',
@@ -97,7 +90,8 @@ export const SegmentsPage: any = () => {
     const openSegmentEdit = (record: any) => {
         setSegmentObj(record);
         setNewSegmentMoal(true);
-        message.warn("Work in progress", 0.2).then(() => {});
+        message.warn("Work in progress", 0.2).then(() => {
+        });
     };
 
     const deleteContact = (record: any) => {
@@ -123,16 +117,19 @@ export const SegmentsPage: any = () => {
                     </div>
                 </div>
                 <div className="rightPlacement">
-                    <Popconfirm overlayClassName="ant-popover-audience" placement="left"
-                                title={<p><Title level={5}>Are you sure you want to delete?</Title>
-                                    This will permanently delete these records and all associated data from your
-                                    account. Deleting and re-adding records can alter your monthly contact limits. <a>Learn
-                                        More</a></p>}
-                                okText="Delete" cancelText="Cancel"
-                                onConfirm={deleteAllContact}>
-                        <Button className="deleteBtn" icon={<DeleteOutlined/>} type="primary" danger>Delete</Button>
-                    </Popconfirm>
-                    <Button type={'primary'} className="addBtn" onClick={() => openSegmentEdit(true)}>Add New
+                    {segmentNameSelected.length > 0 ?
+                        <Popconfirm overlayClassName="ant-popover-audience" placement="left"
+                                    title={<p><Title level={5}>Are you sure you want to delete?</Title>
+                                        This will permanently delete these records and all associated data from your
+                                        account. Deleting and re-adding records can alter your monthly contact
+                                        limits. <a>Learn
+                                            More</a></p>}
+                                    okText="Delete" cancelText="Cancel"
+                                    onConfirm={deleteAllContact}>
+                            <Button className="deleteBtn" icon={<DeleteOutlined/>} type="primary" danger>Delete</Button>
+                        </Popconfirm> : null}
+                    <Button type={'primary'} icon={<PlusOutlined/>} style={{width: 150}}
+                            onClick={() => openSegmentEdit(true)}>Add New
                         Segment</Button>
                 </div>
             </div>

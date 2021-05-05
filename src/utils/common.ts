@@ -18,11 +18,11 @@ export const populateFormObj = (propsObj: any, formObj: any) => {
             email: (propsObj && propsObj.email) ? propsObj.email : undefined,
             firstName: (propsObj && propsObj.firstName) ? propsObj.firstName : undefined,
             lastName: (propsObj && propsObj.lastName) ? propsObj.lastName : undefined,
-            address: undefined,
-            city: undefined,
-            postalCode: undefined,
-            country: undefined,
-            location: undefined,
+            address: (propsObj && propsObj.address) ? propsObj.address : undefined,
+            city: (propsObj && propsObj.city) ? propsObj.city : undefined,
+            postalCode: (propsObj && propsObj.postalCode) ? propsObj.postalCode : undefined,
+            country: (propsObj && propsObj.country) ? propsObj.country : undefined,
+            location: (propsObj && propsObj.location) ? propsObj.location : undefined
         }
     });
 };

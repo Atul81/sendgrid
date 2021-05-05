@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "John1",
+    "contacts": 132456781,
+    "conditions": 1
+  },
+  {
+    "id": 2,
+    "name": "John2",
+    "contacts": 132456782,
+    "conditions": 2
+  },
+  {
+    "id": 3,
+    "name": "John3",
+    "contacts": 132456783,
+    "conditions": 3
+  },
+  {
+    "id": 4,
+    "name": "John4",
+    "contacts": 132456784,
+    "conditions": 4
+  },
+  {
+    "id": 5,
+    "name": "John5",
+    "contacts": 132456785,
+    "conditions": 5
+  }
+]

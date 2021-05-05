@@ -16,32 +16,50 @@ import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 import {UploadPage} from "../../common/upload/UploadLoadable";
 import {ContactsInterface, QuickAddContactInterface} from "../contactInterface";
+import {addNewContact, deleteContactById, getAllContacts, getContactById} from "../serverCalls/contactsFetch";
 
 export const ContactsPage: any = () => {
+
+    useEffect(() => {
+        populateAllContacts();
+    }, []);
+
     const {Search} = Input;
     const {Title} = Typography;
     const [addContact] = Form.useForm();
+    const dispatch = useDispatch();
 
     const [exportReqModal, setExportModalReq] = useState(false);
-
     const [emailIdSelected, setEmailIdSelected] = useState<string[]>([]);
     const [contactDS, setContactDS] = useState<ContactsInterface[]>([]);
     const [contactDSOps, setContactDSOps] = useState<ContactsInterface[]>([]);
-    useEffect(() => {
-        let data: ContactsInterface[] = [];
-        for (let i = 0; i < 100; i++) {
-            data.push({
-                key: i.toString(10),
-                email: `email+test@gmail.com ${i}`,
-                firstName: `John`,
-                lastName: `Doe ${i}`,
-                emailMarketing: 'Subscribed',
-                tags: 'Prospect',
-            });
-        }
-        setContactDS(data);
-        setContactDSOps(data);
-    }, []);
+    const [contactId, setContactId] = useState<number>(13);
+    const [quickAddContactDS, setQuickAddContactDS] = useState<QuickAddContactInterface[]>([]);
+    const [tableLabel, setTableLabel] = useState<string>('All Contacts');
+    const [editPage, setEditPage] = useState(false);
+    const [contactObj, setContactObj] = useState({});
+    const [uploadModal, setUploadModal] = useState(false);
+    const [uploadFileInfo, setUploadFileInfo] = useState({
+        file: {},
+        fileList: [{}]
+    });
+    const [showDelBtn, setShowDelBtn] = useState(false);
+    const [quickAddModal, setQuickAddModal] = useState(false);
+    const [serviceInProgress, setServiceInProgress] = useState(false);
+
+    const populateAllContacts = () => {
+        getAllContacts().then(async response => {
+            let resBody = await response.json();
+            let data: ContactsInterface[] = [];
+            if (resBody && Array.isArray(resBody)) {
+                resBody.forEach((itr: any) => {
+                    data.push({...itr, key: itr.id});
+                });
+            }
+            setContactDS(data);
+            setContactDSOps(data);
+        });
+    };
 
     const columns = [
         {
@@ -134,25 +152,12 @@ export const ContactsPage: any = () => {
         let tempObj = quickAddContactDS.filter(value => record.key !== value.key);
         setQuickAddContactDS(tempObj);
     }
-    const [quickAddContactDS, setQuickAddContactDS] = useState<QuickAddContactInterface[]>([]);
-    const [tableLabel, setTableLabel] = useState<string>('All Contacts');
-    const [editPage, setEditPage] = useState(false);
-    const [contactObj, setContactObj] = useState({});
-    const [uploadModal, setUploadModal] = useState(false);
-    const [uploadFileInfo, setUploadFileInfo] = useState({
-        file: {},
-        fileList: [{}]
-    });
-
-    const dispatch = useDispatch();
-
 
     const onSearch = (searchParam: string) => {
         setContactDS(contactDSOps.filter(value => {
             return value.email.includes(searchParam);
         }));
     };
-    const [showDelBtn, setShowDelBtn] = useState(false);
 
     const contactRowSelection = {
         onChange: (selectedRowKeys: React.Key[], selectedRows: ContactsInterface[]) => {
@@ -170,22 +175,34 @@ export const ContactsPage: any = () => {
     };
 
     const openContactEdit = (record: any) => {
-        setContactObj(record);
-        setEditPage(true);
+        getContactById(record.key).then(async response => {
+            let resBody = await response.json();
+            if (resBody) {
+                setContactObj({...resBody});
+                setEditPage(true);
+            }
+        });
     };
     const deleteContact = (record: any) => {
         console.log(record);
-    }
+        deleteContactById(record.id).then(async response => {
+            let resBody = await response.json();
+            if (resBody) {
+                populateAllContacts();
+                message.success(`Contact with email ${record.email} has been successfully deleted`);
+            }
+        });
+    };
 
     const exportCsv = () => {
         setExportModalReq(true);
     };
-    const [quickAddModal, setQuickAddModal] = useState(false);
 
     const handleAddContactMenuClick = (e: any) => {
         if (e.key === 'addManually') {
             setEditPage(true);
-            setContactObj({});
+            setContactObj({id: contactId});
+            setContactId(contactId + 1);
         } else if (e.key === 'quickAdd') {
             setQuickAddModal(true);
         } else {
@@ -209,6 +226,7 @@ export const ContactsPage: any = () => {
 
     const navigateToLandingPage = () => {
         dispatch(updateBreadcrumb(['Audience', 'Contacts']));
+        populateAllContacts();
         setContactObj({});
         setEditPage(false);
     };
@@ -218,7 +236,8 @@ export const ContactsPage: any = () => {
             message.warning("Please use the checkbox to select contact for deletion", 0.8).then(() => {
             });
         }
-        console.log(emailIdSelected);
+        message.error("Bulk delete not yet supported in mock server", 0.7).then(() => {
+        });
     };
 
     const cancelUploadProcess = () => {
@@ -230,7 +249,6 @@ export const ContactsPage: any = () => {
     };
 
     const handleTablePaginationChange = (pagination: any) => {
-        console.log(pagination);
     };
 
     const quickAddContactFormFinish = (values: any) => {
@@ -242,12 +260,31 @@ export const ContactsPage: any = () => {
         } else {
             tempData.push({...values.formObj, key: Math.random()});
             setQuickAddContactDS(tempData);
+            addContact.resetFields();
         }
     };
 
     const quickAddContactService = () => {
-        console.log(quickAddContactDS);
-    }
+        if (quickAddContactDS.length > 0) {
+            setServiceInProgress(true);
+            let itrId = contactId;
+            quickAddContactDS.forEach(itr => {
+                itrId++;
+                addNewContact({...itr, id: itrId}).then(async response => {
+                    let resBody = await response.json();
+                    if (resBody) {
+                        message.success(`New Contact ${itr.email} successfully created`, 0.6);
+                    }
+                }).catch(reason => {
+                    console.log(reason);
+                });
+            });
+            setContactId(itrId);
+        }
+        setServiceInProgress(false);
+        populateAllContacts();
+        cancelQuickAdd();
+    };
 
     return !editPage ? (
         <div className="pageLayout">
@@ -271,8 +308,7 @@ export const ContactsPage: any = () => {
                             <Button className="deleteBtn" icon={<DeleteOutlined/>} type="primary" danger>Delete</Button>
                         </Popconfirm> : null}
                     <Button className="exportBtn" onClick={exportCsv} icon={<ExportOutlined/>}>Export CSV</Button>
-                    <Dropdown.Button type={'primary'} overlay={addContactMenu}>Add
-                        Contact</Dropdown.Button>
+                    <Dropdown.Button type={'primary'} overlay={addContactMenu}>Add Contact</Dropdown.Button>
                 </div>
                 <Modal title="Upload Contacts" centered visible={uploadModal} width={'65%'} footer={[
                     <Button key="cancel" onClick={cancelUploadProcess} icon={<CloseOutlined/>}>
@@ -286,7 +322,8 @@ export const ContactsPage: any = () => {
                 </Modal>
                 <Modal title="Add Contact" centered visible={quickAddModal} width={432}
                        footer={quickAddContactDS.length > 0 ?
-                           <Button key="done" style={{background: 'darkgreen'}} type="primary" icon={<CheckOutlined/>}
+                           <Button disabled={serviceInProgress} key="done" style={{background: 'darkgreen'}}
+                                   type="primary" icon={<CheckOutlined/>}
                                    onClick={quickAddContactService}>
                                Done
                            </Button> : null}

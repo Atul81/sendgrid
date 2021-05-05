@@ -2,17 +2,19 @@ import React, {useEffect, useState} from "react";
 import './editContact.scss';
 import {updateBreadcrumb} from "../../../../store/actions/root";
 import {useDispatch} from "react-redux";
-import {Button, Form, Input, Tabs} from "antd";
+import {Button, Form, Input, message, Tabs} from "antd";
 import Title from "antd/lib/typography/Title";
 import {StepBackwardOutlined} from '@ant-design/icons';
 import {FormEditPage} from "../../../common/formEdit/formEdit";
 import {populateFormObj} from "../../../../utils/common";
 import {CustomFields} from "../../contactInterface";
+import {addNewContact, editContactById} from "../../serverCalls/contactsFetch";
 
 export const EditContactPage: any = (props: any) => {
     const dispatch = useDispatch();
     const {TabPane} = Tabs;
     const [contactForm] = Form.useForm();
+    const [customFieldForm] = Form.useForm();
 
     useEffect(() => {
         dispatch(updateBreadcrumb(['Audience', 'Contacts', 'Edit Contact']));
@@ -20,28 +22,47 @@ export const EditContactPage: any = (props: any) => {
     }, [dispatch, contactForm, props.contactObj]);
 
     const modifyContactService = (values: any) => {
-        console.log(values);
+        if(props.contactObj.firstName) {
+            editContactById({...values, oldObj: props.contactObj}).then(async response => {
+                let resBody = await response.json();
+                if (resBody) {
+                    populateFormObj(resBody, contactForm);
+                    message.success("Contact Data successfully updated", 0.6);
+                }
+            }).catch(reason => {
+                console.log(reason);
+            });
+        } else {
+            addNewContact({...values, id: props.contactObj.id}).then(async response => {
+                let resBody = await response.json();
+                if (resBody) {
+                    populateFormObj(resBody, contactForm);
+                    message.success("New Contact successfully created", 0.6);
+                }
+            }).catch(reason => {
+                console.log(reason);
+            });
+        }
     };
-
-    const [customFieldForm] = Form.useForm();
 
     const [customFieldsDS, setCustomFieldsDS] = useState<CustomFields[]>([
         {
             key: 'anniversary',
             fieldName: 'Anniversary',
-            fieldType: 'text',
+            fieldType: 'text'
         },
         {
             key: 'alternateEmail',
             fieldName: 'Alternate Email',
-            fieldType: 'email',
+            fieldType: 'email'
         },
         {
             key: 'alternateNumber',
             fieldName: 'Alternate Number',
-            fieldType: 'number',
+            fieldType: 'number'
         }
     ]);
+
     return (
         <div className="editContact pageLayout">
             <div className="firstNav">
@@ -57,12 +78,14 @@ export const EditContactPage: any = (props: any) => {
             <div className="tabsNav">
                 <Tabs defaultActiveKey="1">
                     <TabPane tab="General" key="1">
-                        <FormEditPage generalForm={contactForm} saveFormValues={modifyContactService}/>
+                        <FormEditPage key={props.contactObj ? props.contactObj.key : Math.random()}
+                                      generalForm={contactForm} saveFormValues={modifyContactService}/>
                     </TabPane>
                     <TabPane style={{width: 408}} tab="Custom Fields" key="2">
                         <Form form={customFieldForm} layout={'vertical'} onFinish={modifyContactService}>
                             {customFieldsDS.map(mapItr => {
-                                return <Form.Item label={mapItr.fieldName} name={['formObj', mapItr.key]}>
+                                return <Form.Item key={mapItr.key} label={mapItr.fieldName}
+                                                  name={['formObj', mapItr.key]}>
                                     <Input type={mapItr.fieldType} placeholder={"Enter ".concat(mapItr.fieldName)}/>
                                 </Form.Item>
                             })}

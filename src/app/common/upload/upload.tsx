@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {message, Radio, Select, Upload} from "antd";
 import 'antd/dist/antd.css';
 import {InboxOutlined} from '@ant-design/icons';
@@ -7,22 +7,27 @@ import {Link} from "react-router-dom";
 import {AddSegment} from "../../audience/contactInterface";
 import Title from "antd/lib/typography/Title";
 import {filterSelectOptions} from "../../../utils/common";
+import {getAllSegments} from "../../audience/serverCalls/segmentsFetch";
 
 export const UploadPage: any = (props: any) => {
+
+    useEffect(() => {
+        getAllSegments().then(async response => {
+            let resBody = await response.json();
+            let data: AddSegment[] = [];
+            if (resBody && Array.isArray(resBody)) {
+                resBody.forEach((itr: any) => {
+                    data.push({segment: itr.name, key: itr.id});
+                });
+            }
+            setAllSegments(data);
+        });
+    }, []);
+
     const {Dragger} = Upload;
     const {Option} = Select;
 
-    const [allSegments, setAllSegments] = useState<AddSegment[]>(
-        [{
-            key: 'xennials',
-            segment: 'The Xennials'
-        }, {
-            key: 'lg',
-            segment: 'LG Curve'
-        }, {
-            key: 'samsung',
-            segment: 'Samsung Curve'
-        }]);
+    const [allSegments, setAllSegments] = useState<AddSegment[]>([]);
     const [segmentSelected, setSegmentSelected] = useState<AddSegment>({
         key: '',
         segment: ''
