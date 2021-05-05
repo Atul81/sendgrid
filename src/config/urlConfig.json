@@ -1,0 +1,4 @@
+{
+  "contacts": "http://localhost:3002/contacts",
+  "segments": "http://localhost:3002/segments"
+}
