@@ -1,40 +1,26 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import './customFields.scss';
-import {Button, Card, Input, message, Modal, Popconfirm, Radio, Space, Table} from "antd";
+import {Button, Card, Form, Input, message, Modal, Popconfirm, Radio, Space, Table} from "antd";
 import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import Search from "antd/lib/input/Search";
-import {CustomFields} from "../contactInterface";
+import {CustomFields} from "../audienceInterface";
 import Title from "antd/lib/typography/Title";
 import Paragraph from "antd/lib/typography/Paragraph";
+import {addNewAudience, deleteAudienceById, editAudienceById, getAllAudience} from "../serverCalls/audienceFetch";
 
 export const CustomFieldsPage: any = () => {
 
+    useEffect(() => {
+        populateAllSegments();
+    }, []);
+
+    const [amendCustomForm] = Form.useForm();
+
     const [editModal, setEditModal] = useState(false);
-    const [customFieldsDS, setCustomFieldsDS] = useState<CustomFields[]>([
-        {
-            key: '1',
-            fieldName: 'test+email@gmail.com',
-            fieldType: 'Text',
-        },
-        {
-            key: '2',
-            fieldName: 'info@solulever.com',
-            fieldType: 'Doe',
-        }
-    ]);
-    const [customFieldsDSOps, setCustomFieldsDSOps] = useState<CustomFields[]>([
-        {
-            key: '1',
-            fieldName: 'test+email@gmail.com',
-            fieldType: 'Text',
-        },
-        {
-            key: '2',
-            fieldName: 'info@solulever.com',
-            fieldType: 'Doe',
-        }
-    ]);
+    const [customFieldsDS, setCustomFieldsDS] = useState<CustomFields[]>([]);
+    const [customFieldsDSOps, setCustomFieldsDSOps] = useState<CustomFields[]>([]);
     const [selectedFieldKeys, setFieldKeys] = useState<string[]>([]);
+    const [customFormId, setCustomFormId] = useState<number>(5);
 
     const columns = [
         {
@@ -69,20 +55,49 @@ export const CustomFieldsPage: any = () => {
                     </Popconfirm>
                 </Space>
             }),
-        },
+        }
     ];
+
+    const populateAllSegments = () => {
+        getAllAudience('customFields').then(async response => {
+            let resBody = await response.json();
+            let data: CustomFields[] = [];
+            if (resBody && Array.isArray(resBody)) {
+                resBody.forEach((itr: any) => {
+                    data.push({...itr, key: itr.id});
+                });
+            }
+            setCustomFieldsDS(data);
+            setCustomFieldsDSOps(data);
+        });
+    };
 
     const openContactEdit = (record: any) => {
         setEditModal(true);
         setCustomFields({
             ...customFields,
             radioValue: record.fieldType !== 'Text' ? 'Number' : 'Text',
-            name: record.fieldName
+            name: record.fieldName,
+            key: record.key
         });
+        amendCustomForm.setFieldsValue({
+            customFields: {
+                name: record.fieldName,
+                radioValue: record.fieldType !== 'Text' ? 'Number' : 'Text',
+            }
+        })
     };
 
     const deleteCustomFields = (record: any) => {
-        console.log(record);
+        deleteAudienceById(record.key, 'customFields').then(async response => {
+            let resBody = await response.json();
+            if (resBody) {
+                message.success(`Custom Field ${record.fieldName} has been deleted`, 0.6);
+                populateAllSegments();
+            }
+        }).catch(reason => {
+            console.log(reason);
+        });
     }
     const onSearch = (searchParam: string) => {
         setCustomFieldsDS(customFieldsDSOps.filter(value => {
@@ -92,15 +107,51 @@ export const CustomFieldsPage: any = () => {
 
     const [customFields, setCustomFields] = useState({
         name: '',
-        radioValue: 'text'
+        radioValue: 'Text',
+        key: ''
     });
 
     const cancelFieldModification = () => {
         setEditModal(false);
+        amendCustomForm.resetFields();
+        setCustomFields({
+            name: '',
+            radioValue: 'Text',
+            key: ''
+        })
     };
 
-    const modifyCustomField = () => {
-        console.log(customFields);
+    const modifyCustomField = (values: any) => {
+        if (customFields.key.length !== 0) {
+            editAudienceById({
+                id: customFields.key.length,
+                fieldName: values.customFields.name,
+                fieldType: values.customFields.radioValue
+            }, 'customFields').then(async response => {
+                let resBody = await response.json();
+                if (resBody) {
+                    message.success("Custom Field Data successfully updated", 0.6);
+                }
+            }).catch(reason => {
+                console.log(reason);
+            });
+        } else {
+            addNewAudience({
+                id: customFields.key.length,
+                fieldName: values.customFields.name,
+                fieldType: values.customFields.radioValue
+            }, 'customFields').then(async response => {
+                let resBody = await response.json();
+                if (resBody) {
+                    message.success("Custom Field Data successfully created", 0.6);
+                }
+            }).catch(reason => {
+                console.log(reason);
+            });
+            setCustomFormId(customFormId + 1);
+        }
+        populateAllSegments();
+        amendCustomForm.resetFields();
         setEditModal(false);
     };
 
@@ -118,8 +169,10 @@ export const CustomFieldsPage: any = () => {
         if (selectedFieldKeys.length === 0) {
             message.warning("Please use the checkbox to select contact for deletion", 0.8).then(() => {
             });
+        } else {
+            message.error("Buld delete not supported", 0.7).then(() => {
+            });
         }
-        console.log(selectedFieldKeys);
     };
     return (
         <div className="customFields">
@@ -146,31 +199,39 @@ export const CustomFieldsPage: any = () => {
                         </div>
                     </div>
                     <div className="thirdNav" style={{height: 'calc(100vh - 228px)'}}>
-                        <Modal title="Add/Edit Custom Field" centered visible={editModal} width={450} footer={[
-                            <Button key="cancel" onClick={cancelFieldModification}>
-                                Cancel
-                            </Button>,
-                            <Button key="done" type="primary" onClick={modifyCustomField}>
-                                Done
-                            </Button>
-                        ]} onCancel={cancelFieldModification}>
+                        <Modal key={customFields.name} className={'editModal'} title="Add/Edit Custom Field" centered
+                               visible={editModal}
+                               width={450} footer={null} onCancel={cancelFieldModification}>
                             <Paragraph type="secondary">Use only alphanumeric characters (letters A-Z, numbers 0-9) and
                                 underscores. Do not use
                                 reserved field name</Paragraph>
+                            <Form layout={'vertical'} form={amendCustomForm} onFinish={modifyCustomField}>
+                                <Form.Item label={<Title level={5}>Name</Title>}>
+                                    <Form.Item name={['customFields', 'name']}>
+                                        <Input disabled={customFields.key.length !== 0} placeholder="Text Only"/>
+                                    </Form.Item>
+                                </Form.Item>
+                                <Form.Item name={['customFields', 'radioValue']}>
+                                    <Radio.Group>
+                                        <Radio value={'Text'}>Text</Radio>
+                                        <Radio value={'Number'}>Number</Radio>
+                                    </Radio.Group>
+                                </Form.Item>
+                                <div className={'reverseFlex'}>
+                                    <Form.Item>
+                                        <Button key="done" htmlType={'submit'} type="primary">
+                                            Done
+                                        </Button>
+                                    </Form.Item>
+                                    <Form.Item>
+                                        <Button key="cancel" htmlType={'reset'} style={{marginRight: 8}}
+                                                onClick={cancelFieldModification}>
+                                            Cancel
+                                        </Button>
+                                    </Form.Item>
+                                </div>
 
-                            <Title level={5}>Name</Title>
-                            <Input value={customFields.name}
-                                   onChange={(e) => setCustomFields({...customFields, name: e.target.value})}
-                                   placeholder="Text Only"/>
-                            <Radio.Group style={{marginTop: 16}}
-                                         onChange={(e) => setCustomFields({
-                                             ...customFields,
-                                             radioValue: e.target.value
-                                         })}
-                                         value={customFields.radioValue}>
-                                <Radio value={'Text'}>Text</Radio>
-                                <Radio value={'Number'}>Number</Radio>
-                            </Radio.Group>
+                            </Form>
                         </Modal>
                         <Table rowSelection={{...customFieldRowSelection}} dataSource={customFieldsDS} columns={columns}
                                bordered/>
@@ -185,21 +246,12 @@ export const CustomFieldsPage: any = () => {
                     <div className="thirdNav cardSpacing" style={{height: 'calc(100vh - 228px)'}}>
                         <Card>
                             <div className="reservedBox">
-                                <div className="label">
-                                    <Title level={5}>First Name</Title>
-                                    <Title level={5}>Last Name</Title>
-                                    <Title level={5}>Email</Title>
-                                    <Title level={5}>Alternate Email</Title>
-                                    <Title level={5}>Address Line 1</Title>
-                                </div>
-                                <div className="value">
-                                    <Paragraph type="secondary">Text</Paragraph>
-                                    <Paragraph type="secondary">Text</Paragraph>
-                                    <Paragraph type="secondary">Text</Paragraph>
-                                    <Paragraph type="secondary">Text</Paragraph>
-                                    <Paragraph type="secondary">Text</Paragraph>
-                                    <Paragraph type="secondary">Text</Paragraph>
-                                </div>
+                                {customFieldsDS.map(value => {
+                                    return <div key={value.key} className="boxValue">
+                                        <Title level={5}>{value.fieldName}</Title>
+                                        <Paragraph type={'secondary'}>{value.fieldType}</Paragraph>
+                                    </div>
+                                })}
                             </div>
                         </Card>
                     </div>

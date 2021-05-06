@@ -1,38 +1,23 @@
-import React, {useState} from "react";
-import {ExportContactInterface} from "../contactInterface";
+import React, {useEffect, useState} from "react";
+import {ExportContactInterface} from "../audienceInterface";
 import {Space, Table} from "antd";
-import {DeleteOutlined, DownloadOutlined} from "@ant-design/icons";
+import {DownloadOutlined} from "@ant-design/icons";
+import {getAllAudience} from "../serverCalls/audienceFetch";
+import {getTimeFromUnix} from "../../../utils/common";
 
 export const ExportPage: any = () => {
 
-    const [exportContactDS, setExportContactDS] = useState<ExportContactInterface[]>([
-        {
-            key: '1',
-            fileName: 'Chicago_contacts.csv',
-            exportTimestamp: new Date().toLocaleTimeString('kok-IN', {
-                hour12: false,
-                day: '2-digit',
-                month: '2-digit',
-                year: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            })
-        },
-        {
-            key: '2',
-            fileName: 'omni_campaign_subscribers_list.csv',
-            exportTimestamp: new Date().toLocaleTimeString('kok-IN', {
-                hour12: false,
-                day: '2-digit',
-                month: '2-digit',
-                year: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            })
-        }
-    ]);
+    useEffect(() => {
+        getAllAudience('exportsData').then(async response => {
+            let tempObj: ExportContactInterface[] = [];
+            let res = await response.json();
+            res.forEach((itr: any) => {
+                tempObj.push({...itr, exportTimestamp: getTimeFromUnix(itr.exportTimestamp), key: itr.id});
+            });
+            setExportContactDS(tempObj);
+        });
+    }, []);
+    const [exportContactDS, setExportContactDS] = useState<ExportContactInterface[]>([]);
 
     const downloadFile = (record: any) => {
         console.log('Make the server call', record);

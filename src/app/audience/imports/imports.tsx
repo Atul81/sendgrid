@@ -1,45 +1,29 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Table, Typography} from "antd";
-import {ImportsInterface} from "../contactInterface";
+import {ImportsInterface} from "../audienceInterface";
 import {RowDetailsPage} from "./details/RowDetailsLoadable";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
+import {getAllAudience} from "../serverCalls/audienceFetch";
+import {getTimeFromUnix} from "../../../utils/common";
 
 export const ImportsPage: any = () => {
     const {Title} = Typography;
     const dispatch = useDispatch();
-    const [importContactDS, setImportContactDS] = useState<ImportsInterface[]>([
-        {
-            key: '1',
-            fileName: 'Chicago_contacts.csv',
-            importTimestamp: new Date().toLocaleTimeString('kok-IN', {
-                hour12: false,
-                day: '2-digit',
-                month: '2-digit',
-                year: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            }),
-            rowsFraction: '143/167',
-            status: 'Uploaded'
-        },
-        {
-            key: '2',
-            fileName: 'omni_campaign_subscribers_list.csv',
-            importTimestamp: new Date().toLocaleTimeString('kok-IN', {
-                hour12: false,
-                day: '2-digit',
-                month: '2-digit',
-                year: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            }),
-            rowsFraction: '2451/2839',
-            status: 'In progress'
-        }
-    ]);
+
+    useEffect(() => {
+        getAllAudience('imports').then(async response => {
+            let tempObj: ImportsInterface[] = [];
+            let res = await response.json();
+            res.forEach((itr: any) => {
+                tempObj.push({...itr, importTimestamp: getTimeFromUnix(itr.importTimestamp), key: itr.id});
+            });
+            setImportContactDS(tempObj);
+        });
+    }, []);
+
+
+    const [importContactDS, setImportContactDS] = useState<ImportsInterface[]>([]);
     const columns = [
         {
             title: 'File Name',
@@ -75,10 +59,11 @@ export const ImportsPage: any = () => {
         setUploadObj({});
         openRowDetailsPage(false);
     };
+
     return !rowDetailsPage ? (
         <div className="pageLayout">
             <div className="secondNav">
-                <Title level={4}>All Uploads</Title>
+                <Title level={4}>All Imports</Title>
             </div>
             <div className="thirdNav" style={{height: 'calc(100vh - 228px)'}}>
                 <Table columns={columns} dataSource={importContactDS} bordered/>

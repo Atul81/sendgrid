@@ -15,8 +15,9 @@ import {ContactEditPage} from "./edit/ContactEditLoadable";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 import {UploadPage} from "../../common/upload/UploadLoadable";
-import {ContactsInterface, QuickAddContactInterface} from "../contactInterface";
-import {addNewContact, deleteContactById, getAllContacts, getContactById} from "../serverCalls/contactsFetch";
+import {ContactsInterface, QuickAddContactInterface} from "../audienceInterface";
+import {addNewAudience, deleteAudienceById, getAllAudience, getAudienceById} from "../serverCalls/audienceFetch";
+import './contacts.scss';
 
 export const ContactsPage: any = () => {
 
@@ -48,7 +49,7 @@ export const ContactsPage: any = () => {
     const [serviceInProgress, setServiceInProgress] = useState(false);
 
     const populateAllContacts = () => {
-        getAllContacts().then(async response => {
+        getAllAudience('contacts').then(async response => {
             let resBody = await response.json();
             let data: ContactsInterface[] = [];
             if (resBody && Array.isArray(resBody)) {
@@ -175,7 +176,7 @@ export const ContactsPage: any = () => {
     };
 
     const openContactEdit = (record: any) => {
-        getContactById(record.key).then(async response => {
+        getAudienceById(record.key, 'contacts').then(async response => {
             let resBody = await response.json();
             if (resBody) {
                 setContactObj({...resBody});
@@ -184,7 +185,7 @@ export const ContactsPage: any = () => {
         });
     };
     const deleteContact = (record: any) => {
-        deleteContactById(record.id).then(async response => {
+        deleteAudienceById(record.id, 'contacts').then(async response => {
             let resBody = await response.json();
             if (resBody) {
                 populateAllContacts();
@@ -252,7 +253,7 @@ export const ContactsPage: any = () => {
 
     const quickAddContactFormFinish = (values: any) => {
         let tempData = [...quickAddContactDS];
-        let filteredItem = tempData.filter(itr => itr.email === values.formObj.email);
+        let filteredItem = tempData.filter(itr => itr.email.toLowerCase() === values.formObj.email.toLowerCase());
         if (filteredItem.length > 0) {
             message.warn('Email Address already in use', 0.6).then(() => {
             });
@@ -269,7 +270,7 @@ export const ContactsPage: any = () => {
             let itrId = contactId;
             quickAddContactDS.forEach(itr => {
                 itrId++;
-                addNewContact({...itr, id: itrId}).then(async response => {
+                addNewAudience({...itr, id: itrId}, 'contacts').then(async response => {
                     let resBody = await response.json();
                     if (resBody) {
                         message.success(`New Contact ${itr.email} successfully created`, 0.6);
@@ -319,7 +320,7 @@ export const ContactsPage: any = () => {
                 ]} onCancel={cancelUploadProcess}>
                     <UploadPage fileInfo={(fileInfo: any) => setUploadFileInfo(fileInfo)}/>
                 </Modal>
-                <Modal title="Add Contact" centered visible={quickAddModal} width={432}
+                <Modal title="Add Contact" centered visible={quickAddModal} width={550} className={'contacts'}
                        footer={quickAddContactDS.length > 0 ?
                            <Button disabled={serviceInProgress} key="done" style={{background: 'darkgreen'}}
                                    type="primary" icon={<CheckOutlined/>}
@@ -335,7 +336,7 @@ export const ContactsPage: any = () => {
                                     <Input placeholder="email+test@gmail.com" type={"email"}/>
                                 </Form.Item>
                             </Form.Item>
-                            <div className='flexEqualSpacing'>
+                            <div className='flexEqualSpacing flexFormItems'>
                                 <Form.Item label="First Name">
                                     <Form.Item name={['formObj', 'firstName']} noStyle>
                                         <Input placeholder="Text Only" type={'text'}/>

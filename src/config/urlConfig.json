@@ -1,4 +1,7 @@
 {
   "contacts": "http://localhost:3002/contacts",
-  "segments": "http://localhost:3002/segments"
+  "segments": "http://localhost:3002/segments",
+  "customFields": "http://localhost:3002/customFields",
+  "imports": "http://localhost:3002/imports",
+  "exportsData": "http://localhost:3002/exportsData"
 }

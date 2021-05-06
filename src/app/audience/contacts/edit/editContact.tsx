@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import './editContact.scss';
+import '../contacts.scss';
 import {updateBreadcrumb} from "../../../../store/actions/root";
 import {useDispatch} from "react-redux";
 import {Button, Form, Input, message, Tabs} from "antd";
@@ -7,8 +7,8 @@ import Title from "antd/lib/typography/Title";
 import {StepBackwardOutlined} from '@ant-design/icons';
 import {FormEditPage} from "../../../common/formEdit/formEdit";
 import {populateFormObj} from "../../../../utils/common";
-import {CustomFields} from "../../contactInterface";
-import {addNewContact, editContactById} from "../../serverCalls/contactsFetch";
+import {CustomFields} from "../../audienceInterface";
+import {addNewAudience, editAudienceById, getAllAudience} from "../../serverCalls/audienceFetch";
 
 export const EditContactPage: any = (props: any) => {
     const dispatch = useDispatch();
@@ -19,11 +19,21 @@ export const EditContactPage: any = (props: any) => {
     useEffect(() => {
         dispatch(updateBreadcrumb(['Audience', 'Contacts', 'Edit Contact']));
         populateFormObj(props.contactObj, contactForm);
+        getAllAudience('customFields').then(async response => {
+            let resBody = await response.json();
+            let data: CustomFields[] = [];
+            if (resBody && Array.isArray(resBody)) {
+                resBody.forEach((itr: any) => {
+                    data.push({...itr, key: itr.id});
+                });
+            }
+            setCustomFieldsDS(data);
+        });
     }, [dispatch, contactForm, props.contactObj]);
 
     const modifyContactService = (values: any) => {
-        if(props.contactObj.firstName) {
-            editContactById({...values, oldObj: props.contactObj}).then(async response => {
+        if (props.contactObj.firstName) {
+            editAudienceById({...values.formObj, oldObj: props.contactObj}, 'contacts').then(async response => {
                 let resBody = await response.json();
                 if (resBody) {
                     populateFormObj(resBody, contactForm);
@@ -34,7 +44,7 @@ export const EditContactPage: any = (props: any) => {
             });
         } else {
             console.log(props.contactObj)
-            addNewContact({...values.formObj, id: props.contactObj.id + 1}).then(async response => {
+            addNewAudience({...values.formObj, id: props.contactObj.id + 1}, 'contacts').then(async response => {
                 let resBody = await response.json();
                 if (resBody) {
                     populateFormObj(resBody, contactForm);
@@ -47,23 +57,7 @@ export const EditContactPage: any = (props: any) => {
         }
     };
 
-    const [customFieldsDS, setCustomFieldsDS] = useState<CustomFields[]>([
-        {
-            key: 'anniversary',
-            fieldName: 'Anniversary',
-            fieldType: 'text'
-        },
-        {
-            key: 'alternateEmail',
-            fieldName: 'Alternate Email',
-            fieldType: 'email'
-        },
-        {
-            key: 'alternateNumber',
-            fieldName: 'Alternate Number',
-            fieldType: 'number'
-        }
-    ]);
+    const [customFieldsDS, setCustomFieldsDS] = useState<CustomFields[]>([]);
 
     return (
         <div className="editContact pageLayout">

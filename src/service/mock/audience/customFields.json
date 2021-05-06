@@ -16,7 +16,7 @@
   },
   {
     "id": 4,
-    "fieldName": "Alternate Contact Number",
+    "fieldName": "Alternate Number",
     "fieldType": "Number"
   }
 ]

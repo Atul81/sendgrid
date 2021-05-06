@@ -30,3 +30,11 @@ export const populateFormObj = (propsObj: any, formObj: any) => {
 export const filterSelectOptions = (input: string, option: any) => {
     return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 };
+
+export const getTimeFromUnix = (unixTime: number) => {
+    let date = new Date(unixTime * 1000);
+    let hours = date.getHours();
+    let minutes = "0" + date.getMinutes();
+    let seconds = "0" + date.getSeconds();
+    return hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+}

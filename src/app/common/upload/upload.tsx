@@ -4,15 +4,15 @@ import 'antd/dist/antd.css';
 import {InboxOutlined} from '@ant-design/icons';
 import Paragraph from "antd/es/typography/Paragraph";
 import {Link} from "react-router-dom";
-import {AddSegment} from "../../audience/contactInterface";
+import {AddSegment} from "../../audience/audienceInterface";
 import Title from "antd/lib/typography/Title";
 import {filterSelectOptions} from "../../../utils/common";
-import {getAllSegments} from "../../audience/serverCalls/segmentsFetch";
+import {getAllAudience} from "../../audience/serverCalls/audienceFetch";
 
 export const UploadPage: any = (props: any) => {
 
     useEffect(() => {
-        getAllSegments().then(async response => {
+        getAllAudience('segments').then(async response => {
             let resBody = await response.json();
             let data: AddSegment[] = [];
             if (resBody && Array.isArray(resBody)) {

@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {Button, Input, message, Popconfirm, Space, Table, Typography} from "antd";
-import {SegmentInterface} from "../contactInterface";
+import {SegmentInterface} from "../audienceInterface";
 import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
-import {getAllSegments} from "../serverCalls/segmentsFetch";
+import {deleteAudienceById, getAllAudience} from "../serverCalls/audienceFetch";
 
 export const SegmentsPage: any = () => {
 
@@ -11,7 +11,7 @@ export const SegmentsPage: any = () => {
     }, []);
 
     const populateAllSegments = () => {
-        getAllSegments().then(async response => {
+        getAllAudience('segments').then(async response => {
             let resBody = await response.json();
             let data: SegmentInterface[] = [];
             if (resBody && Array.isArray(resBody)) {
@@ -62,7 +62,7 @@ export const SegmentsPage: any = () => {
                                         More</a></p>}
                                 okText="Delete" cancelText="Cancel"
                                 onConfirm={() => deleteContact(record)}>
-                        <p><DeleteOutlined/></p>
+                        <p className={"actionColumn"}><DeleteOutlined/></p>
                     </Popconfirm>
                 </Space>
             }),
@@ -95,7 +95,13 @@ export const SegmentsPage: any = () => {
     };
 
     const deleteContact = (record: any) => {
-        console.log(record);
+        deleteAudienceById(record.key, 'segments').then(async response => {
+            let resBody = await response.json();
+            if (resBody) {
+                populateAllSegments();
+                message.success(`Segment with name ${record.name} has been successfully deleted`);
+            }
+        });
     }
 
     const updateNewSegmentService = (segObj: any) => {
@@ -106,7 +112,7 @@ export const SegmentsPage: any = () => {
         if (segmentNameSelected.length === 0) {
             message.warning("Please use the checkbox to select contact for deletion", 0.8);
         }
-        console.log(segmentNameSelected);
+        message.error("Bulk Delete not yet supported");
     };
     return (
         <div className="pageLayout">
