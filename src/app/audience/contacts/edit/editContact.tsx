@@ -8,7 +8,7 @@ import {StepBackwardOutlined} from '@ant-design/icons';
 import {FormEditPage} from "../../../common/formEdit/formEdit";
 import {populateFormObj} from "../../../../utils/common";
 import {CustomFields} from "../../audienceInterface";
-import {addNewAudience, editAudienceById, getAllAudience} from "../../serverCalls/audienceFetch";
+import {addNewObject, editObjectById, getAllServerCall} from "../../../../service/serverCalls/mockServerRest";
 
 export const EditContactPage: any = (props: any) => {
     const dispatch = useDispatch();
@@ -19,7 +19,7 @@ export const EditContactPage: any = (props: any) => {
     useEffect(() => {
         dispatch(updateBreadcrumb(['Audience', 'Contacts', 'Edit Contact']));
         populateFormObj(props.contactObj, contactForm);
-        getAllAudience('customFields').then(async response => {
+        getAllServerCall('customFields').then(async response => {
             let resBody = await response.json();
             let data: CustomFields[] = [];
             if (resBody && Array.isArray(resBody)) {
@@ -33,7 +33,7 @@ export const EditContactPage: any = (props: any) => {
 
     const modifyContactService = (values: any) => {
         if (props.contactObj.firstName) {
-            editAudienceById({...values.formObj, oldObj: props.contactObj}, 'contacts').then(async response => {
+            editObjectById({...values.formObj, oldObj: props.contactObj}, 'contacts').then(async response => {
                 let resBody = await response.json();
                 if (resBody) {
                     populateFormObj(resBody, contactForm);
@@ -44,7 +44,7 @@ export const EditContactPage: any = (props: any) => {
             });
         } else {
             console.log(props.contactObj)
-            addNewAudience({...values.formObj, id: props.contactObj.id + 1}, 'contacts').then(async response => {
+            addNewObject({...values.formObj, id: props.contactObj.id + 1}, 'contacts').then(async response => {
                 let resBody = await response.json();
                 if (resBody) {
                     populateFormObj(resBody, contactForm);

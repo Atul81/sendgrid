@@ -4,7 +4,7 @@ import {ImportsInterface} from "../audienceInterface";
 import {RowDetailsPage} from "./details/RowDetailsLoadable";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
-import {getAllAudience} from "../serverCalls/audienceFetch";
+import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import {getTimeFromUnix} from "../../../utils/common";
 
 export const ImportsPage: any = () => {
@@ -12,7 +12,7 @@ export const ImportsPage: any = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        getAllAudience('imports').then(async response => {
+        getAllServerCall('imports').then(async response => {
             let tempObj: ImportsInterface[] = [];
             let res = await response.json();
             res.forEach((itr: any) => {

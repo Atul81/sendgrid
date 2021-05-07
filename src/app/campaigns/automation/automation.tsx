@@ -1,14 +1,19 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, message, Popconfirm, Space, Table} from "antd";
 import {DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import Search from "antd/lib/input/Search";
 import {CampaignInterface} from "../campaignInterface";
 import {AmendAutomationPage} from "./amendAutomation/AmendAutomationLoadable";
+import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 
 export const AutomationPage: any = () => {
+
+    useEffect(() => {
+        populateAllAutomations();
+    }, []);
+
     const [openAutomationAmend, setOpenAutomationAmend] = useState(false);
-    const [automationOpenType, setOpenType] = useState('view');
     const [automationObj, setAutomationObj] = useState({});
     const [customFieldsDS, setCustomFieldsDS] = useState<CampaignInterface[]>([
         {
@@ -72,10 +77,22 @@ export const AutomationPage: any = () => {
         },
     ];
 
+    const populateAllAutomations = () => {
+        getAllServerCall('automation').then(async res => {
+            let data = await res.json();
+            let tempObj: CampaignInterface[] = [];
+            if (data && Array.isArray(data)) {
+                data.forEach((itr: any) => {
+                    tempObj.push({...itr, key: itr.id})
+                });
+            }
+            setCustomFieldsDS(tempObj);
+            setCustomFieldsDSOps(tempObj);
+        })
+    }
     const openAutomationRow = (record: any, openType: string) => {
         setOpenAutomationAmend(true);
-        setAutomationObj(record);
-        setOpenType(openType);
+        setAutomationObj({...record, viewType: openType});
     };
 
     const deleteCustomFields = (record: any) => {
@@ -108,7 +125,6 @@ export const AutomationPage: any = () => {
     const navigateToLandingPage = () => {
         setOpenAutomationAmend(false);
         setAutomationObj({});
-        setOpenType('view');
     };
 
     return !openAutomationAmend ? (

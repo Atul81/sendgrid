@@ -16,7 +16,7 @@ import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 import {UploadPage} from "../../common/upload/UploadLoadable";
 import {ContactsInterface, QuickAddContactInterface} from "../audienceInterface";
-import {addNewAudience, deleteAudienceById, getAllAudience, getAudienceById} from "../serverCalls/audienceFetch";
+import {addNewObject, deleteObjectById, getAllServerCall, getObjectById} from "../../../service/serverCalls/mockServerRest";
 import './contacts.scss';
 
 export const ContactsPage: any = () => {
@@ -49,7 +49,7 @@ export const ContactsPage: any = () => {
     const [serviceInProgress, setServiceInProgress] = useState(false);
 
     const populateAllContacts = () => {
-        getAllAudience('contacts').then(async response => {
+        getAllServerCall('contacts').then(async response => {
             let resBody = await response.json();
             let data: ContactsInterface[] = [];
             if (resBody && Array.isArray(resBody)) {
@@ -176,7 +176,7 @@ export const ContactsPage: any = () => {
     };
 
     const openContactEdit = (record: any) => {
-        getAudienceById(record.key, 'contacts').then(async response => {
+        getObjectById(record.key, 'contacts').then(async response => {
             let resBody = await response.json();
             if (resBody) {
                 setContactObj({...resBody});
@@ -185,7 +185,7 @@ export const ContactsPage: any = () => {
         });
     };
     const deleteContact = (record: any) => {
-        deleteAudienceById(record.id, 'contacts').then(async response => {
+        deleteObjectById(record.id, 'contacts').then(async response => {
             let resBody = await response.json();
             if (resBody) {
                 populateAllContacts();
@@ -270,7 +270,7 @@ export const ContactsPage: any = () => {
             let itrId = contactId;
             quickAddContactDS.forEach(itr => {
                 itrId++;
-                addNewAudience({...itr, id: itrId}, 'contacts').then(async response => {
+                addNewObject({...itr, id: itrId}, 'contacts').then(async response => {
                     let resBody = await response.json();
                     if (resBody) {
                         message.success(`New Contact ${itr.email} successfully created`, 0.6);

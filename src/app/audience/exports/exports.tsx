@@ -2,13 +2,13 @@ import React, {useEffect, useState} from "react";
 import {ExportContactInterface} from "../audienceInterface";
 import {Space, Table} from "antd";
 import {DownloadOutlined} from "@ant-design/icons";
-import {getAllAudience} from "../serverCalls/audienceFetch";
+import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import {getTimeFromUnix} from "../../../utils/common";
 
 export const ExportPage: any = () => {
 
     useEffect(() => {
-        getAllAudience('exportsData').then(async response => {
+        getAllServerCall('exportsData').then(async response => {
             let tempObj: ExportContactInterface[] = [];
             let res = await response.json();
             res.forEach((itr: any) => {

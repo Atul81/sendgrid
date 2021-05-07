@@ -7,12 +7,12 @@ import {Link} from "react-router-dom";
 import {AddSegment} from "../../audience/audienceInterface";
 import Title from "antd/lib/typography/Title";
 import {filterSelectOptions} from "../../../utils/common";
-import {getAllAudience} from "../../audience/serverCalls/audienceFetch";
+import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 
 export const UploadPage: any = (props: any) => {
 
     useEffect(() => {
-        getAllAudience('segments').then(async response => {
+        getAllServerCall('segments').then(async response => {
             let resBody = await response.json();
             let data: AddSegment[] = [];
             if (resBody && Array.isArray(resBody)) {

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Button, Input, message, Popconfirm, Space, Table, Typography} from "antd";
 import {SegmentInterface} from "../audienceInterface";
 import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
-import {deleteAudienceById, getAllAudience} from "../serverCalls/audienceFetch";
+import {deleteObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 
 export const SegmentsPage: any = () => {
 
@@ -11,7 +11,7 @@ export const SegmentsPage: any = () => {
     }, []);
 
     const populateAllSegments = () => {
-        getAllAudience('segments').then(async response => {
+        getAllServerCall('segments').then(async response => {
             let resBody = await response.json();
             let data: SegmentInterface[] = [];
             if (resBody && Array.isArray(resBody)) {
@@ -95,7 +95,7 @@ export const SegmentsPage: any = () => {
     };
 
     const deleteContact = (record: any) => {
-        deleteAudienceById(record.key, 'segments').then(async response => {
+        deleteObjectById(record.key, 'segments').then(async response => {
             let resBody = await response.json();
             if (resBody) {
                 populateAllSegments();

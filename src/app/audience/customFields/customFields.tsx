@@ -6,7 +6,7 @@ import Search from "antd/lib/input/Search";
 import {CustomFields} from "../audienceInterface";
 import Title from "antd/lib/typography/Title";
 import Paragraph from "antd/lib/typography/Paragraph";
-import {addNewAudience, deleteAudienceById, editAudienceById, getAllAudience} from "../serverCalls/audienceFetch";
+import {addNewObject, deleteObjectById, editObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 
 export const CustomFieldsPage: any = () => {
 
@@ -59,7 +59,7 @@ export const CustomFieldsPage: any = () => {
     ];
 
     const populateAllSegments = () => {
-        getAllAudience('customFields').then(async response => {
+        getAllServerCall('customFields').then(async response => {
             let resBody = await response.json();
             let data: CustomFields[] = [];
             if (resBody && Array.isArray(resBody)) {
@@ -89,7 +89,7 @@ export const CustomFieldsPage: any = () => {
     };
 
     const deleteCustomFields = (record: any) => {
-        deleteAudienceById(record.key, 'customFields').then(async response => {
+        deleteObjectById(record.key, 'customFields').then(async response => {
             let resBody = await response.json();
             if (resBody) {
                 message.success(`Custom Field ${record.fieldName} has been deleted`, 0.6);
@@ -123,7 +123,7 @@ export const CustomFieldsPage: any = () => {
 
     const modifyCustomField = (values: any) => {
         if (customFields.key.length !== 0) {
-            editAudienceById({
+            editObjectById({
                 id: customFields.key.length,
                 fieldName: values.customFields.name,
                 fieldType: values.customFields.radioValue
@@ -136,7 +136,7 @@ export const CustomFieldsPage: any = () => {
                 console.log(reason);
             });
         } else {
-            addNewAudience({
+            addNewObject({
                 id: customFields.key.length,
                 fieldName: values.customFields.name,
                 fieldType: values.customFields.radioValue
