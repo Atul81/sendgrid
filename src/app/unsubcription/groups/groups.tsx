@@ -4,10 +4,13 @@ import {CloseOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-de
 import Title from "antd/es/typography/Title";
 import {GroupNameInterface} from "../unsubcriptionInterface";
 import Paragraph from "antd/es/typography/Paragraph";
+import {useLocation} from "react-router-dom";
 
 export const GroupsPage: any = () => {
     const [groupNameDS, setGroupNameDS] = useState<GroupNameInterface[]>([]);
     const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
+    const urlPath = useLocation();
+    const [openCustomizeForm, setCustomizeFormFrame] = useState(false);
 
     const contactRowSelection = {
         onChange: (selectedRowKeys: React.Key[], selectedRows: GroupNameInterface[]) => {
@@ -19,17 +22,24 @@ export const GroupsPage: any = () => {
         }
     };
     useEffect(() => {
-        let data: GroupNameInterface[] = [];
-        for (let i = 0; i < 100; i++) {
-            data.push({
-                key: i.toString(10),
-                groupName: `email+test@gmail.com ${i} Unsubscribe`,
-                groupDesc: `${i} Unsubscribe`,
-                globalDisplay: true
-            });
+        let urlRoute = urlPath.pathname.split("/");
+        setCustomizeFormFrame(false);
+
+        if (urlRoute[2] && urlRoute[2] === 'customize-form') {
+            setCustomizeFormFrame(true);
+        } else {
+            let data: GroupNameInterface[] = [];
+            for (let i = 0; i < 100; i++) {
+                data.push({
+                    key: i.toString(10),
+                    groupName: `email+test@gmail.com ${i} Unsubscribe`,
+                    groupDesc: `${i} Unsubscribe`,
+                    globalDisplay: true
+                });
+            }
+            setGroupNameDS(data);
         }
-        setGroupNameDS(data);
-    }, []);
+    }, [urlPath.pathname]);
 
     const openGroupNameEdit = (record: any) => {
         console.log(record);
@@ -90,7 +100,7 @@ export const GroupsPage: any = () => {
         console.log(values, switchCheck);
     };
 
-    return <div className={'pageLayout'}>
+    return !openCustomizeForm ? (<div className={'pageLayout'}>
         <div className="reverseFlex">
             <Button style={{marginRight: 8}} key="addGroup" type="primary" onClick={() => setAmendGroupModal(true)}
                     icon={<PlusOutlined/>}>
@@ -145,5 +155,7 @@ export const GroupsPage: any = () => {
             <Table scroll={{y: 'calc(100vh - 320px)'}} rowSelection={{...contactRowSelection}} dataSource={groupNameDS}
                    columns={columns} bordered/>
         </div>
-    </div>
+    </div>) : <iframe title={"Analytics Dashboard"}
+                      style={{margin: -24, height: 'calc(100vh - 128px)', width: 'calc(100vw - 232px)'}}
+                      src={'https://programmablesearchengine.google.com/about/'}/>
 }

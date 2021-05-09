@@ -22,7 +22,8 @@ export const populateFormObj = (propsObj: any, formObj: any) => {
             city: (propsObj && propsObj.city) ? propsObj.city : undefined,
             postalCode: (propsObj && propsObj.postalCode) ? propsObj.postalCode : undefined,
             country: (propsObj && propsObj.country) ? propsObj.country : undefined,
-            location: (propsObj && propsObj.location) ? propsObj.location : undefined
+            location: (propsObj && propsObj.location) ? propsObj.location : undefined,
+            domainVerified: (propsObj && propsObj.domainVerified) ? propsObj.domainVerified : undefined
         }
     });
 };

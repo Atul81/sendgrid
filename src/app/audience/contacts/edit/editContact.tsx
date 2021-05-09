@@ -74,7 +74,7 @@ export const EditContactPage: any = (props: any) => {
             <div className="tabsNav">
                 <Tabs defaultActiveKey="1">
                     <TabPane tab="General" key="1">
-                        <FormEditPage key={props.contactObj ? props.contactObj.key : Math.random()}
+                        <FormEditPage key={props.contactObj ? props.contactObj.key : Math.random()} type={'contacts'}
                                       generalForm={contactForm} saveFormValues={modifyContactService}/>
                     </TabPane>
                     <TabPane style={{width: 408}} tab="Custom Fields" key="2">

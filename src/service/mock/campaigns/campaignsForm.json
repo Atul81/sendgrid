@@ -1,0 +1,40 @@
+[
+  {
+    "id": 1,
+    "campaignData": {
+      "step5": {
+        "msgPerEP": "2000",
+        "overrideMsgPerEPSet": true,
+        "msgPerDayPerEP": "2000",
+        "overrideMsgPerDayPerEPSet": true,
+        "campRunTime": "1000"
+      },
+      "step4": {
+        "campaignTime": "specificTime",
+        "campaignFrequency": "monthly",
+        "rangePicker": [
+          "2021-05-20T09:34:14.138Z",
+          "2021-06-26T09:34:14.138Z"
+        ],
+        "timeZone": "ist",
+        "startTime": 1621503254138,
+        "endTime": 1624700054138
+      },
+      "step3": {
+        "segmentType": "emailCampaign",
+        "emailTemplate": "usa"
+      },
+      "step2": {
+        "segment": "existingSegment",
+        "segmentType": 2,
+        "segmentHoldOut": "3"
+      },
+      "step1": {
+        "name": "Name of the campaigns",
+        "campaignType": "testingCampaign",
+        "sender": "usa"
+      }
+    }
+  }
+]
+

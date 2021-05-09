@@ -1,48 +1,24 @@
-import React, {useState} from "react";
-import {Button, Popconfirm, Space, Table, Typography} from "antd";
+import React, {useEffect, useState} from "react";
+import {Button, message, Popconfirm, Space, Table, Typography} from "antd";
 import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import {SendersInterface} from "../campaignInterface";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 import {AmendSendersPage} from "./amendSenders/AmendSendersLoadable";
+import {deleteObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 
 export const SendersPage: any = () => {
     const {Title} = Typography;
     const dispatch = useDispatch();
 
-    const [segmentNameSelected, setSegmentNameSelected] = useState<string[]>([]);
-    const [segmentDS, setSegmentDS] = useState<SendersInterface[]>([
-        {
-            key: '1',
-            email: 'test+email@gmail.com',
-            firstName: 'John',
-            lastName: 'Pandey',
-            domainVerified: 'Yes'
-        },
-        {
-            key: '2',
-            email: 'John.pandey@solulever.com',
-            firstName: 'John Kumar',
-            lastName: 'Pandey',
-            domainVerified: 'No'
-        }
-    ]);
-    const [segmentDSOps, setSegmentDSOps] = useState<SendersInterface[]>([
-        {
-            key: '1',
-            email: 'test+email@gmail.com',
-            firstName: 'John',
-            lastName: 'Pandey',
-            domainVerified: 'Yes'
-        },
-        {
-            key: '2',
-            email: 'John.pandey@solulever.com',
-            firstName: 'John Kumar',
-            lastName: 'Pandey',
-            domainVerified: 'No'
-        }
-    ]);
+    useEffect(() => {
+        populateAllSenders();
+    }, []);
+
+    const [segmentNamesSelected, setSegmentNamesSelected] = useState<string[]>([]);
+    const [segmentDS, setSegmentDS] = useState<SendersInterface[]>([]);
+    const [senderId, setSenderId] = useState<number>(5);
+
     const columns = [
         {
             title: 'Email Address',
@@ -81,7 +57,7 @@ export const SendersPage: any = () => {
                                         More</a></p>}
                                 okText="Delete" cancelText="Cancel"
                                 onConfirm={() => deleteContact(record)}>
-                        <p><DeleteOutlined/></p>
+                        <p className={"actionColumn"}><DeleteOutlined/></p>
                     </Popconfirm>
                 </Space>
             }),
@@ -97,24 +73,45 @@ export const SendersPage: any = () => {
             selectedRows.forEach(segItr => {
                 rowsSelected.push(segItr.email);
             });
-            setSegmentNameSelected(rowsSelected);
+            setSegmentNamesSelected(rowsSelected);
         }
     };
 
     const openSegmentEdit = (record: any) => {
-        setSendersObj(record);
+        setSendersObj({...record, generatedId: senderId});
+        setSenderId(senderId + 1);
         setModifySendersPage(true);
     };
 
     const deleteContact = (record: any) => {
-        console.log(record);
+        deleteObjectById(record.key, 'senders').then(async deleteResAsync => {
+            let delRes = await deleteResAsync.json();
+            if (delRes) {
+                message.success(`Sender of email ${record.email} has been successfully deleted`, 0.6);
+                populateAllSenders();
+            }
+        })
     };
 
     const navigateToLandingPage = () => {
-        dispatch(updateBreadcrumb(['Audience', 'Contacts']));
+        populateAllSenders();
+        dispatch(updateBreadcrumb(['Campaigns', 'Senders']));
         setSendersObj({});
         setModifySendersPage(false);
     };
+
+    const populateAllSenders = () => {
+        getAllServerCall('senders').then(async allSendersAsync => {
+            let allSendersRes = await allSendersAsync.json();
+            let tempItrObj: SendersInterface[] = [];
+            if (allSendersRes) {
+                allSendersRes.forEach((itr: any) => {
+                    tempItrObj.push({...itr, key: itr.id});
+                });
+            }
+            setSegmentDS(tempItrObj);
+        })
+    }
 
     return !modifySendersPage ? (
         <div className="pageLayout">

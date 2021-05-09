@@ -5,6 +5,9 @@ const imports = require('./audience/imports.json');
 const exportsData = require('./audience/exports.json');
 const automation = require('./campaigns/automation.json');
 const workFlow = require('./campaigns/workFlow.json');
+const campaigns = require('./campaigns/campaigns.json');
+const campaignsForm = require('./campaigns/campaignsForm.json');
+const senders = require('./campaigns/senders.json');
 
 module.exports = () => ({
     contacts,
@@ -13,5 +16,8 @@ module.exports = () => ({
     imports,
     exportsData,
     automation,
-    workFlow
+    workFlow,
+    campaigns,
+    campaignsForm,
+    senders
 });

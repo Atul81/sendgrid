@@ -248,9 +248,6 @@ export const ContactsPage: any = () => {
         console.log(uploadFileInfo.fileList);
     };
 
-    const handleTablePaginationChange = (pagination: any) => {
-    };
-
     const quickAddContactFormFinish = (values: any) => {
         let tempData = [...quickAddContactDS];
         let filteredItem = tempData.filter(itr => itr.email.toLowerCase() === values.formObj.email.toLowerCase());
@@ -383,7 +380,7 @@ export const ContactsPage: any = () => {
                 <Title level={4}>{tableLabel}</Title>
             </div>
             <div className="thirdNav">
-                <Table scroll={{y: 'calc(100vh - 400px)'}} onChange={handleTablePaginationChange}
+                <Table scroll={{y: 'calc(100vh - 400px)'}}
                        rowSelection={{...contactRowSelection}} dataSource={contactDS} columns={columns} bordered/>
             </div>
         </div>

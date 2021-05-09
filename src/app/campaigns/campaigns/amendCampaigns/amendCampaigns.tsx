@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Button, DatePicker, Form, Input, message, Radio, Select, Space, Steps, Switch} from 'antd';
 import './amendCampaigns.scss';
 import {
@@ -14,8 +14,51 @@ import {
 } from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
 import {useHistory} from "react-router-dom";
+import {editObjectById, getAllServerCall, getObjectById} from "../../../../service/serverCalls/mockServerRest";
+import {DropDown} from "../../../../utils/Interfaces";
+import moment from "moment";
 
 export const AmendCampaignsPage: any = (propsObj: any) => {
+    const [campaignForm] = Form.useForm();
+    const [pageEditRights, setPageEditRights] = useState(propsObj.amendObj.openType === 'edit');
+    useEffect(() => {
+        campaignForm.setFieldsValue(currentFormValues.current);
+        if (propsObj && propsObj.amendObj) {
+            getObjectById(propsObj.amendObj.key, 'campaignsForm').then(async campaignFormAsync => {
+                let campaignFormData = await campaignFormAsync.json();
+                if (campaignFormData && campaignFormData.campaignData) {
+                    let currentCampaignData = campaignFormData.campaignData;
+                    let serverRangePicker = currentCampaignData.step4.rangePicker;
+                    if (serverRangePicker) {
+                        campaignFormData.campaignData.step4.rangePicker = [moment(serverRangePicker[0]), moment(serverRangePicker[1])];
+                    }
+                    currentFormValues.current = currentCampaignData;
+                    campaignForm.setFieldsValue(currentCampaignData);
+                    if (currentCampaignData.step2.segment === 'existingSegment') {
+                        setStep2Segments(true);
+                    }
+                }
+            }).catch(reason => {
+                message.error(reason).then(() => {
+                });
+            });
+        }
+
+        getAllServerCall('segments').then(async segmentsRes => {
+            let allSegments = await segmentsRes.json();
+            let tempData: DropDown[] = [];
+            if (allSegments && Array.isArray(allSegments)) {
+                allSegments.forEach((itr: any) => {
+                    tempData.push({
+                        value: itr.id,
+                        label: itr.name,
+                        children: null
+                    });
+                });
+            }
+            setAllSegments(tempData);
+        });
+    }, [campaignForm, propsObj]);
 
     const {Step} = Steps;
     const {RangePicker} = DatePicker;
@@ -53,9 +96,11 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
         }
     ];
     const [current, setCurrent] = useState(0);
+    const [allSegments, setAllSegments] = useState<DropDown[]>([]);
+    const [step2ShowSegment, setStep2Segments] = useState(false);
     const currentFormValues = useRef({
         step1: {
-            name: (propsObj.step1 && propsObj.step1.name) ? propsObj.step1.name : undefined,
+            name: (propsObj.amendObj && propsObj.amendObj.name) ? propsObj.amendObj.name : undefined,
             campaignType: (propsObj.step1 && propsObj.step1.campaignType) ? propsObj.step1.campaignType : undefined,
             sender: (propsObj.step1 && propsObj.step1.sender) ? propsObj.step1.sender : undefined
         },
@@ -71,8 +116,6 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
         step4: {
             campaignTime: (propsObj.step4 && propsObj.step4.campaignTime) ? propsObj.step4.campaignTime : undefined,
             campaignFrequency: (propsObj.step4 && propsObj.step4.campaignFrequency) ? propsObj.step4.campaignFrequency : undefined,
-            startTime: (propsObj.step4 && propsObj.step4.startTime) ? propsObj.step4.startTime : undefined,
-            endTime: (propsObj.step4 && propsObj.step4.endTime) ? propsObj.step4.endTime : undefined,
             rangePicker: undefined,
             timeZone: (propsObj.step4 && propsObj.step4.timeZone) ? propsObj.step4.timeZone : undefined,
         },
@@ -85,8 +128,6 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             overrideCampRunTimeSet: (propsObj.step5 && propsObj.step5.overrideCampRunTimeSet) ? propsObj.step5.overrideCampRunTimeSet : undefined,
         }
     });
-    const [campaignForm] = Form.useForm();
-    campaignForm.setFieldsValue(currentFormValues);
 
     const nextState = () => {
         setCurrent(current + 1);
@@ -95,23 +136,23 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
     const prevState = () => {
         setCurrent(current - 1);
     };
+
     const onStepChange = (current: number) => {
         setCurrent(current);
     };
+
     const radioStyle = {
         display: 'block',
         height: '30px',
         lineHeight: '30px',
     };
     const {Option} = Select;
+
     const filterCountryOption = (input: string, option: any) => {
         return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
     };
+
     const saveCampaignForm = (values: any) => {
-        if (values.step4 && Array.isArray(values.step4.rangePicker)) {
-            values.step4.startTime = values.step4.rangePicker[0]._d;
-            values.step4.endTime = values.step4.rangePicker[1]._d.getTime();
-        }
         currentFormValues.current = {
             step5: values.step5 ? values.step5 : currentFormValues.current.step5,
             step4: values.step4 ? values.step4 : currentFormValues.current.step4,
@@ -119,30 +160,47 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             step2: values.step2 ? values.step2 : currentFormValues.current.step2,
             step1: values.step1 ? values.step1 : currentFormValues.current.step1
         };
-        console.log(currentFormValues);
+        message.success("Campaign Data cached, please click Done button at Step 5 to save your changes", 0.7).then(() => {
+        });
     };
 
     const createYourMessageRadio = (radioValue: any) => {
+        setStep2Segments(false);
         if (radioValue.target && radioValue.target.value === 'newSegment') {
-            history.push("/audience/segments")
+            history.push("/audience/segments");
+        } else {
+            setStep2Segments(true);
         }
     };
+
+    const step5RadioValueChanges = (checked: boolean, overrideType: string) => {
+        if (overrideType === 'overrideMsgPerEPSet') {
+            currentFormValues.current.step5.overrideMsgPerEPSet = checked;
+        } else if (overrideType === 'overrideMsgPerDayPerEPSet') {
+            currentFormValues.current.step5.overrideMsgPerDayPerEPSet = checked
+        } else {
+            currentFormValues.current.step5.overrideCampRunTimeSet = checked
+        }
+    };
+
     const switchForm = () => {
         switch (current) {
             case 0: {
                 return <>
                     <Form.Item label="Campaign Name" name={['step1', 'name']}
                                tooltip="This is a required field">
-                        <Input style={{width: '50%'}} placeholder="Eg: Sales Campaign"/>
+                        <Input style={{width: '50%'}} disabled={true} placeholder="Eg: Sales Campaign"/>
                     </Form.Item>
                     <Form.Item label="Campaign Type" name={['step1', 'campaignType']}>
-                        <Radio.Group>
-                            <Radio style={radioStyle} value='emailCampaign'>Email Campaign</Radio>
-                            <Radio style={radioStyle} value='testingCampaign'>A/B Testing Campaign</Radio>
+                        <Radio.Group disabled={!pageEditRights}>
+                            <Radio style={radioStyle} value='emailCampaign'>Email
+                                Campaign</Radio>
+                            <Radio style={radioStyle} value='testingCampaign'>A/B Testing
+                                Campaign</Radio>
                         </Radio.Group>
                     </Form.Item>
                     <Form.Item label="Select Sender" name={['step1', 'sender']}>
-                        <Select style={{width: '50%'}} showSearch placeholder="Select Sender"
+                        <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch placeholder="Select Sender"
                                 optionFilterProp="children"
                                 filterOption={(input, option) => filterCountryOption(input, option)}>
                             <Option value="ind">India</Option>
@@ -155,36 +213,39 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             case 1: {
                 return <>
                     <Form.Item label="Segment" name={['step2', 'segment']}>
-                        <Radio.Group onChange={createYourMessageRadio}>
+                        <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
                             <Radio value='existingSegment'>Use Existing segment</Radio>
                             <Radio.Button value='newSegment'>Create New Segment</Radio.Button>
                         </Radio.Group>
                     </Form.Item>
-                    <Form.Item label="Select Sender" name={['step2', 'segmentType']}>
-                        <Select style={{width: '50%'}} showSearch placeholder="Select Sender"
-                                optionFilterProp="children"
-                                filterOption={(input, option) => filterCountryOption(input, option)}>
-                            <Option value="ind">India</Option>
-                            <Option value="usa">United States</Option>
-                            <Option value="uk">United Kingdom</Option>
-                        </Select>
-                    </Form.Item>
+                    {step2ShowSegment ?
+                        <Form.Item label="Select Segment" name={['step2', 'segmentType']}>
+                            <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                                    placeholder="Select Segment"
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) => filterCountryOption(input, option)}>
+                                {allSegments.map(itr => {
+                                    return <Option value={itr.value}>{itr.label}</Option>
+                                })}
+                            </Select>
+                        </Form.Item> : null
+                    }
                     <Form.Item label="Segment hold-out (Optional)" name={['step2', 'segmentHoldOut']}
                                tooltip="Percentage of customers in the segment that won't receive emails">
-                        <Input type={'number'} style={{width: '50%'}} placeholder="Percentage"/>
+                        <Input disabled={!pageEditRights} type={'number'} style={{width: '50%'}} placeholder="Percentage"/>
                     </Form.Item>
                 </>
             }
             case 2: {
                 return <>
                     <Form.Item label="Campaign Type" name={['step3', 'segmentType']}>
-                        <Radio.Group onChange={createYourMessageRadio}>
+                        <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
                             <Radio value='emailCampaign'>Use Existing template</Radio>
                             <Radio.Button value='testingCampaign'>Create New Template</Radio.Button>
                         </Radio.Group>
                     </Form.Item>
-                    <Form.Item label="Select Template" name={['step3', 'emailTemplate']}>
-                        <Select style={{width: '50%'}} showSearch placeholder="Welcome Email Template"
+                    <Form.Item label="Select Templates" name={['step3', 'emailTemplate']}>
+                        <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch placeholder="Welcome Email Template"
                                 optionFilterProp="children"
                                 filterOption={(input, option) => filterCountryOption(input, option)}>
                             <Option value="ind">India</Option>
@@ -198,13 +259,13 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 return <>
                     <Form.Item label="Campaign Time" name={['step4', 'campaignTime']}
                                tooltip="When to send the campaign">
-                        <Radio.Group>
+                        <Radio.Group disabled={!pageEditRights}>
                             <Radio value='specificTime'>At a specific time</Radio>
                             <Radio value='eventTrigger'>At event trigger</Radio>
                         </Radio.Group>
                     </Form.Item>
                     <Form.Item label="Campaign Frequency" name={['step4', 'campaignFrequency']}>
-                        <Select style={{width: '50%'}} showSearch placeholder="Select Frequency"
+                        <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch placeholder="Select Frequency"
                                 optionFilterProp="children"
                                 filterOption={(input, option) => filterCountryOption(input, option)}>
                             <Option value="weekly">Weekly</Option>
@@ -213,10 +274,10 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                         </Select>
                     </Form.Item>
                     <Form.Item label="Time Range" name={['step4', 'rangePicker']}>
-                        <RangePicker allowClear bordered format="YYYY-MM-DD hh:mm:ss a"/>
+                        <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
                     </Form.Item>
                     <Form.Item label="Time Zone" name={['step4', 'timeZone']}>
-                        <Select style={{width: '50%'}} showSearch placeholder="Select Time Zone"
+                        <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch placeholder="Select Time Zone"
                                 optionFilterProp="children"
                                 filterOption={(input, option) => filterCountryOption(input, option)}>
                             <Option value="ist">India-IST</Option>
@@ -228,46 +289,68 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             }
             case 4: {
                 return <>
-                <Space key={'step5-1'} size={24} style={{display: 'flex', marginBottom: 8}} align="baseline">
-                    <Form.Item label="Max. Messages per End-Point" name={['step5', 'msgPerEP']}>
-                        <Select style={{width: '24vw'}} placeholder="Select Max Messages">
-                            <Option value="1000">1000</Option>
-                            <Option value="2000">2000</Option>
-                            <Option value="5000">5000</Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item label="Over-ride global Settings" name={['step5', 'overrideMsgPerEPSet']}>
-                        <Switch defaultChecked={false}/>
-                    </Form.Item>
-                </Space>
-                    <Space key={'step5-2'} size={24} style={{display: 'flex', marginBottom: 8}} align="baseline">
-                        <Form.Item label="Max. Messages per Day per End-Point" name={['step5', 'msgPerDayPerEP']}>
-                            <Select style={{width: '24vw'}} placeholder="Select Max Messages">
+                    <Space key={'step5-1'} size={24} style={{display: 'flex', marginBottom: 8}} align="baseline">
+                        <Form.Item label="Max. Messages per End-Point" name={['step5', 'msgPerEP']}>
+                            <Select disabled={!pageEditRights} style={{width: '24vw'}}
+                                    placeholder="Select Max Messages">
                                 <Option value="1000">1000</Option>
                                 <Option value="2000">2000</Option>
                                 <Option value="5000">5000</Option>
                             </Select>
                         </Form.Item>
-                        <Form.Item label="Over-ride global Settings" name={['step5', 'overrideMsgPerDayPerEPSet']}>
-                            <Switch defaultChecked={false}/>
+                        <Form.Item label="Over-ride global Settings">
+                            <Switch disabled={!pageEditRights}
+                                    defaultChecked={currentFormValues.current.step5.overrideMsgPerEPSet}
+                                    onChange={(checked) => step5RadioValueChanges(checked, 'overrideMsgPerEPSet')}/>
+                        </Form.Item>
+                    </Space>
+                    <Space key={'step5-2'} size={24} style={{display: 'flex', marginBottom: 8}} align="baseline">
+                        <Form.Item label="Max. Messages per Day per End-Point" name={['step5', 'msgPerDayPerEP']}>
+                            <Select disabled={!pageEditRights} style={{width: '24vw'}}
+                                    placeholder="Select Max Messages">
+                                <Option value="1000">1000</Option>
+                                <Option value="2000">2000</Option>
+                                <Option value="5000">5000</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label="Over-ride global Settings">
+                            <Switch disabled={!pageEditRights}
+                                    defaultChecked={currentFormValues.current.step5.overrideMsgPerDayPerEPSet}
+                                    onChange={(checked) => step5RadioValueChanges(checked, 'overrideMsgPerDayPerEPSet')}/>
                         </Form.Item>
                     </Space>
                     <Space key={'step5-3'} size={24} style={{display: 'flex', marginBottom: 8}} align="baseline">
                         <Form.Item label="Max. Campaign Run time (minutes)" name={['step5', 'campRunTime']}>
-                            <Select style={{width: '24vw'}} placeholder="Select Max Messages">
+                            <Select disabled={!pageEditRights} style={{width: '24vw'}}
+                                    placeholder="Select Max Messages">
                                 <Option value="1000">1000</Option>
                                 <Option value="2000">2000</Option>
                                 <Option value="5000">5000</Option>
                             </Select>
                         </Form.Item>
-                        <Form.Item label="Over-ride global Settings" name={['step5', 'overrideCampRunTimeSet']}>
-                            <Switch defaultChecked={false}/>
+                        <Form.Item label="Over-ride global Settings">
+                            <Switch disabled={!pageEditRights}
+                                    defaultChecked={currentFormValues.current.step5.overrideCampRunTimeSet}
+                                    onChange={(checked) => step5RadioValueChanges(checked, 'overrideCampRunTimeSet')}/>
                         </Form.Item>
                     </Space>
                 </>
             }
         }
-    }
+    };
+
+    const submitCampaignData = () => {
+        editObjectById({
+            campaignData: currentFormValues.current,
+            id: propsObj.amendObj.key
+        }, 'campaignsForm').then(async editCampaignAsync => {
+            let editCampaignRes = editCampaignAsync.json();
+            if (editCampaignRes) {
+                message.success("Campaign Data successfully saved", 0.6);
+            }
+        });
+    };
+
     return (
         <div className='amendCampaign pageLayout'>
             <div className='cancelNav'>
@@ -293,9 +376,9 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                                     Previous
                                 </Button>
                             )}
-                            {current === steps.length - 1 && (
+                            {pageEditRights && current === steps.length - 1 && (
                                 <Button type="primary" className={'submitBtn'} icon={<CheckOutlined/>}
-                                        onClick={() => message.success('Working')}>
+                                        onClick={submitCampaignData}>
                                     Submit
                                 </Button>
                             )}
@@ -313,9 +396,9 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                               layout="vertical"
                               requiredMark={true}>
                             {switchForm()}
-                            <Form.Item>
+                            {pageEditRights ? <Form.Item>
                                 <Button type="primary" htmlType={'submit'}>Save</Button>
-                            </Form.Item>
+                            </Form.Item> : null}
                         </Form>
                     </div>
                 </div>

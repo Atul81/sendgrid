@@ -9,5 +9,5 @@ export interface SendersInterface {
     email: string,
     firstName: string,
     lastName: string,
-    domainVerified: string,
+    domainVerified: string
 }

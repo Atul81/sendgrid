@@ -17,8 +17,8 @@ export const AutomationPage: any = () => {
     const [automationObj, setAutomationObj] = useState({
         name: ''
     });
-    const [customFieldsDS, setCustomFieldsDS] = useState<CampaignInterface[]>([]);
-    const [customFieldsDSOps, setCustomFieldsDSOps] = useState<CampaignInterface[]>([]);
+    const [automationDS, setAutomationDS] = useState<CampaignInterface[]>([]);
+    const [automationDSOps, setAutomationDSOps] = useState<CampaignInterface[]>([]);
     const [selectedAutomationKeys, setAutomationKeys] = useState<string[]>([]);
     const [newAutomationModal, setNewAutomationModal] = useState(false);
     const [automationId, setAutomationId] = useState(3);
@@ -68,17 +68,18 @@ export const AutomationPage: any = () => {
                     tempObj.push({...itr, key: itr.id})
                 });
             }
-            setCustomFieldsDS(tempObj);
-            setCustomFieldsDSOps(tempObj);
-        })
-    }
+            setAutomationDS(tempObj);
+            setAutomationDSOps(tempObj);
+        });
+    };
+
     const openAutomationRow = (record: any, openType: string) => {
         setOpenAutomationAmend(true);
         setAutomationObj({...record, viewType: openType});
     };
 
     const onSearch = (searchParam: string) => {
-        setCustomFieldsDS(customFieldsDSOps.filter(value => {
+        setAutomationDS(automationDSOps.filter(value => {
             return value.name.includes(searchParam);
         }));
     };
@@ -112,7 +113,7 @@ export const AutomationPage: any = () => {
             message.error("Automation Name required", 0.5).then(() => {
             });
         }
-    }
+    };
 
     const customFieldRowSelection = {
         onChange: (selectedRowKeys: React.Key[], selectedRows: CampaignInterface[]) => {
@@ -169,7 +170,7 @@ export const AutomationPage: any = () => {
                        onChange={(inpEvent) => setAutomationObj({name: inpEvent.target.value})}/>
             </Modal>
             <div className="thirdNav" style={{height: 'calc(100vh - 228px)'}}>
-                <Table rowSelection={{...customFieldRowSelection}} dataSource={customFieldsDS} columns={columns}
+                <Table rowSelection={{...customFieldRowSelection}} dataSource={automationDS} columns={columns}
                        bordered/>
             </div>
         </div>

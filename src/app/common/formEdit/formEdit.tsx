@@ -4,10 +4,6 @@ import React from "react";
 export const FormEditPage: any = (props: any) => {
     const {Option} = Select;
 
-    const onCountryChange = (value: string) => {
-        console.log(`selected ${value}`);
-    };
-
     const filterCountryOption = (input: string, option: any) => {
         return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
     };
@@ -15,12 +11,13 @@ export const FormEditPage: any = (props: any) => {
         props.saveFormValues(values);
     };
 
-    return (<div className='editForm'>
+    return (
+        <div className='editForm'>
             <Form form={props.generalForm} layout={'vertical'} onFinish={modifyContactService}>
                 <Form.Item label="Email" required>
-                    <Form.Item name={['formObj', 'email']}
-                               noStyle rules={[{required: true, message: 'Email required'}]}>
-                        <Input placeholder="tony@testing.com" type={"email"}/>
+                    <Form.Item name={['formObj', 'email']} noStyle
+                               rules={[{required: true, message: 'Email required'}]}>
+                        <Input disabled={(props.type === 'senders' && props.emailEditable)} placeholder="tony@testing.com" type={"email"}/>
                     </Form.Item>
                 </Form.Item>
                 <div style={{
@@ -40,26 +37,35 @@ export const FormEditPage: any = (props: any) => {
                             <Input placeholder="Enter Last Name"/>
                         </Form.Item>
                     </Form.Item>
-                    <Form.Item label="Address" name={['formObj', 'address']}>
-                        <Input placeholder="input placeholder"/>
-                    </Form.Item>
-                    <Form.Item label="City" name={['formObj', 'city']}>
-                        <Input placeholder="input placeholder"/>
-                    </Form.Item>
-                    <Form.Item label="Postal" name={['formObj', 'postalCode']}>
-                        <Input type={'number'} placeholder="input placeholder"/>
-                    </Form.Item>
-                    <Form.Item label="Country" name={['formObj', 'country']}>
-                        <Select
-                            showSearch
-                            placeholder="Country"
-                            optionFilterProp="children"
-                            filterOption={(input, option) => filterCountryOption(input, option)}>
-                            <Option value="ind">India</Option>
-                            <Option value="usa">United States</Option>
-                            <Option value="uk">United Kingdom</Option>
-                        </Select>
-                    </Form.Item>
+                    {props.type !== 'senders' ?
+                        <>
+                            <Form.Item label="Address" name={['formObj', 'address']}>
+                                <Input placeholder="input placeholder"/>
+                            </Form.Item>
+                            <Form.Item label="City" name={['formObj', 'city']}>
+                                <Input placeholder="input placeholder"/>
+                            </Form.Item>
+                            <Form.Item label="Postal" name={['formObj', 'postalCode']}>
+                                <Input type={'number'} placeholder="input placeholder"/>
+                            </Form.Item>
+                            <Form.Item label="Country" name={['formObj', 'country']}>
+                                <Select
+                                    showSearch
+                                    placeholder="Country"
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) => filterCountryOption(input, option)}>
+                                    <Option value="ind">India</Option>
+                                    <Option value="usa">United States</Option>
+                                    <Option value="uk">United Kingdom</Option>
+                                </Select>
+                            </Form.Item>
+                        </> : <>
+                            <Form.Item label="Domain Verified">
+                                <Form.Item name={['formObj', 'domainVerified']}>
+                                    <Input placeholder="Domain Verified or Not"/>
+                                </Form.Item>
+                            </Form.Item>
+                        </>}
                 </div>
                 <Form.Item>
                     <Button type="primary" htmlType={'submit'}>Save</Button>

@@ -33,6 +33,7 @@
     "react-flow-renderer": "^9.4.4",
     "react-i18next": "11.8.12",
     "react-live-clock": "^5.0.16",
+    "react-moment": "^1.1.1",
     "react-redux": "7.2.3",
     "react-router-dom": "5.2.0",
     "react-script-tag": "^1.1.2",

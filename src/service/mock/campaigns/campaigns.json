@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "name": "Name of the campaigns",
+    "status": "Scheduled"
+  },
+  {
+    "id": 2,
+    "name": "Exit Extent Flow",
+    "status": "Sent"
+  }
+]
