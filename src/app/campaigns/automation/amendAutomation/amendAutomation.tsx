@@ -13,35 +13,39 @@ import ReactFlow, {
 } from 'react-flow-renderer';
 import './amendAutomation.scss';
 import {StepBackwardOutlined} from "@ant-design/icons";
-import {getAllServerCall} from "../../../../service/serverCalls/mockServerRest";
+import {editObjectById, getObjectById} from "../../../../service/serverCalls/mockServerRest";
 
 export const AmendAutomationPage: any = (props: any) => {
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
     const [elements, setElements] = useState<Elements>([]);
 
     useEffect(() => {
-        getAllServerCall('workFlow').then(async response => {
-            let workFlowElements = await response.json();
-            if (workFlowElements) {
-                let tempObj: Elements = [];
-                workFlowElements.forEach((itr: any) => {
-                    if (itr.data && itr.data.label && itr.data.label.props) {
-                        tempObj.push({
-                            ...itr, data: {
-                                label:
-                                    <Card size={"small"} title={itr.data.label.props.title} bordered={false}>
-                                        Card content
-                                    </Card>
-                            }
-                        });
-                    } else {
-                        tempObj.push(itr);
-                    }
-                })
-                setElements(tempObj);
-            }
-        });
-    }, []);
+        if (props.amendObj.viewType !== 'create') {
+            getObjectById(props.amendObj.key, 'workFlow').then(async response => {
+                let elementsJson = await response.json();
+                if (elementsJson) {
+                    let tempObj: Elements = [];
+                    let elementsData = elementsJson.data;
+                    elementsData.forEach((itr: any) => {
+                        if (itr.data && itr.data.label && itr.data.label.props) {
+                            tempObj.push({
+                                ...itr, data: {
+                                    label:
+                                        <Card size={"small"} title={itr.data.label.props.title} bordered={false}>
+                                            Card content
+                                        </Card>
+                                }
+                            });
+                            setId(itr.id);
+                        } else {
+                            tempObj.push(itr);
+                        }
+                    });
+                    setElements(tempObj);
+                }
+            });
+        }
+    }, [props.amendObj.key, props.amendObj.viewType]);
 
     useEffect(() => {
         if (reactFlowInstance && elements.length) {
@@ -53,7 +57,7 @@ export const AmendAutomationPage: any = (props: any) => {
     const {Text} = Typography;
     const {Option} = Select;
     const deleteConfirm = Modal.confirm;
-    const [id, setId] = useState(4);
+    const [id, setId] = useState('0');
     const [nodeDrawer, setNodeDrawer] = useState<boolean>(false);
     const [nodeTitle, setNodeTitle] = useState<string>("");
     const [edgeTitle, setEdgeTitle] = useState<string>("");
@@ -78,6 +82,7 @@ export const AmendAutomationPage: any = (props: any) => {
 
         return '#eee';
     };
+
     const nodeColor = (n: Node): string => {
         if (n.style?.background) {
             return n.style.background as string;
@@ -85,6 +90,7 @@ export const AmendAutomationPage: any = (props: any) => {
 
         return '#fff';
     };
+
     const onElementsRemove = (elementsToRemove: Elements) => {
         if (elementsToRemove[0]) {
             deleteConfirm({
@@ -105,6 +111,7 @@ export const AmendAutomationPage: any = (props: any) => {
         }
     };
     const onConnect = (params: Edge | Connection) => setElements((els) => addEdge(params, els));
+
     const createNewNode = (event: any) => {
         if (nodeTitle.length <= 0) {
             message.error("Node Title Required", 0.5).then(() => {
@@ -133,13 +140,17 @@ export const AmendAutomationPage: any = (props: any) => {
         }
         setNodeType("default");
     };
+
     const getId = () => {
-        setId(id + 1);
-        return `${id}`;
+        let newNodeId = String(parseInt(id, 10) + 1);
+        setId(newNodeId);
+        return `${newNodeId}`;
     };
+
     const onLoad = (_reactFlowInstance: any) => {
         setReactFlowInstance(_reactFlowInstance);
-    }
+    };
+
     const onElementClick = (event: any, element: any) => {
         if (element.data && element.data.label) {
             setNodeTitle(element.data.label.props ? element.data.label.props.title : element.data.label);
@@ -150,15 +161,19 @@ export const AmendAutomationPage: any = (props: any) => {
         }
         setElementSelected(element);
     };
+
     const handleOk = () => {
         setIsModalVisible(false);
     };
+
     const handleCancel = () => {
         setIsModalVisible(false);
     };
+
     const radioValueChange = (event: { target: { value: any; }; }) => {
         console.log('radio checked', event.target.value);
     };
+
     const updateEdgeName = () => {
         let itemElements = [...elements].map(elementItr => {
             if (elementItr.id === elementSelected.id) {
@@ -169,12 +184,19 @@ export const AmendAutomationPage: any = (props: any) => {
         setElements(itemElements);
         setIsEdgeModalVisible(false);
     };
+
     const onTypeChange = (value: any) => {
         setNodeType(value);
-    }
+    };
+
     const saveJson = () => {
-        console.log(elements);
-    }
+        editObjectById({data: elements, id: props.amendObj.key}, 'workFlow').then(async editElementsRes => {
+            let elementsJson = await editElementsRes.json();
+            if (elementsJson && elementsJson.id) {
+                message.success(`Workflow data for automation ${props.amendObj.name} has been successfully updated`, 0.7);
+            }
+        });
+    };
 
     const radioStyle = {
         display: 'block',
@@ -183,7 +205,7 @@ export const AmendAutomationPage: any = (props: any) => {
     };
     return (
         <div className='amendAutomation pageLayout'>
-            {(props.amendObj && props.amendObj.viewType === 'edit') ? (
+            {(props.amendObj && (props.amendObj.viewType === 'edit' || props.amendObj.viewType === 'create')) ? (
                     <div style={{paddingBottom: 16}} className='firstNav'>
                         {!nodeDrawer ?
                             <div className='leftPlacement' style={{width: '39%'}}>
