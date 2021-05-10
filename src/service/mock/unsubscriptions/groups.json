@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "groupName": "Global Unsubscribe",
+    "groupDesc": "Description for Global Unsubscribe",
+    "globalDisplay": false
+  },
+  {
+    "id": 2,
+    "groupName": "Promotions Unsubscribe",
+    "groupDesc": "Description for Global Promotions",
+    "globalDisplay": true
+  },
+  {
+    "id": 3,
+    "groupName": "Newsletter Unsubscribe",
+    "groupDesc": "Description for Newsletter Unsubscribe",
+    "globalDisplay": false
+  },
+  {
+    "id": 4,
+    "groupName": "Digest Unsubscribe",
+    "groupDesc": "Description for Digest Unsubscribe",
+    "globalDisplay": true
+  },
+  {
+    "id": 5,
+    "groupName": "Soft Care Unsubscribe",
+    "groupDesc": "Description for Soft Care Unsubscribe",
+    "globalDisplay": true
+  },
+  {
+    "id": 6,
+    "groupName": "Boat Unsubscribe",
+    "groupDesc": "Description for Boat Unsubscribe",
+    "globalDisplay": false
+  }
+]

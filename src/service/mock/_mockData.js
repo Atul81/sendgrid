@@ -8,6 +8,8 @@ const workFlow = require('./campaigns/workFlow.json');
 const campaigns = require('./campaigns/campaigns.json');
 const campaignsForm = require('./campaigns/campaignsForm.json');
 const senders = require('./campaigns/senders.json');
+const templates = require('./templates/templates.json');
+const groups = require('./unsubscriptions/groups.json');
 
 module.exports = () => ({
     contacts,
@@ -19,5 +21,7 @@ module.exports = () => ({
     workFlow,
     campaigns,
     campaignsForm,
-    senders
+    senders,
+    templates,
+    groups
 });

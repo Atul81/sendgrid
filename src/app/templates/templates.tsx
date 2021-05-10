@@ -1,13 +1,23 @@
 import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {Button, Card, Popover, Skeleton} from "antd";
 import {EllipsisOutlined, PlusOutlined} from "@ant-design/icons";
-import {templateTest} from '../../utils/templateTest'
 import Meta from "antd/es/card/Meta";
 import './templates.scss';
 import {TemplateIeFrame} from "./templateIeFrame";
 import {useHistory} from "react-router-dom";
-import {updateActiveContent} from "../../store/actions/root";
+import {getAllServerCall} from "../../service/serverCalls/mockServerRest";
+
+interface TemplatesInterface {
+    "id": number,
+    "title": string,
+    "authors": string,
+    "average_rating": number,
+    "isbn": number,
+    "language_code": string,
+    "ratings_count": number,
+    "price": number
+}
 
 export const TemplatesPage: any = () => {
 
@@ -16,15 +26,17 @@ export const TemplatesPage: any = () => {
     const [openIeFrame, setOpenIeFrame] = useState(false);
     const [templateObj, setTemplateObj] = useState({});
     const history = useHistory();
+    const [templatesDS, setTemplateDS] = useState<TemplatesInterface[]>([]);
 
     useEffect(() => {
         setIeFrameType(activeMenu);
         setOpenIeFrame(false);
         if (activeMenu === 'template-editor' || activeMenu === 'delivery-testing') {
             setOpenIeFrame(true);
+        } else {
+            getAllTemplates();
         }
     }, [activeMenu]);
-
 
     const addNewSegment = () => {
         setOpenIeFrame(true);
@@ -42,16 +54,30 @@ export const TemplatesPage: any = () => {
         }
     };
 
+    const openEllipsisFrame = (ellipsisType: string) => {
+        setIeFrameType('newTemplate');
+        setOpenIeFrame(true);
+    }
+
     const templateContent = (
         <div className={'contentListing'}>
-            <p onClick={() => console.log(templateObj)}>Edit</p>
-            <p>Duplicate</p>
+            <p onClick={() => openEllipsisFrame('edit')}>Edit</p>
+            <p onClick={() => openEllipsisFrame('duplicate')}>Duplicate</p>
         </div>
     );
 
     const exitTemplate = () => {
         setOpenIeFrame(false);
         history.push("/templates/templates");
+    };
+
+    const getAllTemplates = () => {
+        getAllServerCall('templates').then(async allTemplatesAsync => {
+            let allTemplatesRes = await allTemplatesAsync.json();
+            if (allTemplatesRes) {
+                setTemplateDS(allTemplatesRes);
+            }
+        });
     };
 
     return !openIeFrame ? (
@@ -64,27 +90,29 @@ export const TemplatesPage: any = () => {
             </div>
             <div className="cardContainer">
                 <div className="cardDiv">
-                    {templateTest.map(value => {
-                        return <Card style={{marginTop: 16}}
-                                     cover={
-                                         <img
-                                             alt="example"
-                                             src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                                         />}>
-                            <Skeleton loading={false} avatar active>
-                                <Meta title={<div className={'flexEqualSpacing'}>
-                                    <div className={'textOverflow'}>{value.title}</div>
-                                    <div>
-                                        <Popover placement="leftBottom" content={templateContent} trigger="click">
-                                            <EllipsisOutlined onClick={() => setTemplateObj(value)}/>
-                                        </Popover></div>
-                                </div>}
-                                />
-                            </Skeleton>
-                        </Card>
+                    {templatesDS.map(value => {
+                        return (
+                            <Card key={value.id} style={{marginTop: 16}} cover={<img alt="example"
+                                                                                     src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"/>}>
+                                <Skeleton loading={false} avatar active>
+                                    <Meta title={
+                                        <div className={'flexEqualSpacing'}>
+                                            <div className={'textOverflow'}>{value.title}</div>
+                                            <div>
+                                                <Popover placement="leftBottom" content={templateContent}
+                                                         trigger="click">
+                                                    <EllipsisOutlined onClick={() => setTemplateObj(value)}/>
+                                                </Popover>
+                                            </div>
+                                        </div>}
+                                    />
+                                </Skeleton>
+                            </Card>
+                        )
                     })}
                 </div>
             </div>
         </div>
-    ) : <TemplateIeFrame ieFrameSrc={getIeFrameSource()} exitTemplateEdit={exitTemplate}/>;
+    ) : <TemplateIeFrame existingTemplate={templateObj} ieFrameSrc={getIeFrameSource()}
+                         exitTemplateEdit={exitTemplate}/>;
 }

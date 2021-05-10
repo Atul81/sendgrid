@@ -1,16 +1,26 @@
 import React, {useEffect, useState} from "react";
-import {Button, Form, Input, Modal, Popconfirm, Space, Switch, Table} from "antd";
+import {Button, Form, Input, message, Modal, Popconfirm, Space, Switch, Table} from "antd";
 import {CloseOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
 import {GroupNameInterface} from "../unsubcriptionInterface";
 import Paragraph from "antd/es/typography/Paragraph";
 import {useLocation} from "react-router-dom";
+import {
+    addNewObject,
+    deleteObjectById,
+    editObjectById,
+    getAllServerCall
+} from "../../../service/serverCalls/mockServerRest";
 
 export const GroupsPage: any = () => {
     const [groupNameDS, setGroupNameDS] = useState<GroupNameInterface[]>([]);
     const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
     const urlPath = useLocation();
     const [openCustomizeForm, setCustomizeFormFrame] = useState(false);
+    const [groupId, setGroupId] = useState(7);
+    const [groupObj, setGroupObj] = useState({
+        id: ''
+    });
 
     const contactRowSelection = {
         onChange: (selectedRowKeys: React.Key[], selectedRows: GroupNameInterface[]) => {
@@ -24,38 +34,34 @@ export const GroupsPage: any = () => {
     useEffect(() => {
         let urlRoute = urlPath.pathname.split("/");
         setCustomizeFormFrame(false);
-
         if (urlRoute[2] && urlRoute[2] === 'customize-form') {
             setCustomizeFormFrame(true);
         } else {
-            let data: GroupNameInterface[] = [];
-            for (let i = 0; i < 100; i++) {
-                data.push({
-                    key: i.toString(10),
-                    groupName: `email+test@gmail.com ${i} Unsubscribe`,
-                    groupDesc: `${i} Unsubscribe`,
-                    globalDisplay: true
-                });
-            }
-            setGroupNameDS(data);
+            populateAllGroups();
         }
     }, [urlPath.pathname]);
 
     const openGroupNameEdit = (record: any) => {
-        console.log(record);
         unsubscribeForm.setFieldsValue({
             formObj: {
                 groupName: record.groupName,
                 groupDesc: record.groupDesc,
-                globalDisplay: record.globalDisplay
+                globalDisplay: record.globalDisplay,
             }
         });
+        setGroupObj({...record, id: record.key});
         setSwitchCheck(record.globalDisplay);
         setAmendGroupModal(true);
     };
 
     const deleteGroupName = (record: any) => {
-        console.log(record);
+        deleteObjectById(record.key, 'groups').then(async deleteGroupAsync => {
+            let delGroupRes = await deleteGroupAsync.json();
+            if (delGroupRes) {
+                message.success(`Group ${record.groupName} has been successfully deleted`, 0.7);
+                populateAllGroups();
+            }
+        })
     }
     const columns = [
         {
@@ -94,11 +100,49 @@ export const GroupsPage: any = () => {
         setAmendGroupModal(false);
         unsubscribeForm.resetFields();
         setSwitchCheck(false);
+        setGroupObj({id: ''});
     };
 
     const amendGroupService = (values: any) => {
-        console.log(values, switchCheck);
+
+        if (groupObj && groupObj.id) {
+            editObjectById({
+                ...values.formObj,
+                globalDisplay: switchCheck,
+                id: groupObj.id
+            }, 'groups').then(async editGroupAsync => {
+                let editGroupRes = await editGroupAsync.json();
+                if (editGroupRes) {
+                    message.success(`Group ${values.formObj.groupName} has been successfully updated`);
+                }
+            })
+        } else {
+            let newGrpId = groupId + 1;
+            let amendGrpObj = {...values.formObj, globalDisplay: switchCheck, id: newGrpId};
+            addNewObject(amendGrpObj, 'groups').then(async newGroupAsync => {
+                let newGrpRes = await newGroupAsync.json();
+                if (newGrpRes) {
+                    message.success(`New Group ${amendGrpObj.groupName} has been successfully created`, 0.6);
+                    setGroupId(newGrpId);
+                }
+            })
+        }
+        populateAllGroups();
     };
+
+    const populateAllGroups = () => {
+        getAllServerCall('groups').then(async allGroupsAsync => {
+            let allGroupsRes = await allGroupsAsync.json();
+            let tempItrObj: GroupNameInterface[] = [];
+            if (allGroupsRes) {
+                allGroupsRes.forEach((itr: any) => {
+                    tempItrObj.push({...itr, key: itr.id});
+                    setGroupId(itr.id);
+                });
+            }
+            setGroupNameDS(tempItrObj);
+        });
+    }
 
     return !openCustomizeForm ? (<div className={'pageLayout'}>
         <div className="reverseFlex">
@@ -112,7 +156,7 @@ export const GroupsPage: any = () => {
                 </Button> : null}
         </div>
         <Modal title="Add Unsubscribe Group" centered visible={amendGroupModal} width={500} footer={null}
-               closable={false}
+               closable={false} destroyOnClose={true}
                onCancel={cancelUnsubscribeAmend}>
             <div className='columnFlex'>
                 <Form form={unsubscribeForm} layout={'vertical'} onFinish={amendGroupService}>
@@ -128,9 +172,9 @@ export const GroupsPage: any = () => {
                         </Form.Item>
                     </Form.Item>
                     <Form.Item label={null}>
-                        <Form.Item name={['formObj', 'globalDisplay']} noStyle>
+                        <Form.Item noStyle>
                             <div className={'flexEqualSpacing'}>
-                                <Switch checked={switchCheck}/>
+                                <Switch defaultChecked={switchCheck} onChange={(checked => setSwitchCheck(checked))}/>
                                 <Paragraph>Display this group in global subscription preferences</Paragraph></div>
                         </Form.Item>
                     </Form.Item>

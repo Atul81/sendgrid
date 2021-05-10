@@ -8,5 +8,7 @@
   "workFlow": "http://localhost:3002/workFlow",
   "campaigns": "http://localhost:3002/campaigns",
   "campaignsForm": "http://localhost:3002/campaignsForm",
-  "senders": "http://localhost:3002/senders"
+  "senders": "http://localhost:3002/senders",
+  "templates": "http://localhost:3002/templates",
+  "groups": "http://localhost:3002/groups"
 }
