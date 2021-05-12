@@ -25,7 +25,7 @@ import {
     PlusOutlined
 } from '@ant-design/icons';
 import Tag from "antd/es/tag";
-import {updateBreadcrumb} from "../../../store/actions/root";
+import {updateActiveContent, updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 import {UploadPage} from "../../common/upload/UploadLoadable";
 import {ContactsInterface, QuickAddContactInterface} from "../audienceInterface";
@@ -48,6 +48,8 @@ export const ContactsPage: any = () => {
     const {Option} = Select;
 
     useEffect(() => {
+        dispatch(updateBreadcrumb(['Audience', 'Contacts']));
+        dispatch(updateActiveContent('contacts'));
         populateAllContacts();
         getAllServerCall('segments').then(async response => {
             let resBody = await response.json();

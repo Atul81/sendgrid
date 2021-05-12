@@ -7,10 +7,15 @@ import {DropDown} from "../../../utils/Interfaces";
 import './domain.scss';
 import {DnsRecordsPage} from "./dnsRecords/DnsRecordsLoadable";
 import {addNewObject, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
+import {useDispatch} from "react-redux";
+import {updateActiveContent, updateBreadcrumb} from "../../../store/actions/root";
 
 export const DomainSettingsPage: any = () => {
+    const dispatch = useDispatch();
 
     useEffect(() => {
+        dispatch(updateBreadcrumb(['Settings', 'domain']));
+        dispatch(updateActiveContent('domain'));
         getAllServerCall('utils').then(async allDnsHostsAsync => {
             let allDnsHostsRes = await allDnsHostsAsync.json();
             let tempItrObj: DropDown[] = [];
@@ -21,7 +26,7 @@ export const DomainSettingsPage: any = () => {
             }
             setAllDnsHost(tempItrObj);
         });
-    }, []);
+    }, [dispatch]);
 
     const [domainForm] = Form.useForm();
     const {Option} = Select;
@@ -48,6 +53,16 @@ export const DomainSettingsPage: any = () => {
         domainForm.resetFields();
     };
 
+    const exitToDataView = () => {
+        setNewDomainSettings(true);
+        dispatch(updateBreadcrumb(['Settings', 'domain', 'add-domain']));
+    };
+
+    const cancelNewDomain = () => {
+        setNewDomainSettings(false);
+        dispatch(updateBreadcrumb(['Settings', 'domain']));
+    };
+
     return newDomainSettings ? (<div className={'domain'}>
         <Form className={'maxWidth'} form={domainForm} layout={'vertical'} onFinish={proceedDomainSettings}>
             <div className="pageLayout">
@@ -58,7 +73,7 @@ export const DomainSettingsPage: any = () => {
                     <div className="rightPlacement">
                         <Button style={{width: 88}} type={'primary'} htmlType={"submit"}
                                 icon={<CheckOutlined/>}>Proceed</Button>
-                        <Button style={{width: 76, marginLeft: 8}} onClick={() => setNewDomainSettings(false)}
+                        <Button style={{width: 76, marginLeft: 8}} onClick={cancelNewDomain}
                                 icon={<StepBackwardOutlined/>}>Cancel</Button>
                     </div>
                 </div>
@@ -85,5 +100,5 @@ export const DomainSettingsPage: any = () => {
                 </div>
             </div>
         </Form>
-    </div>) : <DnsRecordsPage exitToLandingPage={() => setNewDomainSettings(true)}/>
+    </div>) : <DnsRecordsPage exitToLandingPage={exitToDataView}/>
 }

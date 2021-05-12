@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
 import './index.scss';
 import {Breadcrumb, Layout, Menu} from 'antd';
-import {MediumOutlined, UserOutlined} from '@ant-design/icons';
+import {UserOutlined} from '@ant-design/icons';
 import Sider from "antd/es/layout/Sider";
 import SubMenu from "antd/es/menu/SubMenu";
 import {Content, Header} from "antd/es/layout/layout";
@@ -42,7 +42,7 @@ export function App() {
             dispatch(updateActiveMenuContent(urlRoute[1]));
             if (urlRoute[2]) {
                 dispatch(updateActiveContent(urlRoute[2]));
-                dispatch(updateBreadcrumb([translation.breadcrumb[urlRoute[1]], translation.breadcrumb[urlRoute[2]]]));
+                dispatch(updateBreadcrumb([urlRoute[1], urlRoute[2]]));
             } else {
                 dispatch(updateActiveContent(translation.defaultSidebar[urlRoute[1]]));
                 dispatch(updateBreadcrumb([translation.breadcrumb[urlRoute[1]], translation.breadcrumb[translation.defaultSidebar[urlRoute[1]]]]));
@@ -62,7 +62,7 @@ export function App() {
         } else {
             let urlRoute = urlPath.pathname.split("/");
             dispatch(updateActiveContent(urlRoute[2]));
-            dispatch(updateBreadcrumb([translation.breadcrumb[urlRoute[1]], translation.breadcrumb[urlRoute[2]]]));
+            dispatch(updateBreadcrumb([urlRoute[1], urlRoute[2]]));
         }
     };
 
@@ -106,8 +106,18 @@ export function App() {
                 </Header>
                 <Content style={{margin: "0 16px"}}>
                     <Breadcrumb style={{margin: "16px 0"}} separator=">">
-                        {rootState.selectedBreadCrum.map((breadCrum: string) => {
-                            return <Breadcrumb.Item>{breadCrum}</Breadcrumb.Item>;
+                        {rootState.selectedBreadCrum.map((breadCrumb: string, index: number) => {
+                            if (breadCrumb) {
+                                if (index !== 2) {
+                                    return <Breadcrumb.Item>
+                                        <a href={breadCrumb ? breadCrumb.toLowerCase() : breadCrumb}> {translation.breadcrumb[breadCrumb.toLowerCase()]}</a>
+                                    </Breadcrumb.Item>;
+                                } else {
+                                    return <Breadcrumb.Item>{translation.breadcrumb[breadCrumb.toLowerCase()]}</Breadcrumb.Item>
+                                }
+                            } else {
+                                return null;
+                            }
                         })}
                     </Breadcrumb>
                     <div className="site-layout-background" style={{padding: 24, minHeight: "calc(100vh - 128px)"}}>

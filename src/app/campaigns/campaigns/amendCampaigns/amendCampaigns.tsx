@@ -21,6 +21,7 @@ import moment from "moment";
 export const AmendCampaignsPage: any = (propsObj: any) => {
     const [campaignForm] = Form.useForm();
     const [pageEditRights, setPageEditRights] = useState(propsObj.amendObj.openType === 'edit');
+
     useEffect(() => {
         campaignForm.setFieldsValue(currentFormValues.current);
         if (propsObj && propsObj.amendObj) {
@@ -232,7 +233,8 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                     }
                     <Form.Item label="Segment hold-out (Optional)" name={['step2', 'segmentHoldOut']}
                                tooltip="Percentage of customers in the segment that won't receive emails">
-                        <Input disabled={!pageEditRights} type={'number'} style={{width: '50%'}} placeholder="Percentage"/>
+                        <Input disabled={!pageEditRights} type={'number'} style={{width: '50%'}}
+                               placeholder="Percentage"/>
                     </Form.Item>
                 </>
             }
@@ -245,7 +247,8 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                         </Radio.Group>
                     </Form.Item>
                     <Form.Item label="Select Templates" name={['step3', 'emailTemplate']}>
-                        <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch placeholder="Welcome Email Template"
+                        <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                                placeholder="Welcome Email Template"
                                 optionFilterProp="children"
                                 filterOption={(input, option) => filterCountryOption(input, option)}>
                             <Option value="ind">India</Option>
@@ -265,7 +268,8 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                         </Radio.Group>
                     </Form.Item>
                     <Form.Item label="Campaign Frequency" name={['step4', 'campaignFrequency']}>
-                        <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch placeholder="Select Frequency"
+                        <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                                placeholder="Select Frequency"
                                 optionFilterProp="children"
                                 filterOption={(input, option) => filterCountryOption(input, option)}>
                             <Option value="weekly">Weekly</Option>
@@ -277,7 +281,8 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                         <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
                     </Form.Item>
                     <Form.Item label="Time Zone" name={['step4', 'timeZone']}>
-                        <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch placeholder="Select Time Zone"
+                        <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                                placeholder="Select Time Zone"
                                 optionFilterProp="children"
                                 filterOption={(input, option) => filterCountryOption(input, option)}>
                             <Option value="ist">India-IST</Option>

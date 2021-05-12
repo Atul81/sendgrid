@@ -6,9 +6,11 @@ import Search from "antd/lib/input/Search";
 import {CampaignInterface} from "../campaignInterface";
 import {AmendAutomationPage} from "./amendAutomation/AmendAutomationLoadable";
 import {addNewObject, deleteObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
+import {updateActiveContent, updateBreadcrumb} from "../../../store/actions/root";
+import {useDispatch} from "react-redux";
 
 export const AutomationPage: any = () => {
-
+    const dispatch = useDispatch();
     useEffect(() => {
         populateAllAutomations();
     }, []);
@@ -126,6 +128,7 @@ export const AutomationPage: any = () => {
     };
 
     const navigateToLandingPage = () => {
+        dispatch(updateBreadcrumb(['Campaigns', 'Automation']));
         setOpenAutomationAmend(false);
         setAutomationObj({name: ''});
     };

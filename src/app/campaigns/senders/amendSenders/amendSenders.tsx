@@ -32,7 +32,7 @@ export const AmendSendersPage: any = (props: any) => {
     };
 
     useEffect(() => {
-        dispatch(updateBreadcrumb(['Campaigns', 'Senders', 'Create/Modify Sender']));
+        dispatch(updateBreadcrumb(['Campaigns', 'Senders', 'amend-sender']));
         if (props.sendersObj.key) {
             getObjectById(props.sendersObj.key, 'senders').then(async senderByIdAsync => {
                 let sendersObj = await senderByIdAsync.json();

@@ -14,12 +14,16 @@ import ReactFlow, {
 import './amendAutomation.scss';
 import {StepBackwardOutlined} from "@ant-design/icons";
 import {editObjectById, getObjectById} from "../../../../service/serverCalls/mockServerRest";
+import {updateBreadcrumb} from "../../../../store/actions/root";
+import {useDispatch} from "react-redux";
 
 export const AmendAutomationPage: any = (props: any) => {
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
     const [elements, setElements] = useState<Elements>([]);
-
+    const dispatch = useDispatch();
     useEffect(() => {
+        dispatch(updateBreadcrumb(['Campaigns', 'Automation', 'amend-automation']));
+
         if (props.amendObj.viewType !== 'create') {
             getObjectById(props.amendObj.key, 'workFlow').then(async response => {
                 let elementsJson = await response.json();
@@ -45,7 +49,7 @@ export const AmendAutomationPage: any = (props: any) => {
                 }
             });
         }
-    }, [props.amendObj.key, props.amendObj.viewType]);
+    }, [props.amendObj.key, props.amendObj.viewType, dispatch]);
 
     useEffect(() => {
         if (reactFlowInstance && elements.length) {

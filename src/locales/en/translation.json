@@ -22,7 +22,12 @@
     "dedicated-ips": "Dedicated IPs",
     "custom-events": "Custom Events",
     "preference": "Preferences",
-    "users": "Users"
+    "users": "Users",
+    "edit-contact": "Edit Contact",
+    "amend-sender": "Create/Modify Sender",
+    "amend-automation": "Create/Modify Automation",
+    "amend-campaign": "Create/Modify Campaign",
+    "add-domain": "Add New Domain"
   },
   "defaultSidebar": {
     "dashboard": "1",

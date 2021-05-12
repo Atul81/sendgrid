@@ -11,8 +11,11 @@ import {
     editObjectById,
     getAllServerCall
 } from "../../../service/serverCalls/mockServerRest";
+import {updateActiveContent, updateBreadcrumb} from "../../../store/actions/root";
+import {useDispatch} from "react-redux";
 
 export const GroupsPage: any = () => {
+    const dispatch = useDispatch();
     const [groupNameDS, setGroupNameDS] = useState<GroupNameInterface[]>([]);
     const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
     const urlPath = useLocation();
@@ -32,6 +35,8 @@ export const GroupsPage: any = () => {
         }
     };
     useEffect(() => {
+        dispatch(updateBreadcrumb(['unsubscription', 'groups']));
+        dispatch(updateActiveContent('groups'));
         let urlRoute = urlPath.pathname.split("/");
         setCustomizeFormFrame(false);
         if (urlRoute[2] && urlRoute[2] === 'customize-form') {

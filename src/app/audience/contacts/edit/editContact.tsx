@@ -17,7 +17,7 @@ export const EditContactPage: any = (props: any) => {
     const [customFieldForm] = Form.useForm();
 
     useEffect(() => {
-        dispatch(updateBreadcrumb(['Audience', 'Contacts', 'Edit Contact']));
+        dispatch(updateBreadcrumb(['Audience', 'Contacts', 'edit-contact']));
         populateFormObj(props.contactObj, contactForm);
         getAllServerCall('customFields').then(async response => {
             let resBody = await response.json();

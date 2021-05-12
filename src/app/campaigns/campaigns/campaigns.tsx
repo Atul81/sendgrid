@@ -6,8 +6,12 @@ import Search from "antd/lib/input/Search";
 import {AmendCampaignsPage} from "./amendCampaigns/AmendCampaignsLoadable";
 import {CampaignInterface} from "../campaignInterface";
 import {addNewObject, deleteObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
+import {updateBreadcrumb} from "../../../store/actions/root";
+import {useDispatch} from "react-redux";
 
 export const CampaignPage: any = () => {
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         populateAllCampaigns();
@@ -63,6 +67,7 @@ export const CampaignPage: any = () => {
 
     const openAutomationRow = (record: any, openType: string) => {
         setOpenAutomationAmend(true);
+        dispatch(updateBreadcrumb(['Campaigns', 'Automation', 'amend-campaign']));
         setCampaignObj({...record, openType: openType});
     };
 
@@ -105,6 +110,7 @@ export const CampaignPage: any = () => {
     const navigateToLandingPage = () => {
         setOpenAutomationAmend(false);
         setCampaignObj({name: ''});
+        dispatch(updateBreadcrumb(['Campaigns', 'Campaigns']));
     };
 
     const populateAllCampaigns = () => {
