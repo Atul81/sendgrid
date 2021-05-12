@@ -11,6 +11,8 @@ export default function (state = initialState.root, action: any) {
             return {...state, ...{activeMenuContent: action.payload}};
         case types.ACTIVE_CONTENT:
             return {...state, ...{activeContent: action.payload}}
+        case types.ALL_SEGMENTS:
+            return {...state, ...{allSegments: action.payload}}
         default:
             return state;
     }

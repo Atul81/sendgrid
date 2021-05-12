@@ -4,6 +4,7 @@ import Title from "antd/lib/typography/Title";
 import {CheckOutlined, PlusOutlined} from "@ant-design/icons";
 import {DnsRecordsInterface} from "../../settingsInterface";
 import './../domain.scss';
+import {getAllServerCall} from "../../../../service/serverCalls/mockServerRest";
 
 export const DnsRecordsPage: any = (props: any) => {
 
@@ -16,7 +17,8 @@ export const DnsRecordsPage: any = (props: any) => {
         message.success(text.concat(' has been copied on your clipboard'), 0.7).then(() => {
         });
         document.body.removeChild(columnVal);
-    }
+    };
+
     const columns = [
         {
             title: 'Type',
@@ -52,22 +54,23 @@ export const DnsRecordsPage: any = (props: any) => {
         }
     ];
     const verifyDomainSettings = () => {
-        message.warn("Value has been successfully verified", 0.7);
+        message.warn("Value has been successfully verified", 0.7).then(() => {
+        });
     }
 
     const [dnsRecordsDS, setDnsRecordsDS] = useState<DnsRecordsInterface[]>([]);
 
     useEffect(() => {
-        let data: DnsRecordsInterface[] = [];
-        for (let i = 0; i < 100; i++) {
-            data.push({
-                key: i.toString(10),
-                dnsName: `John`,
-                canonicalName: `Doe ${i}`,
-                type: 'CNAME'
-            });
-        }
-        setDnsRecordsDS(data);
+        getAllServerCall('domain').then(async allDomainAsync => {
+            let allDomainRes = await allDomainAsync.json();
+            let data: DnsRecordsInterface[] = [];
+            if (allDomainRes) {
+                allDomainRes.forEach((itr: any) => {
+                    data.push({...itr, key: itr.id});
+                });
+            }
+            setDnsRecordsDS(data);
+        });
     }, []);
 
     return <div className="domain pageLayout">
@@ -76,13 +79,14 @@ export const DnsRecordsPage: any = (props: any) => {
                 <Title level={4}>Install DNS Records</Title>
             </div>
             <div className="rightPlacement">
-                <Button style={{width: 88, marginRight: 8}} type={'primary'} onClick={verifyDomainSettings}
+                <Button style={{width: 72, marginRight: 8}} type={'primary'} onClick={verifyDomainSettings}
                         icon={<CheckOutlined/>}>Verify</Button>
-                <Button className={'addBtn'} icon={<PlusOutlined/>} onClick={props.exitToLandingPage}>Add Domain</Button>
+                <Button style={{width: 112}} icon={<PlusOutlined/>} onClick={props.exitToLandingPage}>Add
+                    Domain</Button>
             </div>
         </div>
         <div className="thirdNav" style={{height: 'calc(100vh - 238px)'}}>
-            <Table scroll={{y: 'calc(100vh - 332px)'}} dataSource={dnsRecordsDS} columns={columns} bordered/>
+            <Table scroll={{y: 'calc(100vh - 326px)'}} dataSource={dnsRecordsDS} columns={columns} bordered/>
         </div>
     </div>
 }

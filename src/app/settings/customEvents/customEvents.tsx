@@ -1,12 +1,16 @@
 import React, {useEffect, useState} from "react";
-import {Space, Table, Tag} from "antd";
+import {message, Space, Table, Tag} from "antd";
 import {EditOutlined} from "@ant-design/icons";
 import {CustomEventsInterface} from "../settingsInterface";
 import Title from "antd/lib/typography/Title";
+import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 
 export const CustomEventsPage: any = () => {
     const editCustomEvent = (record: any) => {
-    }
+        message.warn("Pending design, Work In Progress", 0.7).then(() => {
+        });
+    };
+
     const columns = [
         {
             title: 'Name',
@@ -48,17 +52,21 @@ export const CustomEventsPage: any = () => {
     const [customEventsDS, setCustomEventsDS] = useState<CustomEventsInterface[]>([]);
 
     useEffect(() => {
-        let data: CustomEventsInterface[] = [];
-        for (let i = 0; i < 100; i++) {
-            data.push({
-                key: i.toString(10),
-                name: `Event Web Hook Requests ${i}`,
-                description: `Allows notifications for events, such as bounces and ${i}`,
-                status: 'Active'
-            });
-        }
-        setCustomEventsDS(data);
+        populateTableData();
     }, []);
+
+    const populateTableData = () => {
+        getAllServerCall('customEvents').then(async allCustomEventsAsync => {
+            let allCustomEventsRes = await allCustomEventsAsync.json();
+            let data: CustomEventsInterface[] = [];
+            if (allCustomEventsRes) {
+                allCustomEventsRes.forEach((itr: any) => {
+                    data.push({...itr, key: itr.id});
+                });
+            }
+            setCustomEventsDS(data);
+        });
+    }
 
     return <div className="domain pageLayout">
         <div className="firstNav">

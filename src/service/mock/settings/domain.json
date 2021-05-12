@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "type": "CNAME1",
+    "dnsName": "John1",
+    "canonicalName": "Doe1"
+  },
+  {
+    "id": 2,
+    "type": "CNAME2",
+    "dnsName": "John2",
+    "canonicalName": "Doe2"
+  },
+  {
+    "id": 3,
+    "type": "CNAME3",
+    "dnsName": "John3",
+    "canonicalName": "Doe3"
+  },
+  {
+    "id": 4,
+    "type": "CNAME4",
+    "dnsName": "John4",
+    "canonicalName": "Doe4"
+  },
+  {
+    "id": 5,
+    "type": "CNAME5",
+    "dnsName": "John5",
+    "canonicalName": "Doe5"
+  },
+  {
+    "id": 6,
+    "type": "CNAME6",
+    "dnsName": "John6",
+    "canonicalName": "Doe6"
+  },
+  {
+    "id": 7,
+    "type": "CNAME7",
+    "dnsName": "John7",
+    "canonicalName": "Doe7"
+  },
+  {
+    "id": 8,
+    "type": "CNAME8",
+    "dnsName": "John8",
+    "canonicalName": "Doe8"
+  },
+  {
+    "id": 9,
+    "type": "CNAME9",
+    "dnsName": "John9",
+    "canonicalName": "Doe9"
+  },
+  {
+    "id": 10,
+    "type": "CNAME10",
+    "dnsName": "John10",
+    "canonicalName": "Doe10"
+  },
+  {
+    "id": 11,
+    "type": "CNAME11",
+    "dnsName": "John11",
+    "canonicalName": "Doe11"
+  }
+]

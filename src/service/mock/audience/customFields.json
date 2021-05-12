@@ -18,5 +18,10 @@
     "id": 4,
     "fieldName": "Alternate Number",
     "fieldType": "Number"
+  },
+  {
+    "id": 5,
+    "fieldName": "Alternate Address",
+    "fieldType": "List of Strings"
   }
 ]

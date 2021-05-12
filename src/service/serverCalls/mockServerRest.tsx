@@ -22,8 +22,8 @@ export const editObjectById = (editObject: any, urlType: string) => {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
             ...editObject,
-            emailMarketing: editObject.oldObj ? editObject.oldObj.emailMarketing : undefined,
-            tags: editObject.oldObj ? editObject.oldObj.tags : undefined
+            emailMarketing: editObject.oldObj ? editObject.oldObj.emailMarketing : editObject.emailMarketing,
+            tags: editObject.oldObj ? editObject.oldObj.tags : editObject.tags
         })
     };
     return fetch(urlConfig[urlType].concat(`/${editObject.oldObj ? editObject.oldObj.id : editObject.id}`), objectEditByIdRequest);

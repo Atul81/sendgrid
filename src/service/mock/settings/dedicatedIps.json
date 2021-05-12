@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "ipAddress": "127.0.0.1",
+    "purchaseDate": 1621503254138,
+    "status": "Active"
+  },
+  {
+    "id": 2,
+    "ipAddress": "227.0.0.2",
+    "purchaseDate": 1621503254138,
+    "status": "Inactive"
+  },
+  {
+    "id": 3,
+    "ipAddress": "327.0.0.3",
+    "purchaseDate": 1621503254338,
+    "status": "Active"
+  },
+  {
+    "id": 4,
+    "ipAddress": "427.0.0.4",
+    "purchaseDate": 1621503254438,
+    "status": "Inactive"
+  },
+  {
+    "id": 5,
+    "ipAddress": "527.0.0.5",
+    "purchaseDate": 1621503254538,
+    "status": "Active"
+  },
+  {
+    "id": 6,
+    "ipAddress": "627.0.0.6",
+    "purchaseDate": 1621503254638,
+    "status": "Inactive"
+  },
+  {
+    "id": 7,
+    "ipAddress": "727.0.0.7",
+    "purchaseDate": 1621503254738,
+    "status": "Active"
+  },
+  {
+    "id": 8,
+    "ipAddress": "827.0.0.8",
+    "purchaseDate": 1621503254838,
+    "status": "Inactive"
+  },
+  {
+    "id": 9,
+    "ipAddress": "927.0.0.9",
+    "purchaseDate": 1621503254938,
+    "status": "Active"
+  },
+  {
+    "id": 10,
+    "ipAddress": "127.0.0.10",
+    "purchaseDate": 1621503254108,
+    "status": "Inactive"
+  },
+  {
+    "id": 12,
+    "ipAddress": "127.0.0.12",
+    "purchaseDate": 1621503254123,
+    "status": "Active"
+  },
+  {
+    "id": 13,
+    "ipAddress": "127.0.0.13",
+    "purchaseDate": 1621503254133,
+    "status": "Inactive"
+  }
+]

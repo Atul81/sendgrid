@@ -1,15 +1,38 @@
-import React from "react";
-import {Button, Form, Input, Radio, TimePicker} from "antd";
+import React, {useEffect} from "react";
+import {Button, Form, Input, message, Radio, TimePicker} from "antd";
 import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import './preference.scss';
+import {editObjectById, getObjectById} from "../../../service/serverCalls/mockServerRest";
+import moment from "moment";
 
 export const PreferencePage: any = () => {
 
     const [preferenceForm] = Form.useForm();
 
+    useEffect(() => {
+        getObjectById("1", 'preferences').then(async getPreferenceByIdAsync => {
+            let getPreferenceByIdRes = await getPreferenceByIdAsync.json();
+            if (getPreferenceByIdRes) {
+                preferenceForm.setFieldsValue({
+                    formObj: {
+                        ...getPreferenceByIdRes,
+                        trackingDomainType: getPreferenceByIdRes.trackingDomainType ? [moment(getPreferenceByIdRes.trackingDomainType[0]), moment(getPreferenceByIdRes.trackingDomainType[1])] : undefined,
+                        quietTimeHours: getPreferenceByIdRes.quietTimeHours ? [moment(getPreferenceByIdRes.quietTimeHours[0]), moment(getPreferenceByIdRes.quietTimeHours[1])] : undefined,
+                        trackingSubDomain: getPreferenceByIdRes.trackingSubDomain ? [moment(getPreferenceByIdRes.trackingSubDomain[0]), moment(getPreferenceByIdRes.trackingSubDomain[1])] : []
+                    }
+                });
+            }
+        })
+    }, [preferenceForm]);
+
     const preferenceFormService = (values: any) => {
-        console.log(values);
+        editObjectById({...values.formObj, id: 1}, 'preferences').then(async preferenceFormAsync => {
+            let preferenceFormRes = await preferenceFormAsync.json();
+            if (preferenceFormRes) {
+                message.success("Preferences has been successfully saved", 0.6);
+            }
+        });
     };
 
     const resetPreferenceFormService = () => {

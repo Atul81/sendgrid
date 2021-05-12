@@ -1,22 +1,49 @@
-import React, {useState} from "react";
-import {Button, Form, Input, Select} from "antd";
-import {CheckOutlined} from "@ant-design/icons";
+import React, {useEffect, useState} from "react";
+import {Button, Form, Input, message, Select} from "antd";
+import {CheckOutlined, StepBackwardOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import {filterSelectOptions} from "../../../utils/common";
 import {DropDown} from "../../../utils/Interfaces";
 import './domain.scss';
 import {DnsRecordsPage} from "./dnsRecords/DnsRecordsLoadable";
+import {addNewObject, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 
 export const DomainSettingsPage: any = () => {
+
+    useEffect(() => {
+        getAllServerCall('utils').then(async allDnsHostsAsync => {
+            let allDnsHostsRes = await allDnsHostsAsync.json();
+            let tempItrObj: DropDown[] = [];
+            if (allDnsHostsRes && Array.isArray(allDnsHostsRes.dnsHosts)) {
+                allDnsHostsRes.dnsHosts.forEach((itr: any) => {
+                    tempItrObj.push(itr)
+                });
+            }
+            setAllDnsHost(tempItrObj);
+        });
+    }, []);
 
     const [domainForm] = Form.useForm();
     const {Option} = Select;
 
-    const [allDnsHost, setAllDnsHost] = useState<DropDown[]>([{label: 'One', value: '1', children: null}]);
+    const [allDnsHost, setAllDnsHost] = useState<DropDown[]>([]);
     const [newDomainSettings, setNewDomainSettings] = useState(false);
+    const [domainId, setDomainId] = useState(12);
 
     const proceedDomainSettings = (values: any) => {
-        console.log(values);
+        let newDomainObj = values.formObj;
+        addNewObject({
+            id: domainId,
+            type: newDomainObj.dnsHost,
+            dnsName: newDomainObj.dnsName,
+            canonicalName: newDomainObj.dnsName
+        }, 'domain').then(async newDnsRecordAsync => {
+            let newDnsRecordRes = await newDnsRecordAsync.json();
+            if (newDnsRecordRes) {
+                setDomainId(domainId + 1);
+                message.success("New DNS Record has been installed", 0.6);
+            }
+        });
         setNewDomainSettings(false);
         domainForm.resetFields();
     };
@@ -31,6 +58,8 @@ export const DomainSettingsPage: any = () => {
                     <div className="rightPlacement">
                         <Button style={{width: 88}} type={'primary'} htmlType={"submit"}
                                 icon={<CheckOutlined/>}>Proceed</Button>
+                        <Button style={{width: 76, marginLeft: 8}} onClick={() => setNewDomainSettings(false)}
+                                icon={<StepBackwardOutlined/>}>Cancel</Button>
                     </div>
                 </div>
                 <div className="thirdNav" style={{height: 'calc(100vh - 238px)'}}>

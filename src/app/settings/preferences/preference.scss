@@ -1,16 +1,18 @@
 .preference {
 
   .ant-form-item-control {
-    max-width: 16%;
-    width: 16%
+    max-width: 25%;
+    width: 25%;
   }
 
   .borderBox {
     border: 2px solid black;
     margin-bottom: 1.5%;
 
-    .anticon svg {
-      margin-bottom: 0;
+    .ant-picker-suffix {
+      .anticon svg {
+        margin-bottom: 0;
+      }
     }
   }
 

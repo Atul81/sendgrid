@@ -14,3 +14,8 @@ export const updateActiveMenuContent = (payload: any) => ({
     type: types.ACTIVE_MENU_CONTENT,
     payload
 });
+
+export const populateAllSegments = () => ({
+    type: types.ALL_SEGMENTS,
+});
+

@@ -3,6 +3,7 @@ export default {
     root: {
         selectedBreadCrum: ['Dashboard'],
         activeContent: '1',
-        activeMenuContent: 'dashboard'
+        activeMenuContent: 'dashboard',
+        allSegments: []
     }
 };

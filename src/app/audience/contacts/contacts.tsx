@@ -1,5 +1,19 @@
 import React, {useEffect, useState} from "react";
-import {Button, Dropdown, Form, Input, Menu, message, Modal, Popconfirm, Result, Space, Table, Typography} from "antd";
+import {
+    Button,
+    Dropdown,
+    Form,
+    Input,
+    Menu,
+    message,
+    Modal,
+    Popconfirm,
+    Result,
+    Select,
+    Space,
+    Table,
+    Typography
+} from "antd";
 import {
     CheckOutlined,
     CloseOutlined,
@@ -11,18 +25,54 @@ import {
     PlusOutlined
 } from '@ant-design/icons';
 import Tag from "antd/es/tag";
-import {ContactEditPage} from "./edit/ContactEditLoadable";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 import {UploadPage} from "../../common/upload/UploadLoadable";
 import {ContactsInterface, QuickAddContactInterface} from "../audienceInterface";
-import {addNewObject, deleteObjectById, getAllServerCall, getObjectById} from "../../../service/serverCalls/mockServerRest";
+import {
+    addNewObject,
+    deleteObjectById,
+    editObjectById,
+    getAllServerCall,
+    getObjectById
+} from "../../../service/serverCalls/mockServerRest";
 import './contacts.scss';
+import {DropDown} from "../../../utils/Interfaces";
+import {ContactEditPage} from "./edit/ContactEditLoadable";
 
 export const ContactsPage: any = () => {
 
+    const [allSegments, setAllSegments] = useState<DropDown[]>([]);
+    const [allTags, setAllTags] = useState<DropDown[]>([]);
+    const [multiSelectValue, setMultiSelectValue] = useState<string[]>([]);
+    const {Option} = Select;
+
     useEffect(() => {
         populateAllContacts();
+        getAllServerCall('segments').then(async response => {
+            let resBody = await response.json();
+            let data: DropDown[] = [];
+            if (resBody && Array.isArray(resBody)) {
+                resBody.forEach((itr: any) => {
+                    data.push({
+                        value: itr.id,
+                        label: itr.name,
+                        children: null
+                    });
+                });
+            }
+            setAllSegments(data);
+        });
+        getAllServerCall('utils').then(async response => {
+            let resBody = await response.json();
+            let data: DropDown[] = [];
+            if (resBody && Array.isArray(resBody.tags)) {
+                resBody.tags.forEach((itr: any) => {
+                    data.push(itr);
+                });
+            }
+            setAllTags(data);
+        });
     }, []);
 
     const {Search} = Input;
@@ -31,12 +81,12 @@ export const ContactsPage: any = () => {
     const dispatch = useDispatch();
 
     const [exportReqModal, setExportModalReq] = useState(false);
-    const [emailIdSelected, setEmailIdSelected] = useState<string[]>([]);
+    const [idsSelected, setIdsSelected] = useState<string[]>([]);
     const [contactDS, setContactDS] = useState<ContactsInterface[]>([]);
     const [contactDSOps, setContactDSOps] = useState<ContactsInterface[]>([]);
     const [contactId, setContactId] = useState<number>(13);
     const [quickAddContactDS, setQuickAddContactDS] = useState<QuickAddContactInterface[]>([]);
-    const [tableLabel, setTableLabel] = useState<string>('All Contacts');
+    const tableLabel = 'All Contacts';
     const [editPage, setEditPage] = useState(false);
     const [contactObj, setContactObj] = useState({});
     const [uploadModal, setUploadModal] = useState(false);
@@ -44,9 +94,11 @@ export const ContactsPage: any = () => {
         file: {},
         fileList: [{}]
     });
-    const [showDelBtn, setShowDelBtn] = useState(false);
+    const [showBtnOnSelection, setShowBtnOnSelection] = useState(false);
     const [quickAddModal, setQuickAddModal] = useState(false);
     const [serviceInProgress, setServiceInProgress] = useState(false);
+    const [openAdditionalModal, setAdditionalModal] = useState(false);
+    const [additionalModalInfo, setAdditionalModalInfo] = useState('');
 
     const populateAllContacts = () => {
         getAllServerCall('contacts').then(async response => {
@@ -84,7 +136,8 @@ export const ContactsPage: any = () => {
             key: 'emailMarketing',
             render: ((text: string, record: any) => {
                 return (
-                    <Tag color={'geekblue'} key={record.emailMarketing}>
+                    <Tag color={record.emailMarketing.toLowerCase() === 'Subscribed'.toLowerCase() ? 'green' : 'purple'}
+                         key={record.emailMarketing}>
                         {text}
                     </Tag>
                 );
@@ -106,8 +159,9 @@ export const ContactsPage: any = () => {
                     <Popconfirm overlayClassName="ant-popover-audience" placement="left"
                                 title={<p><Title level={5}>Are you sure you want to delete?</Title>
                                     This will permanently delete these records and all associated data from your
-                                    account. Deleting and re-adding records can alter your monthly contact limits. <a>Learn
-                                        More</a></p>}
+                                    account. Deleting and re-adding records can alter your monthly contact limits.
+                                    <a href={'https://programmablesearchengine.google.com/about/'} target={'_blank'}
+                                       rel={'noreferrer'}>Learn More</a></p>}
                                 okText="Delete" cancelText="Cancel"
                                 onConfirm={() => deleteContact(record)}>
                         <p className={"actionColumn"}><DeleteOutlined/></p>
@@ -164,13 +218,13 @@ export const ContactsPage: any = () => {
         onChange: (selectedRowKeys: React.Key[], selectedRows: ContactsInterface[]) => {
             let rowsSelected: string[] = [];
             selectedRows.forEach(contactsData => {
-                rowsSelected.push(contactsData.email);
+                rowsSelected.push(contactsData.key);
             });
-            setEmailIdSelected(rowsSelected);
+            setIdsSelected(rowsSelected);
             if (rowsSelected.length > 0) {
-                setShowDelBtn(true);
+                setShowBtnOnSelection(true);
             } else {
-                setShowDelBtn(false);
+                setShowBtnOnSelection(false);
             }
         }
     };
@@ -232,7 +286,7 @@ export const ContactsPage: any = () => {
     };
 
     const deleteAllContact = () => {
-        if (emailIdSelected.length === 0) {
+        if (idsSelected.length === 0) {
             message.warning("Please use the checkbox to select contact for deletion", 0.8).then(() => {
             });
         }
@@ -283,6 +337,64 @@ export const ContactsPage: any = () => {
         cancelQuickAdd();
     };
 
+    const openAdditionInfoModal = (infoType: string) => {
+        setAdditionalModal(true);
+        setAdditionalModalInfo(infoType);
+    };
+
+    const closeAdditionalInfo = () => {
+        setAdditionalModal(false);
+        setAdditionalModalInfo('');
+        setMultiSelectValue([]);
+    };
+
+    const onMultiSelectChange = (value: string[]) => {
+        setMultiSelectValue(value);
+    };
+
+    const processAdditionalInfo = () => {
+        let additionalInfoString = '';
+        multiSelectValue.forEach(info => {
+            additionalInfoString = additionalInfoString.concat(info).concat(', ');
+        });
+        if (additionalInfoString.length > 0) {
+            additionalInfoString = additionalInfoString.substr(0, additionalInfoString.length - 2);
+            idsSelected.forEach(itr => {
+                getObjectById(itr, 'contacts').then(async contactByIdAsync => {
+                    let contactByIdRes = await contactByIdAsync.json();
+                    if (contactByIdRes) {
+                        let editObject: {};
+                        let editType: string;
+                        if (additionalModalInfo === 'addTags') {
+                            editObject = {
+                                ...contactByIdRes,
+                                tags: additionalInfoString
+                            };
+                            editType = 'Tags';
+                        } else {
+                            editObject = {
+                                ...contactByIdRes,
+                                segment: additionalInfoString
+                            };
+                            editType = 'Segments';
+                        }
+                        editObjectById(editObject, 'contacts').then(async editContactAsync => {
+                            let editContactRes = await editContactAsync.json();
+                            if (editContactRes) {
+                                message.success(`${editType} has been added for ${contactByIdRes.email}`);
+                                populateAllContacts();
+                            }
+                        });
+                    }
+                });
+            });
+            closeAdditionalInfo();
+        } else {
+            message.error("Select at least one option from Dropdown", 0.7).then(() => {
+            });
+        }
+    };
+
     return !editPage ? (
         <div className="pageLayout">
             <div className="firstNav">
@@ -292,18 +404,27 @@ export const ContactsPage: any = () => {
                     </div>
                 </div>
                 <div className="rightPlacement">
-                    {showDelBtn ?
-                        <Popconfirm overlayClassName="ant-popover-audience" placement="left"
-                                    title={<p><Title level={5}>Are you sure you want to delete?</Title>
-                                        This will permanently delete these records and all associated data
-                                        from your account. Deleting and re-adding records can alter your
-                                        monthly contact limits.
-                                        <a href={"https://www.google.com"} target={'_blank'}
-                                           rel={'noreferrer'}> Learn More</a></p>}
-                                    okText="Delete" cancelText="Cancel"
-                                    onConfirm={deleteAllContact}>
-                            <Button className="deleteBtn" icon={<DeleteOutlined/>} type="primary" danger>Delete</Button>
-                        </Popconfirm> : null}
+                    {showBtnOnSelection ?
+                        <>
+                            <Button key="addTags" style={{marginRight: 8}}
+                                    onClick={() => openAdditionInfoModal('addTags')}
+                                    icon={<PlusOutlined/>}>Add Tags</Button>
+                            <Button key="addSegments" style={{marginRight: 8}}
+                                    onClick={() => openAdditionInfoModal('addSegments')}
+                                    icon={<PlusOutlined/>}>Add Segments</Button>
+                            <Popconfirm overlayClassName="ant-popover-audience" placement="left"
+                                        title={<p><Title level={5}>Are you sure you want to delete?</Title>
+                                            This will permanently delete these records and all associated data
+                                            from your account. Deleting and re-adding records can alter your
+                                            monthly contact limits.
+                                            <a href={"https://www.google.com"} target={'_blank'}
+                                               rel={'noreferrer'}> Learn More</a></p>}
+                                        okText="Delete" cancelText="Cancel"
+                                        onConfirm={deleteAllContact}>
+                                <Button className="deleteBtn" icon={<DeleteOutlined/>} type="primary"
+                                        danger>Delete</Button>
+                            </Popconfirm>
+                        </> : null}
                     <Button className="exportBtn" onClick={exportCsv} icon={<ExportOutlined/>}>Export CSV</Button>
                     <Dropdown.Button type={'primary'} overlay={addContactMenu}>Add Contact</Dropdown.Button>
                 </div>
@@ -316,6 +437,35 @@ export const ContactsPage: any = () => {
                     </Button>
                 ]} onCancel={cancelUploadProcess}>
                     <UploadPage fileInfo={(fileInfo: any) => setUploadFileInfo(fileInfo)}/>
+                </Modal>
+                <Modal title={additionalModalInfo === 'addTags' ? 'Add Tags' : 'Add Segments'} centered
+                       destroyOnClose={true}
+                       visible={openAdditionalModal} width={548} footer={[
+                    <Button key="cancel" onClick={closeAdditionalInfo} icon={<CloseOutlined/>}>
+                        Cancel
+                    </Button>,
+                    <Button key="upload" type="primary" icon={<PlusOutlined/>} onClick={processAdditionalInfo}>
+                        Add
+                    </Button>
+                ]} onCancel={closeAdditionalInfo}>
+                    {additionalModalInfo === 'addTags' ?
+                        <>
+                            <Select onChange={onMultiSelectChange} mode={'multiple'} style={{width: 496}}
+                                    placeholder="Select Tags">
+                                {
+                                    allTags.map(itr => {
+                                        return <Option value={itr.label} key={itr.value}>{itr.label}</Option>
+                                    })}
+                            </Select>
+                        </> : <>
+                            <Select onChange={onMultiSelectChange} mode={'multiple'} style={{width: 496}}
+                                    placeholder="Select Segments">
+                                {
+                                    allSegments.map(itr => {
+                                        return <Option value={itr.label} key={itr.value}>{itr.label}</Option>
+                                    })}
+                            </Select>
+                        </>}
                 </Modal>
                 <Modal title="Add Contact" centered visible={quickAddModal} width={550} className={'contacts'}
                        footer={quickAddContactDS.length > 0 ?

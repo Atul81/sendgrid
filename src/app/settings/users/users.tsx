@@ -1,9 +1,15 @@
 import React, {useEffect, useState} from "react";
-import {Button, Form, Input, Modal, Popconfirm, Radio, Select, Space, Table, Tag} from "antd";
+import {Button, Form, Input, message, Modal, Popconfirm, Radio, Select, Space, Table, Tag} from "antd";
 import {CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import {UsersInterface} from "../settingsInterface";
 import {DropDown} from "../../../utils/Interfaces";
 import Title from "antd/lib/typography/Title";
+import {
+    addNewObject,
+    deleteObjectById,
+    editObjectById,
+    getAllServerCall
+} from "../../../service/serverCalls/mockServerRest";
 
 export const UsersPage: any = () => {
 
@@ -11,7 +17,11 @@ export const UsersPage: any = () => {
     const [userModalForm] = Form.useForm();
     const {Option} = Select;
     const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
-
+    const [userId, setUserId] = useState(11);
+    const [userObj, setUserObj] = useState({
+        key: 0,
+        email: ''
+    });
     const [userRoles, setUserRoles] = useState<DropDown[]>([{
         label: 'Admin',
         value: 'admin',
@@ -19,6 +29,13 @@ export const UsersPage: any = () => {
     }, {label: 'Standard', value: 'std', children: null}]);
 
     const deleteSelectedUser = (record: any) => {
+        deleteObjectById(record.key, 'users').then(async deleteUserAsync => {
+            let deleteUserRes = await deleteUserAsync.json();
+            if (deleteUserRes) {
+                message.success(`User ${record.email} has been successfully deleted`);
+                populateAllUsers();
+            }
+        });
     };
 
     const createEditUser = (record: any) => {
@@ -31,20 +48,51 @@ export const UsersPage: any = () => {
                     userPermission: record.permission
                 }
             });
+            setUserObj(record);
         }
     };
 
     const closeUserAmendModal = () => {
         setUserAmendModal(false);
         userModalForm.resetFields();
+        setUserObj({key: 0, email: ''});
     }
 
     const userAmendModalService = (formValues: any) => {
-        console.log(formValues)
+        let userAmendObj = formValues.formObj;
+        if (userObj && userObj.key > 0) {
+            editObjectById({
+                id: userObj.key,
+                email: userObj.email,
+                type: userAmendObj.userRole,
+                permission: userAmendObj.userPermission
+            }, 'users').then(async editUserAsync => {
+                let editUserRes = await editUserAsync.json();
+                if (editUserRes) {
+                    message.success(`User ${formValues.userEmail} has been successfully edited`, 0.7);
+                }
+            });
+        } else {
+            addNewObject({
+                id: userId,
+                email: userAmendObj.userEmail,
+                type: userAmendObj.userRole,
+                permission: userAmendObj.userPermission
+            }, 'users').then(async newUserAsync => {
+                let newUserRes = await newUserAsync.json();
+                if (newUserRes) {
+                    message.success(`User ${formValues.userEmail} has been successfully created`, 0.6);
+                    setUserId(userId + 1);
+                }
+            });
+        }
+        populateAllUsers();
+        closeUserAmendModal();
     };
 
     const deleteBulkUsersService = () => {
-        console.log(selectedUserIds);
+        message.error("Bulk Delete not supported", 0.7).then(() => {
+        });
     }
 
     const userRowSelections = {
@@ -54,6 +102,19 @@ export const UsersPage: any = () => {
                 rowsSelected.push(usersItr.key);
             });
             setSelectedUserIds(rowsSelected);
+        }
+    };
+
+    const getColor = (record: any) => {
+        switch (record.type) {
+            case 'Admin':
+                return 'red';
+            case 'Auditor':
+                return 'blue';
+            case 'Standard':
+                return 'green';
+            case 'Viewer':
+                return 'purple';
         }
     };
 
@@ -70,7 +131,7 @@ export const UsersPage: any = () => {
             key: 'type',
             render: ((text: string, record: any) => {
                 return (
-                    <Tag key={record.key} color={text === 'Admin' ? 'green' : 'red'}>{text}</Tag>
+                    <Tag key={record.key} color={getColor(record)}>{text}</Tag>
                 );
             }),
             width: '10%'
@@ -101,17 +162,31 @@ export const UsersPage: any = () => {
     const [usersDS, setUsersDS] = useState<UsersInterface[]>([]);
 
     useEffect(() => {
-        let data: UsersInterface[] = [];
-        for (let i = 0; i < 100; i++) {
-            data.push({
-                key: i.toString(10),
-                email: `dev-testing${i}@gmail.com`,
-                type: 'Admin',
-                permission: 'manageCampaigns'
-            });
-        }
-        setUsersDS(data);
+        populateAllUsers();
+        getAllServerCall('utils').then(async allUserRolesAsync => {
+            let allUserRolesRes = await allUserRolesAsync.json();
+            let data: DropDown[] = [];
+            if (allUserRolesRes && allUserRolesRes.userRoles) {
+                allUserRolesRes.userRoles.forEach((itr: any) => {
+                    data.push({...itr});
+                });
+            }
+            setUserRoles(data);
+        });
     }, []);
+
+    const populateAllUsers = () => {
+        getAllServerCall('users').then(async allUsersAsync => {
+            let allUsersRes = await allUsersAsync.json();
+            let data: UsersInterface[] = [];
+            if (allUsersRes) {
+                allUsersRes.forEach((itr: any) => {
+                    data.push({...itr, key: itr.id});
+                });
+            }
+            setUsersDS(data);
+        });
+    }
 
     return <div className="domain pageLayout">
         <div className="reverseFlex">
@@ -127,7 +202,7 @@ export const UsersPage: any = () => {
                 <Form.Item label="User Email">
                     <Form.Item name={['formObj', 'userEmail']}
                                noStyle rules={[{required: true, message: 'User Email Address required'}]}>
-                        <Input placeholder="Text only" type={"email"}/>
+                        <Input disabled={userObj.key > 0} placeholder="Text only" type={"email"}/>
                     </Form.Item>
                 </Form.Item>
                 <Form.Item label="User Role">

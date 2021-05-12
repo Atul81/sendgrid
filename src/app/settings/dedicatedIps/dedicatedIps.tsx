@@ -3,16 +3,45 @@ import {Button, message, Popconfirm, Space, Table, Tag} from "antd";
 import {DedicatedIpsInterface} from "../settingsInterface";
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
+import {deleteObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 
 export const DedicatedIpsPage: any = () => {
+
+    const [dedicatedIpsDS, setDedicatedIpsDS] = useState<DedicatedIpsInterface[]>([]);
+
+    useEffect(() => {
+        populateTableData();
+    }, []);
+
+    const populateTableData = () => {
+        getAllServerCall('dedicatedIps').then(async allDomainAsync => {
+            let allDomainRes = await allDomainAsync.json();
+            let data: DedicatedIpsInterface[] = [];
+            if (allDomainRes) {
+                allDomainRes.forEach((itr: any) => {
+                    data.push({...itr, key: itr.id, purchaseDate: new Date(itr.purchaseDate).toDateString()});
+                });
+            }
+            setDedicatedIpsDS(data);
+        });
+    };
+
     const deleteDedicatedIps = (record: any) => {
-    }
+        deleteObjectById(record.key, 'dedicatedIps').then(async delDedicatedIpAsync => {
+            let delDedicatedIpRes = await delDedicatedIpAsync.json();
+            if (delDedicatedIpRes) {
+                message.success(`Dedicated Ip ${record.ipAddress} has been successfully deleted`);
+                populateTableData();
+            }
+        });
+    };
+
     const columns = [
         {
             title: 'IP Address',
             dataIndex: 'ipAddress',
             key: 'ipAddress',
-            width: '70%'
+            width: '65%'
         },
         {
             title: 'Purchase Date',
@@ -51,23 +80,10 @@ export const DedicatedIpsPage: any = () => {
         }
     ];
     const addNewDedicatedIp = () => {
-        message.warn("Value has been successfully verified", 0.7);
-    }
+        message.warn("Pending design, Work In Progress", 0.7).then(() => {
+        });
+    };
 
-    const [dedicatedIpsDS, setDedicatedIpsDS] = useState<DedicatedIpsInterface[]>([]);
-
-    useEffect(() => {
-        let data: DedicatedIpsInterface[] = [];
-        for (let i = 0; i < 100; i++) {
-            data.push({
-                key: i.toString(10),
-                ipAddress: `127.0.0.${i}`,
-                purchaseDate: `Doe ${i}`,
-                status: 'Active'
-            });
-        }
-        setDedicatedIpsDS(data);
-    }, []);
 
     return <div className="domain pageLayout">
         <div className="reverseFlex">

@@ -10,6 +10,12 @@ const campaignsForm = require('./campaigns/campaignsForm.json');
 const senders = require('./campaigns/senders.json');
 const templates = require('./templates/templates.json');
 const groups = require('./unsubscriptions/groups.json');
+const domain = require('./settings/domain.json');
+const dedicatedIps = require('./settings/dedicatedIps.json');
+const customEvents = require('./settings/customEvents.json');
+const preferences = require('./settings/preferences.json');
+const users = require('./settings/users.json');
+const utils = require('./extras/utils.json');
 
 module.exports = () => ({
     contacts,
@@ -23,5 +29,11 @@ module.exports = () => ({
     campaignsForm,
     senders,
     templates,
-    groups
+    groups,
+    domain,
+    dedicatedIps,
+    customEvents,
+    preferences,
+    users,
+    utils
 });

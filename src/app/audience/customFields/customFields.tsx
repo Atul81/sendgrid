@@ -6,7 +6,12 @@ import Search from "antd/lib/input/Search";
 import {CustomFields} from "../audienceInterface";
 import Title from "antd/lib/typography/Title";
 import Paragraph from "antd/lib/typography/Paragraph";
-import {addNewObject, deleteObjectById, editObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
+import {
+    addNewObject,
+    deleteObjectById,
+    editObjectById,
+    getAllServerCall
+} from "../../../service/serverCalls/mockServerRest";
 
 export const CustomFieldsPage: any = () => {
 
@@ -76,14 +81,14 @@ export const CustomFieldsPage: any = () => {
         setEditModal(true);
         setCustomFields({
             ...customFields,
-            radioValue: record.fieldType !== 'Text' ? 'Number' : 'Text',
+            radioValue: record.fieldType ? record.fieldType : 'Text',
             name: record.fieldName,
             key: record.key
         });
         amendCustomForm.setFieldsValue({
             customFields: {
                 name: record.fieldName,
-                radioValue: record.fieldType !== 'Text' ? 'Number' : 'Text',
+                radioValue: record.fieldType ? record.fieldType : 'Text'
             }
         })
     };
@@ -124,7 +129,7 @@ export const CustomFieldsPage: any = () => {
     const modifyCustomField = (values: any) => {
         if (customFields.key.length !== 0) {
             editObjectById({
-                id: customFields.key.length,
+                id: customFields.key,
                 fieldName: values.customFields.name,
                 fieldType: values.customFields.radioValue
             }, 'customFields').then(async response => {
@@ -137,7 +142,7 @@ export const CustomFieldsPage: any = () => {
             });
         } else {
             addNewObject({
-                id: customFields.key.length,
+                id: customFields.key,
                 fieldName: values.customFields.name,
                 fieldType: values.customFields.radioValue
             }, 'customFields').then(async response => {
@@ -215,6 +220,7 @@ export const CustomFieldsPage: any = () => {
                                     <Radio.Group>
                                         <Radio value={'Text'}>Text</Radio>
                                         <Radio value={'Number'}>Number</Radio>
+                                        <Radio value={'List of Strings'}>List of Strings</Radio>
                                     </Radio.Group>
                                 </Form.Item>
                                 <div className={'reverseFlex'}>
