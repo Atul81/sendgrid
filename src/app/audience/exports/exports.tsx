@@ -4,6 +4,8 @@ import {Space, Table} from "antd";
 import {DownloadOutlined} from "@ant-design/icons";
 import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import {getTimeFromUnix} from "../../../utils/common";
+import Title from "antd/lib/typography/Title";
+import Search from "antd/es/input/Search";
 
 export const ExportPage: any = () => {
 
@@ -15,9 +17,11 @@ export const ExportPage: any = () => {
                 tempObj.push({...itr, exportTimestamp: getTimeFromUnix(itr.exportTimestamp), key: itr.id});
             });
             setExportContactDS(tempObj);
+            setExportContactDSOps(tempObj);
         });
     }, []);
     const [exportContactDS, setExportContactDS] = useState<ExportContactInterface[]>([]);
+    const [exportContactDSOps, setExportContactDSOps] = useState<ExportContactInterface[]>([]);
 
     const downloadFile = (record: any) => {
         console.log('Make the server call', record);
@@ -47,7 +51,28 @@ export const ExportPage: any = () => {
             }),
         },
     ];
-    return <div className="thirdNav" style={{height: 'calc(100vh - 228px)'}}>
-        <Table columns={columns} dataSource={exportContactDS} bordered/>
-    </div>
+
+    const onSearchExports = (searchParam: string) => {
+        setExportContactDS(exportContactDSOps.filter(value => {
+            return value.fileName.includes(searchParam);
+        }));
+    };
+
+    return (
+        <div className='pageLayout'>
+            <div className="secondNav">
+                <Title level={4}>All Exports</Title>
+            </div>
+            <div className="firstNav">
+                <div className="leftPlacement">
+                    <div className="searchInput">
+                        <Search placeholder="input search text" onSearch={onSearchExports} enterButton/>
+                    </div>
+                </div>
+            </div>
+            <div className="thirdNav">
+                <Table columns={columns} dataSource={exportContactDS} bordered/>
+            </div>
+        </div>
+    )
 }

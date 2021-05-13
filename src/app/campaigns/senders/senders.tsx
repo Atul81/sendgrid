@@ -6,6 +6,7 @@ import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 import {AmendSendersPage} from "./amendSenders/AmendSendersLoadable";
 import {deleteObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
+import Search from "antd/es/input/Search";
 
 export const SendersPage: any = () => {
     const {Title} = Typography;
@@ -17,6 +18,7 @@ export const SendersPage: any = () => {
 
     const [segmentNamesSelected, setSegmentNamesSelected] = useState<string[]>([]);
     const [segmentDS, setSegmentDS] = useState<SendersInterface[]>([]);
+    const [segmentDSOps, setSegmentDSOps] = useState<SendersInterface[]>([]);
     const [senderId, setSenderId] = useState<number>(5);
 
     const columns = [
@@ -110,16 +112,34 @@ export const SendersPage: any = () => {
                 });
             }
             setSegmentDS(tempItrObj);
+            setSegmentDSOps(tempItrObj);
         })
-    }
+    };
+
+    const onSearchSenders = (searchParam: string) => {
+        setSegmentDS(segmentDSOps.filter(value => {
+            return value.email.includes(searchParam);
+        }));
+    };
 
     return !modifySendersPage ? (
         <div className="pageLayout">
-            <div className="reverseFlex">
-                <Button type={'primary'} icon={<PlusOutlined/>} className="addBtn"
-                        onClick={() => openSegmentEdit(true)}>Add New</Button>
+            <div className="secondNav">
+                <Title level={4}>All Senders</Title>
             </div>
-            <div className="thirdNav" style={{height: 'calc(100vh - 240px'}}>
+            <div className="firstNav">
+                <div className="leftPlacement">
+                    <div className="searchInput">
+                        <Search placeholder="input search text" onSearch={onSearchSenders} enterButton/>
+                    </div>
+                </div>
+                <div className="rightPlacement">
+                    <Button type={'primary'} icon={<PlusOutlined/>} className="addBtn"
+                            onClick={() => openSegmentEdit(true)}>Add New</Button>
+                </div>
+            </div>
+
+            <div className="thirdNav">
                 <Table rowSelection={{...segmentRowSelection}} columns={columns} dataSource={segmentDS} bordered/>
             </div>
         </div>

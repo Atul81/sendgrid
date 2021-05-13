@@ -4,10 +4,12 @@ import {DedicatedIpsInterface} from "../settingsInterface";
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import {deleteObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
+import Search from "antd/es/input/Search";
 
 export const DedicatedIpsPage: any = () => {
 
     const [dedicatedIpsDS, setDedicatedIpsDS] = useState<DedicatedIpsInterface[]>([]);
+    const [dedicatedIpsDSOps, setDedicatedIpsDSOps] = useState<DedicatedIpsInterface[]>([]);
 
     useEffect(() => {
         populateTableData();
@@ -23,6 +25,7 @@ export const DedicatedIpsPage: any = () => {
                 });
             }
             setDedicatedIpsDS(data);
+            setDedicatedIpsDSOps(data);
         });
     };
 
@@ -84,14 +87,30 @@ export const DedicatedIpsPage: any = () => {
         });
     };
 
+    const onSearchDedicatedIps = (searchParam: string) => {
+        setDedicatedIpsDS(dedicatedIpsDSOps.filter(value => {
+            return value.ipAddress.includes(searchParam);
+        }));
+    };
 
     return <div className="domain pageLayout">
-        <div className="reverseFlex">
-            <Button className={'addBtn'} type={'primary'} onClick={addNewDedicatedIp}
-                    icon={<PlusOutlined/>}>Add New</Button>
+        <div className="secondNav">
+            <Title level={4}>All Dedicated Ips</Title>
         </div>
-        <div className="thirdNav" style={{height: 'calc(100vh - 238px)'}}>
-            <Table scroll={{y: 'calc(100vh - 332px)'}} dataSource={dedicatedIpsDS} columns={columns} bordered/>
+        <div className="firstNav">
+            <div className="leftPlacement">
+                <div className="searchInput">
+                    <Search placeholder="input search text" onSearch={onSearchDedicatedIps} enterButton/>
+                </div>
+            </div>
+            <div className="rightPlacement">
+                <Button className={'addBtn'} type={'primary'} onClick={addNewDedicatedIp}
+                        icon={<PlusOutlined/>}>Add New</Button>
+            </div>
+        </div>
+
+        <div className="thirdNav">
+            <Table dataSource={dedicatedIpsDS} columns={columns} bordered/>
         </div>
     </div>
 }

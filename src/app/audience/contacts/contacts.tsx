@@ -46,6 +46,7 @@ export const ContactsPage: any = () => {
     const [allTags, setAllTags] = useState<DropDown[]>([]);
     const [multiSelectValue, setMultiSelectValue] = useState<string[]>([]);
     const {Option} = Select;
+    const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(updateBreadcrumb(['Audience', 'Contacts']));
@@ -75,12 +76,11 @@ export const ContactsPage: any = () => {
             }
             setAllTags(data);
         });
-    }, []);
+    }, [dispatch]);
 
     const {Search} = Input;
     const {Title} = Typography;
     const [addContact] = Form.useForm();
-    const dispatch = useDispatch();
 
     const [exportReqModal, setExportModalReq] = useState(false);
     const [idsSelected, setIdsSelected] = useState<string[]>([]);
@@ -138,10 +138,9 @@ export const ContactsPage: any = () => {
             key: 'emailMarketing',
             render: ((text: string, record: any) => {
                 return (
-                    <Tag color={record.emailMarketing.toLowerCase() === 'Subscribed'.toLowerCase() ? 'green' : 'purple'}
-                         key={record.emailMarketing}>
-                        {text}
-                    </Tag>
+                    <Tag
+                        color={record.emailMarketing ? (record.emailMarketing.toLowerCase() === 'Subscribed'.toLowerCase() ? 'green' : 'purple') : ''}
+                        key={record.emailMarketing}>{text}</Tag>
                 );
             })
         },
@@ -208,7 +207,7 @@ export const ContactsPage: any = () => {
     const deleteQuickContact = (record: any) => {
         let tempObj = quickAddContactDS.filter(value => record.key !== value.key);
         setQuickAddContactDS(tempObj);
-    }
+    };
 
     const onSearch = (searchParam: string) => {
         setContactDS(contactDSOps.filter(value => {
@@ -240,6 +239,7 @@ export const ContactsPage: any = () => {
             }
         });
     };
+
     const deleteContact = (record: any) => {
         deleteObjectById(record.id, 'contacts').then(async response => {
             let resBody = await response.json();
@@ -299,7 +299,8 @@ export const ContactsPage: any = () => {
     const cancelUploadProcess = () => {
         setUploadModal(false);
         setUploadFileInfo({file: {}, fileList: [{}]});
-    }
+    };
+
     const processUploadedFile = () => {
         console.log(uploadFileInfo.fileList);
     };
@@ -368,6 +369,12 @@ export const ContactsPage: any = () => {
                         let editObject: {};
                         let editType: string;
                         if (additionalModalInfo === 'addTags') {
+                            let existingTags = contactByIdRes.tags.split(', ');
+                            existingTags.forEach((itr: string) => {
+                                if (!(additionalInfoString.includes(itr))) {
+                                    additionalInfoString = additionalInfoString.concat(`, ${itr}`);
+                                }
+                            });
                             editObject = {
                                 ...contactByIdRes,
                                 tags: additionalInfoString
@@ -399,6 +406,9 @@ export const ContactsPage: any = () => {
 
     return !editPage ? (
         <div className="pageLayout">
+            <div className="secondNav">
+                <Title level={4}>{tableLabel}</Title>
+            </div>
             <div className="firstNav">
                 <div className="leftPlacement">
                     <div className="searchInput">
@@ -437,8 +447,8 @@ export const ContactsPage: any = () => {
                     <Button key="upload" type="primary" icon={<DownloadOutlined/>} onClick={processUploadedFile}>
                         Upload
                     </Button>
-                ]} onCancel={cancelUploadProcess}>
-                    <UploadPage fileInfo={(fileInfo: any) => setUploadFileInfo(fileInfo)}/>
+                ]} onCancel={cancelUploadProcess}><UploadPage
+                    fileInfo={(fileInfo: any) => setUploadFileInfo(fileInfo)}/>
                 </Modal>
                 <Modal title={additionalModalInfo === 'addTags' ? 'Add Tags' : 'Add Segments'} centered
                        destroyOnClose={true}
@@ -459,7 +469,8 @@ export const ContactsPage: any = () => {
                                         return <Option value={itr.label} key={itr.value}>{itr.label}</Option>
                                     })}
                             </Select>
-                        </> : <>
+                        </> :
+                        <>
                             <Select onChange={onMultiSelectChange} mode={'multiple'} style={{width: 496}}
                                     placeholder="Select Segments">
                                 {
@@ -527,9 +538,6 @@ export const ContactsPage: any = () => {
                             }
                     />
                 </Modal>
-            </div>
-            <div className="secondNav">
-                <Title level={4}>{tableLabel}</Title>
             </div>
             <div className="thirdNav">
                 <Table scroll={{y: 'calc(100vh - 400px)'}}

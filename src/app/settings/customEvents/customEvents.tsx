@@ -4,6 +4,7 @@ import {EditOutlined} from "@ant-design/icons";
 import {CustomEventsInterface} from "../settingsInterface";
 import Title from "antd/lib/typography/Title";
 import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
+import Search from "antd/es/input/Search";
 
 export const CustomEventsPage: any = () => {
     const editCustomEvent = (record: any) => {
@@ -50,6 +51,7 @@ export const CustomEventsPage: any = () => {
     ];
 
     const [customEventsDS, setCustomEventsDS] = useState<CustomEventsInterface[]>([]);
+    const [customEventsDSOps, setCustomEventsDSOps] = useState<CustomEventsInterface[]>([]);
 
     useEffect(() => {
         populateTableData();
@@ -65,15 +67,30 @@ export const CustomEventsPage: any = () => {
                 });
             }
             setCustomEventsDS(data);
+            setCustomEventsDSOps(data);
         });
-    }
+    };
 
-    return <div className="domain pageLayout">
-        <div className="firstNav">
-            <Title level={4}>Event Settings</Title>
+    const onSearchImports = (searchParam: string) => {
+        setCustomEventsDS(customEventsDSOps.filter(value => {
+            return value.name.includes(searchParam);
+        }));
+    };
+    return (
+        <div className="domain pageLayout">
+            <div className="secondNav">
+                <Title level={4}>Event Settings</Title>
+            </div>
+            <div className="firstNav">
+                <div className="leftPlacement">
+                    <div className="searchInput">
+                        <Search placeholder="input search text" onSearch={onSearchImports} enterButton/>
+                    </div>
+                </div>
+            </div>
+            <div className="thirdNav">
+                <Table dataSource={customEventsDS} columns={columns} bordered/>
+            </div>
         </div>
-        <div className="thirdNav" style={{height: 'calc(100vh - 238px)'}}>
-            <Table scroll={{y: 'calc(100vh - 332px)'}} dataSource={customEventsDS} columns={columns} bordered/>
-        </div>
-    </div>
+    )
 }

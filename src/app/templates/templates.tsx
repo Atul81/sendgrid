@@ -7,6 +7,8 @@ import './templates.scss';
 import {TemplateIeFrame} from "./templateIeFrame";
 import {useHistory} from "react-router-dom";
 import {getAllServerCall} from "../../service/serverCalls/mockServerRest";
+import Title from "antd/es/typography/Title";
+import Search from "antd/es/input/Search";
 
 interface TemplatesInterface {
     "id": number,
@@ -27,6 +29,7 @@ export const TemplatesPage: any = () => {
     const [templateObj, setTemplateObj] = useState({});
     const history = useHistory();
     const [templatesDS, setTemplateDS] = useState<TemplatesInterface[]>([]);
+    const [templatesDSOps, setTemplateDSOps] = useState<TemplatesInterface[]>([]);
 
     useEffect(() => {
         setIeFrameType(activeMenu);
@@ -76,15 +79,30 @@ export const TemplatesPage: any = () => {
             let allTemplatesRes = await allTemplatesAsync.json();
             if (allTemplatesRes) {
                 setTemplateDS(allTemplatesRes);
+                setTemplateDSOps(allTemplatesRes);
             }
         });
     };
 
+    const onSearchTemplates = (searchParam: string) => {
+        setTemplateDS(templatesDSOps.filter(value => {
+            return value.title.includes(searchParam);
+        }));
+    };
+
     return !openIeFrame ? (
         <div className="templates pageLayout">
+            <div className="secondNav">
+                <Title level={4}>All Imports</Title>
+            </div>
             <div className="firstNav">
                 <div className="leftPlacement">
-                    <Button type={'primary'} className="addBtn" onClick={addNewSegment} icon={<PlusOutlined/>}>Add
+                    <div className="searchInput">
+                        <Search placeholder="input search text" onSearch={onSearchTemplates} enterButton/>
+                    </div>
+                </div>
+                <div className="rightPlacement">
+                    <Button type={'primary'} style={{width: 102}} onClick={addNewSegment} icon={<PlusOutlined/>}>Add
                         New</Button>
                 </div>
             </div>

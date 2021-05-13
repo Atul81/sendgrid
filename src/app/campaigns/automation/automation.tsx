@@ -6,7 +6,7 @@ import Search from "antd/lib/input/Search";
 import {CampaignInterface} from "../campaignInterface";
 import {AmendAutomationPage} from "./amendAutomation/AmendAutomationLoadable";
 import {addNewObject, deleteObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
-import {updateActiveContent, updateBreadcrumb} from "../../../store/actions/root";
+import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 
 export const AutomationPage: any = () => {
@@ -145,6 +145,9 @@ export const AutomationPage: any = () => {
 
     return !openAutomationAmend ? (
         <div className="pageLayout">
+            <div className="secondNav">
+                <Title level={4}>Automation</Title>
+            </div>
             <div className="firstNav">
                 <div className="leftPlacement">
                     <Search placeholder="Search Custom field" onSearch={onSearch} enterButton/>
@@ -172,7 +175,7 @@ export const AutomationPage: any = () => {
                 <Input placeholder="New Automation Name"
                        onChange={(inpEvent) => setAutomationObj({name: inpEvent.target.value})}/>
             </Modal>
-            <div className="thirdNav" style={{height: 'calc(100vh - 228px)'}}>
+            <div className="thirdNav">
                 <Table rowSelection={{...customFieldRowSelection}} dataSource={automationDS} columns={columns}
                        bordered/>
             </div>

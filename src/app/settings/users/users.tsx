@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Form, Input, message, Modal, Popconfirm, Radio, Select, Space, Table, Tag} from "antd";
+import {Button, Checkbox, Form, Input, message, Modal, Popconfirm, Radio, Select, Space, Table, Tag} from "antd";
 import {CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import {UsersInterface} from "../settingsInterface";
 import {DropDown} from "../../../utils/Interfaces";
@@ -10,6 +10,8 @@ import {
     editObjectById,
     getAllServerCall
 } from "../../../service/serverCalls/mockServerRest";
+import Search from "antd/es/input/Search";
+import Paragraph from "antd/lib/typography/Paragraph";
 
 export const UsersPage: any = () => {
 
@@ -22,12 +24,16 @@ export const UsersPage: any = () => {
         key: 0,
         email: ''
     });
-    const [userRoles, setUserRoles] = useState<DropDown[]>([{
-        label: 'Admin',
-        value: 'admin',
-        children: null
-    }, {label: 'Standard', value: 'std', children: null}]);
+    const [userRoles, setUserRoles] = useState<DropDown[]>([]);
 
+    const userPermissionOptions = [
+        {value: 'manageContacts', label: 'Manage Contacts'},
+        {value: 'manageCampaigns', label: 'Manage Campaigns'},
+        {value: 'manageUsers', label: 'Manage Users'},
+        {value: 'moreOptions', label: 'More Options...'},
+    ];
+
+    const [currentUserRole, setCurrentUserRole] = useState('');
     const deleteSelectedUser = (record: any) => {
         deleteObjectById(record.key, 'users').then(async deleteUserAsync => {
             let deleteUserRes = await deleteUserAsync.json();
@@ -48,6 +54,7 @@ export const UsersPage: any = () => {
                     userPermission: record.permission
                 }
             });
+            setCurrentUserRole(record.type);
             setUserObj(record);
         }
     };
@@ -69,7 +76,7 @@ export const UsersPage: any = () => {
             }, 'users').then(async editUserAsync => {
                 let editUserRes = await editUserAsync.json();
                 if (editUserRes) {
-                    message.success(`User ${formValues.userEmail} has been successfully edited`, 0.7);
+                    message.success(`User ${userAmendObj.userEmail} has been successfully edited`, 0.7);
                 }
             });
         } else {
@@ -134,7 +141,6 @@ export const UsersPage: any = () => {
                     <Tag key={record.key} color={getColor(record)}>{text}</Tag>
                 );
             }),
-            width: '10%'
         },
         {
             title: 'Action',
@@ -148,7 +154,8 @@ export const UsersPage: any = () => {
                     <Popconfirm overlayClassName="ant-popover-audience" placement="left"
                                 title={<p><Title level={5}>Are you sure you want to delete?</Title>
                                     This will permanently delete these records and all associated data from your
-                                    account. Deleting and re-adding records can alter your monthly contact limits. <a>Learn
+                                    account. Deleting and re-adding records can alter your monthly contact limits. <a
+                                        href={'https://www.google.com'} target={'_blank'} rel={'noreferrer'}>Learn
                                         More</a></p>}
                                 okText="Delete" cancelText="Cancel"
                                 onConfirm={() => deleteSelectedUser(record)}>
@@ -160,6 +167,7 @@ export const UsersPage: any = () => {
     ];
 
     const [usersDS, setUsersDS] = useState<UsersInterface[]>([]);
+    const [usersDSOps, setUsersDSOps] = useState<UsersInterface[]>([]);
 
     useEffect(() => {
         populateAllUsers();
@@ -185,66 +193,118 @@ export const UsersPage: any = () => {
                 });
             }
             setUsersDS(data);
+            setUsersDSOps(data);
         });
-    }
+    };
 
-    return <div className="domain pageLayout">
-        <div className="reverseFlex">
-            <Button className={'addBtn'} type={'primary'} onClick={() => createEditUser(null)} icon={<PlusOutlined/>}>Add
-                New</Button>
-            {selectedUserIds.length > 0 ? <Button style={{marginRight: 8}} className={'delBtn'} type={'primary'} danger
-                                                  onClick={deleteBulkUsersService}
-                                                  icon={<DeleteOutlined/>}>Delete</Button> : null}
-        </div>
-        <Modal title="Add/Edit User" centered visible={userAmendModal} width={'30%'} footer={null}
-               onCancel={closeUserAmendModal}>
-            <Form form={userModalForm} layout={'vertical'} onFinish={userAmendModalService}>
-                <Form.Item label="User Email">
-                    <Form.Item name={['formObj', 'userEmail']}
-                               noStyle rules={[{required: true, message: 'User Email Address required'}]}>
-                        <Input disabled={userObj.key > 0} placeholder="Text only" type={"email"}/>
-                    </Form.Item>
-                </Form.Item>
-                <Form.Item label="User Role">
-                    <Form.Item name={['formObj', 'userRole']} noStyle
-                               rules={[{required: true, message: 'User Role required'}]}>
-                        <Select style={{width: '50%'}} allowClear placeholder="Select User Role">
-                            {userRoles.map(value => {
-                                return <Option key={value.value} value={value.label}>{value.label}</Option>
-                            })}
-                        </Select>
-                    </Form.Item>
-                </Form.Item>
-                <Form.Item label="Permissions">
-                    <Form.Item name={['formObj', 'userPermission']} noStyle
-                               rules={[{required: true, message: 'Permission required'}]}>
-                        <Radio.Group>
-                            <Radio value={'manageContacts'}>Manage Contacts</Radio>
-                            <Radio value={'manageCampaigns'}>Manage Campaigns</Radio>
-                            <Radio value={'manageUsers'}>Manage Users</Radio>
-                            <Radio value={'moreOptions'}>More Options...</Radio>
-                        </Radio.Group>
-                    </Form.Item>
-                </Form.Item>
-                <div className='reverseFlex'>
-                    <Form.Item>
-                        <Button key="cancel" htmlType={'reset'} onClick={closeUserAmendModal}
-                                icon={<CloseOutlined/>}>
-                            Cancel
-                        </Button>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button style={{marginRight: 8}} key="quickAdd" htmlType={'submit'} type="primary"
-                                icon={<CheckOutlined/>}>
-                            Done
-                        </Button>
-                    </Form.Item>
+    const onSearchUsers = (searchParam: string) => {
+        setUsersDS(usersDSOps.filter(value => {
+            return value.email.includes(searchParam);
+        }));
+    };
+
+    const onRoleSelectChange = (roleSelected: string) => {
+        setCurrentUserRole(roleSelected);
+        console.log(userObj);
+        if (roleSelected === 'Admin') {
+            userModalForm.setFieldsValue({
+                formObj: {
+                    userEmail: userObj.email,
+                    userPermission: [
+                        "manageContacts",
+                        "manageCampaigns",
+                        "moreOptions",
+                        "manageUsers"
+                    ]
+                }
+            });
+        } else {
+            userModalForm.setFieldsValue({
+                formObj: {
+                    userEmail: userObj.email,
+                    userPermission: []
+                }
+            });
+        }
+    }
+    return (
+        <div className="domain pageLayout">
+            <div className="secondNav">
+                <Title level={4}>All Imports</Title>
+            </div>
+            <div className="firstNav">
+                <div className="leftPlacement">
+                    <div className="searchInput">
+                        <Search placeholder="input search text" onSearch={onSearchUsers} enterButton/>
+                    </div>
                 </div>
-            </Form>
-        </Modal>
-        <div className="thirdNav" style={{height: 'calc(100vh - 238px)'}}>
-            <Table rowSelection={{...userRowSelections}} scroll={{y: 'calc(100vh - 332px)'}} dataSource={usersDS}
-                   columns={columns} bordered/>
+                <div className="rightPlacement">
+                    {selectedUserIds.length > 0 ?
+                        <Button style={{marginRight: 8}} className={'deleteBtn'} type={'primary'} danger
+                                onClick={deleteBulkUsersService}
+                                icon={<DeleteOutlined/>}>Delete</Button> : null}
+
+                    <Button className={'addBtn'} type={'primary'} style={{width: 100}}
+                            onClick={() => createEditUser(null)}
+                            icon={<PlusOutlined/>}>Add New</Button>
+                </div>
+            </div>
+
+            <Modal title="Add/Edit User" centered visible={userAmendModal} width={'30%'} footer={null}
+                   onCancel={closeUserAmendModal}>
+                <Form form={userModalForm} layout={'vertical'} onFinish={userAmendModalService}>
+                    <Form.Item label="User Email">
+                        <Form.Item name={['formObj', 'userEmail']}
+                                   noStyle rules={[{required: true, message: 'User Email Address required'}]}>
+                            <Input disabled={userObj.key > 0} placeholder="Text only" type={"email"}/>
+                        </Form.Item>
+                    </Form.Item>
+                    <Form.Item label="User Role">
+                        <Form.Item name={['formObj', 'userRole']} noStyle
+                                   rules={[{required: true, message: 'User Role required'}]}>
+                            <Select style={{width: '50%'}} allowClear placeholder="Select User Role"
+                                    onChange={onRoleSelectChange}>
+                                {userRoles.map(value => {
+                                    return <Option key={value.value} value={value.label}>{value.label}</Option>
+                                })}
+                            </Select>
+                        </Form.Item>
+                    </Form.Item>
+                    {currentUserRole !== 'Viewer' ?
+                        <Form.Item label="Permissions">
+                            <Form.Item name={['formObj', 'userPermission']} noStyle
+                                       rules={[{required: true, message: 'Permission required'}]}>
+                                {currentUserRole === 'Admin' ?
+                                    <Checkbox.Group disabled options={userPermissionOptions}/> :
+                                    <Radio.Group>
+                                        <Radio value={'manageContacts'}>Manage Contacts</Radio>
+                                        <Radio value={'manageCampaigns'}>Manage Campaigns</Radio>
+                                        <Radio value={'manageUsers'}>Manage Users</Radio>
+                                        <Radio value={'moreOptions'}>More Options...</Radio>
+                                    </Radio.Group>
+                                }
+                            </Form.Item>
+                        </Form.Item> : <Paragraph style={{color: "red"}}>No permission access
+                            with <strong>Viewer</strong> role</Paragraph>}
+                    <div className='reverseFlex'>
+                        <Form.Item>
+                            <Button key="cancel" htmlType={'reset'} onClick={closeUserAmendModal}
+                                    icon={<CloseOutlined/>}>
+                                Cancel
+                            </Button>
+                        </Form.Item>
+                        <Form.Item>
+                            <Button style={{marginRight: 8}} key="quickAdd" htmlType={'submit'} type="primary"
+                                    icon={<CheckOutlined/>}>
+                                Done
+                            </Button>
+                        </Form.Item>
+                    </div>
+                </Form>
+            </Modal>
+            <div className="thirdNav">
+                <Table rowSelection={{...userRowSelections}} dataSource={usersDS} columns={columns} bordered/>
+            </div>
         </div>
-    </div>
+    )
 }

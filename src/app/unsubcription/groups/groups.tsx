@@ -13,10 +13,12 @@ import {
 } from "../../../service/serverCalls/mockServerRest";
 import {updateActiveContent, updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
+import Search from "antd/es/input/Search";
 
 export const GroupsPage: any = () => {
     const dispatch = useDispatch();
     const [groupNameDS, setGroupNameDS] = useState<GroupNameInterface[]>([]);
+    const [groupNameDSOps, setGroupNameDSOps] = useState<GroupNameInterface[]>([]);
     const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
     const urlPath = useLocation();
     const [openCustomizeForm, setCustomizeFormFrame] = useState(false);
@@ -44,7 +46,7 @@ export const GroupsPage: any = () => {
         } else {
             populateAllGroups();
         }
-    }, [urlPath.pathname]);
+    }, [dispatch, urlPath.pathname]);
 
     const openGroupNameEdit = (record: any) => {
         unsubscribeForm.setFieldsValue({
@@ -109,18 +111,18 @@ export const GroupsPage: any = () => {
     };
 
     const amendGroupService = (values: any) => {
-
         if (groupObj && groupObj.id) {
-            editObjectById({
+            let editObject = {
                 ...values.formObj,
                 globalDisplay: switchCheck,
                 id: groupObj.id
-            }, 'groups').then(async editGroupAsync => {
+            }
+            editObjectById(editObject, 'groups').then(async editGroupAsync => {
                 let editGroupRes = await editGroupAsync.json();
                 if (editGroupRes) {
                     message.success(`Group ${values.formObj.groupName} has been successfully updated`);
                 }
-            })
+            });
         } else {
             let newGrpId = groupId + 1;
             let amendGrpObj = {...values.formObj, globalDisplay: switchCheck, id: newGrpId};
@@ -132,6 +134,7 @@ export const GroupsPage: any = () => {
                 }
             })
         }
+        setAmendGroupModal(false);
         populateAllGroups();
     };
 
@@ -146,65 +149,85 @@ export const GroupsPage: any = () => {
                 });
             }
             setGroupNameDS(tempItrObj);
+            setGroupNameDSOps(tempItrObj);
         });
-    }
+    };
 
-    return !openCustomizeForm ? (<div className={'pageLayout'}>
-        <div className="reverseFlex">
-            <Button style={{marginRight: 8}} key="addGroup" type="primary" onClick={() => setAmendGroupModal(true)}
-                    icon={<PlusOutlined/>}>
-                Add New
-            </Button>
-            {selectedGroups.length > 0 ?
-                <Button style={{marginRight: 8}} key="delGroup" type="primary" danger icon={<DeleteOutlined/>}>
-                    Delete
-                </Button> : null}
-        </div>
-        <Modal title="Add Unsubscribe Group" centered visible={amendGroupModal} width={500} footer={null}
-               closable={false} destroyOnClose={true}
-               onCancel={cancelUnsubscribeAmend}>
-            <div className='columnFlex'>
-                <Form form={unsubscribeForm} layout={'vertical'} onFinish={amendGroupService}>
-                    <Form.Item label="Group Name" required>
-                        <Form.Item name={['formObj', 'groupName']}
-                                   noStyle rules={[{required: true, message: 'Email Address required'}]}>
-                            <Input placeholder="Text Only" type={"text"}/>
-                        </Form.Item>
-                    </Form.Item>
-                    <Form.Item label="Group Description">
-                        <Form.Item name={['formObj', 'groupDesc']} noStyle>
-                            <TextArea placeholder="Text Only"/>
-                        </Form.Item>
-                    </Form.Item>
-                    <Form.Item label={null}>
-                        <Form.Item noStyle>
-                            <div className={'flexEqualSpacing'}>
-                                <Switch defaultChecked={switchCheck} onChange={(checked => setSwitchCheck(checked))}/>
-                                <Paragraph>Display this group in global subscription preferences</Paragraph></div>
-                        </Form.Item>
-                    </Form.Item>
-                    <div className='reverseFlex'>
-                        <Form.Item>
-                            <Button key="cancel" htmlType={'reset'} onClick={cancelUnsubscribeAmend}
-                                    icon={<CloseOutlined/>}>
-                                Cancel
-                            </Button>
-                        </Form.Item>
-                        <Form.Item>
-                            <Button style={{marginRight: 8}} key="quickAdd" htmlType={'submit'} type="primary"
-                                    icon={<PlusOutlined/>}>
-                                Add
-                            </Button>
-                        </Form.Item>
-                    </div>
-                </Form>
+    const onSearchGroups = (searchParam: string) => {
+        setGroupNameDS(groupNameDSOps.filter(value => {
+            return value.groupName.includes(searchParam);
+        }));
+    };
+
+    return !openCustomizeForm ? (
+        <div className={'pageLayout'}>
+            <div className="secondNav">
+                <Title level={4}>All Groups</Title>
             </div>
-        </Modal>
-        <div className="thirdNav" style={{height: 'calc(100vh - 222px)'}}>
-            <Table scroll={{y: 'calc(100vh - 320px)'}} rowSelection={{...contactRowSelection}} dataSource={groupNameDS}
-                   columns={columns} bordered/>
-        </div>
-    </div>) : <iframe title={"Analytics Dashboard"}
-                      style={{margin: -24, height: 'calc(100vh - 128px)', width: 'calc(100vw - 232px)'}}
-                      src={'https://programmablesearchengine.google.com/about/'}/>
+            <div className="firstNav">
+                <div className="leftPlacement">
+                    <div className="searchInput">
+                        <Search placeholder="input search text" onSearch={onSearchGroups} enterButton/>
+                    </div>
+                </div>
+                <div className="rightPlacement">
+                    {selectedGroups.length > 0 ?
+                        <Button style={{marginRight: 8}} className={'deleteBtn'} key="delGroup" type="primary" danger
+                                icon={<DeleteOutlined/>}>
+                            Delete
+                        </Button> : null}
+                    <Button key="addGroup" type="primary" style={{width: 100}}
+                            onClick={() => setAmendGroupModal(true)}
+                            icon={<PlusOutlined/>}>
+                        Add New
+                    </Button>
+                </div>
+            </div>
+            <Modal title="Add Unsubscribe Group" centered visible={amendGroupModal} width={500} footer={null}
+                   closable={false} destroyOnClose={true}
+                   onCancel={cancelUnsubscribeAmend}>
+                <div className='columnFlex'>
+                    <Form form={unsubscribeForm} layout={'vertical'} onFinish={amendGroupService}>
+                        <Form.Item label="Group Name" required>
+                            <Form.Item name={['formObj', 'groupName']}
+                                       noStyle rules={[{required: true, message: 'Email Address required'}]}>
+                                <Input placeholder="Text Only" type={"text"}/>
+                            </Form.Item>
+                        </Form.Item>
+                        <Form.Item label="Group Description">
+                            <Form.Item name={['formObj', 'groupDesc']} noStyle>
+                                <TextArea placeholder="Text Only"/>
+                            </Form.Item>
+                        </Form.Item>
+                        <Form.Item label={null}>
+                            <Form.Item noStyle>
+                                <div className={'flexEqualSpacing'}>
+                                    <Switch defaultChecked={switchCheck}
+                                            onChange={(checked => setSwitchCheck(checked))}/>
+                                    <Paragraph>Display this group in global subscription preferences</Paragraph></div>
+                            </Form.Item>
+                        </Form.Item>
+                        <div className='reverseFlex'>
+                            <Form.Item>
+                                <Button key="cancel" htmlType={'reset'} onClick={cancelUnsubscribeAmend}
+                                        icon={<CloseOutlined/>}>
+                                    Cancel
+                                </Button>
+                            </Form.Item>
+                            <Form.Item>
+                                <Button style={{marginRight: 8}} key="quickAdd" htmlType={'submit'} type="primary"
+                                        icon={<PlusOutlined/>}>
+                                    Add
+                                </Button>
+                            </Form.Item>
+                        </div>
+                    </Form>
+                </div>
+            </Modal>
+            <div className="thirdNav">
+                <Table rowSelection={{...contactRowSelection}} dataSource={groupNameDS} columns={columns} bordered/>
+            </div>
+        </div>) : <iframe title={"Analytics Dashboard"}
+                          style={{margin: -24, height: 'calc(100vh - 128px)', width: 'calc(100vw - 232px)'}}
+                          src={'https://programmablesearchengine.google.com/about/'}/>
 }

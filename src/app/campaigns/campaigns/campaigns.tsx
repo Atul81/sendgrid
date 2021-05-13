@@ -152,6 +152,9 @@ export const CampaignPage: any = () => {
 
     return !openAutomationAmend ? (
         <div className="pageLayout">
+            <div className="secondNav">
+                <Title level={4}>Campaigns</Title>
+            </div>
             <div className="firstNav">
                 <div className="leftPlacement">
                     <Search placeholder="Search Custom field" onSearch={onSearch} enterButton/>
@@ -178,7 +181,7 @@ export const CampaignPage: any = () => {
                 <Input placeholder="New Campaign Name"
                        onChange={(inpEvent) => setCampaignObj({name: inpEvent.target.value})}/>
             </Modal>
-            <div className="thirdNav" style={{height: 'calc(100vh - 228px)'}}>
+            <div className="thirdNav">
                 <Table rowSelection={{...customFieldRowSelection}} dataSource={campaignsDS} columns={columns}
                        bordered/>
             </div>

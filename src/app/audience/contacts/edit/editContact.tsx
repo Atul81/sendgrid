@@ -32,8 +32,19 @@ export const EditContactPage: any = (props: any) => {
     }, [dispatch, contactForm, props.contactObj]);
 
     const modifyContactService = (values: any) => {
+        let tagsInfo = '';
+        if (values.formObj.tags && Array.isArray(values.formObj.tags) && values.formObj.tags.length > 0) {
+            values.formObj.tags.forEach((info: any) => {
+                tagsInfo = tagsInfo.concat(info).concat(', ');
+            });
+            tagsInfo = tagsInfo.substr(0, tagsInfo.length - 2);
+        }
         if (props.contactObj.firstName) {
-            editObjectById({...values.formObj, oldObj: props.contactObj}, 'contacts').then(async response => {
+            editObjectById({
+                ...values.formObj,
+                tags: tagsInfo,
+                oldObj: props.contactObj
+            }, 'contacts').then(async response => {
                 let resBody = await response.json();
                 if (resBody) {
                     populateFormObj(resBody, contactForm);
@@ -43,8 +54,11 @@ export const EditContactPage: any = (props: any) => {
                 console.log(reason);
             });
         } else {
-            console.log(props.contactObj)
-            addNewObject({...values.formObj, id: props.contactObj.id + 1}, 'contacts').then(async response => {
+            addNewObject({
+                ...values.formObj,
+                tags: tagsInfo,
+                id: props.contactObj.id + 1
+            }, 'contacts').then(async response => {
                 let resBody = await response.json();
                 if (resBody) {
                     populateFormObj(resBody, contactForm);
@@ -52,7 +66,8 @@ export const EditContactPage: any = (props: any) => {
                 }
             }).catch(reason => {
                 console.log(reason);
-                message.error("Unable to create new contact", 0.6);
+                message.error("Unable to create new contact", 0.6).then(() => {
+                });
             });
         }
     };

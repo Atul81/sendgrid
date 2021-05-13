@@ -68,7 +68,7 @@ export const SegmentsPage: any = () => {
             }),
         },
     ];
-    const [newSegmentModal, setNewSegmentMoal] = useState(false);
+    const [newSegmentModal, setNewSegmentModal] = useState(false);
     const [segmentObj, setSegmentObj] = useState({});
 
     const onSearch = (searchParam: string) => {
@@ -89,7 +89,7 @@ export const SegmentsPage: any = () => {
 
     const openSegmentEdit = (record: any) => {
         setSegmentObj(record);
-        setNewSegmentMoal(true);
+        setNewSegmentModal(true);
         message.warn("Work in progress", 0.2).then(() => {
         });
     };
@@ -102,20 +102,21 @@ export const SegmentsPage: any = () => {
                 message.success(`Segment with name ${record.name} has been successfully deleted`);
             }
         });
-    }
-
-    const updateNewSegmentService = (segObj: any) => {
-        console.log('click', segObj);
     };
 
     const deleteAllContact = () => {
         if (segmentNameSelected.length === 0) {
-            message.warning("Please use the checkbox to select contact for deletion", 0.8);
+            message.warning("Please use the checkbox to select contact for deletion", 0.8).then(() => {
+            });
         }
-        message.error("Bulk Delete not yet supported");
+        message.error("Bulk Delete not yet supported").then(() => {
+        });
     };
     return (
         <div className="pageLayout">
+            <div className="secondNav">
+                <Title level={4}>All Segments</Title>
+            </div>
             <div className="firstNav">
                 <div className="leftPlacement">
                     <div className="searchInput">
@@ -128,7 +129,7 @@ export const SegmentsPage: any = () => {
                                     title={<p><Title level={5}>Are you sure you want to delete?</Title>
                                         This will permanently delete these records and all associated data from your
                                         account. Deleting and re-adding records can alter your monthly contact
-                                        limits. <a>Learn
+                                        limits. <a href={'https://www.google.com'} target={'_blank'} rel={'noreferrer'}>Learn
                                             More</a></p>}
                                     okText="Delete" cancelText="Cancel"
                                     onConfirm={deleteAllContact}>
@@ -138,9 +139,6 @@ export const SegmentsPage: any = () => {
                             onClick={() => openSegmentEdit(true)}>Add New
                         Segment</Button>
                 </div>
-            </div>
-            <div className="secondNav">
-                <Title level={4}>All Segments</Title>
             </div>
             <div className="thirdNav">
                 <Table rowSelection={{...segmentRowSelection}} columns={columns} dataSource={segmentDS} bordered/>

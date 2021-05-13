@@ -66,9 +66,6 @@ export const routes = [
                 key: 'templates'
             },
             {
-                key: 'template-editor'
-            },
-            {
                 key: 'delivery-testing'
             }
         ]

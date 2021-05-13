@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Button, message, Table} from "antd";
 import Title from "antd/lib/typography/Title";
-import {CheckOutlined, PlusOutlined} from "@ant-design/icons";
+import {CheckOutlined, CopyOutlined, PlusOutlined} from "@ant-design/icons";
 import {DnsRecordsInterface} from "../../settingsInterface";
 import './../domain.scss';
 import {getAllServerCall} from "../../../../service/serverCalls/mockServerRest";
+import Search from "antd/es/input/Search";
 
 export const DnsRecordsPage: any = (props: any) => {
 
@@ -33,7 +34,8 @@ export const DnsRecordsPage: any = (props: any) => {
                 return (
                     <div className='flexEqualSpacing' style={{paddingRight: '12%'}}>
                         <div>{record.dnsName} </div>
-                        <div className={'copyText'} onClick={() => generateCopiedMessage(record.dnsName)}>Copy</div>
+                        <div className={'copyText'} onClick={() => generateCopiedMessage(record.dnsName)}>
+                            <CopyOutlined/></div>
                     </div>
                 );
             })
@@ -46,7 +48,8 @@ export const DnsRecordsPage: any = (props: any) => {
                 return (
                     <div className='flexEqualSpacing' style={{paddingRight: '12%'}}>
                         <div>{record.canonicalName} </div>
-                        <div className={'copyText'} onClick={() => generateCopiedMessage(record.canonicalName)}>Copy
+                        <div className={'copyText'} onClick={() => generateCopiedMessage(record.canonicalName)}>
+                            <CopyOutlined/>
                         </div>
                     </div>
                 );
@@ -59,6 +62,7 @@ export const DnsRecordsPage: any = (props: any) => {
     }
 
     const [dnsRecordsDS, setDnsRecordsDS] = useState<DnsRecordsInterface[]>([]);
+    const [dnsRecordsDSOps, setDnsRecordsDSOps] = useState<DnsRecordsInterface[]>([]);
 
     useEffect(() => {
         getAllServerCall('domain').then(async allDomainAsync => {
@@ -70,23 +74,35 @@ export const DnsRecordsPage: any = (props: any) => {
                 });
             }
             setDnsRecordsDS(data);
+            setDnsRecordsDSOps(data);
         });
     }, []);
 
-    return <div className="domain pageLayout">
-        <div className="firstNav">
-            <div className="leftPlacement">
+    const onSearchDnsRecords = (searchParam: string) => {
+        setDnsRecordsDS(dnsRecordsDSOps.filter(value => {
+            return value.dnsName.includes(searchParam);
+        }));
+    };
+
+    return (
+        <div className="domain pageLayout">
+            <div className="secondNav">
                 <Title level={4}>Install DNS Records</Title>
             </div>
-            <div className="rightPlacement">
-                <Button style={{width: 72, marginRight: 8}} type={'primary'} onClick={verifyDomainSettings}
-                        icon={<CheckOutlined/>}>Verify</Button>
-                <Button style={{width: 112}} icon={<PlusOutlined/>} onClick={props.exitToLandingPage}>Add
-                    Domain</Button>
+            <div className="firstNav">
+                <div className="leftPlacement">
+                    <Search placeholder="input search text" onSearch={onSearchDnsRecords} enterButton/>
+                </div>
+                <div className="rightPlacement">
+                    <Button style={{width: 72, marginRight: 8}} type={'primary'} onClick={verifyDomainSettings}
+                            icon={<CheckOutlined/>}>Verify</Button>
+                    <Button style={{width: 112}} icon={<PlusOutlined/>} onClick={props.exitToLandingPage}>Add
+                        Domain</Button>
+                </div>
+            </div>
+            <div className="thirdNav">
+                <Table scroll={{y: 'calc(100vh - 326px)'}} dataSource={dnsRecordsDS} columns={columns} bordered/>
             </div>
         </div>
-        <div className="thirdNav" style={{height: 'calc(100vh - 238px)'}}>
-            <Table scroll={{y: 'calc(100vh - 326px)'}} dataSource={dnsRecordsDS} columns={columns} bordered/>
-        </div>
-    </div>
+    )
 }

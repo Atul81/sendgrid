@@ -5,7 +5,7 @@
     "firstName": "John",
     "lastName": "Doe",
     "emailMarketing": "Subscribed",
-    "tags": "Prospect",
+    "tags": "Prospect, Campaigns",
     "address": null,
     "city": null,
     "country": null,

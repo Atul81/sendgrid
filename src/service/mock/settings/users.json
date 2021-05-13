@@ -3,13 +3,23 @@
     "id": 1,
     "email": "dev-testing1@gmail.com",
     "type": "Admin",
-    "permission": "manageContacts"
+    "permission": [
+      "manageContacts",
+      "manageCampaigns",
+      "moreOptions",
+      "manageUsers"
+    ]
   },
   {
     "id": 2,
     "email": "dev-testing2@gmail.com",
     "type": "Admin",
-    "permission": "manageCampaigns"
+    "permission": [
+      "manageContacts",
+      "manageCampaigns",
+      "moreOptions",
+      "manageUsers"
+    ]
   },
   {
     "id": 3,
@@ -21,19 +31,29 @@
     "id": 4,
     "email": "dev-testing4@gmail.com",
     "type": "Admin",
-    "permission": "manageCampaigns"
+    "permission": [
+      "manageContacts",
+      "manageCampaigns",
+      "moreOptions",
+      "manageUsers"
+    ]
   },
   {
     "id": 5,
     "email": "dev-testing5@gmail.com",
     "type": "Viewer",
-    "permission": "moreOptions"
+    "permission": null
   },
   {
     "id": 6,
     "email": "dev-testing6@gmail.com",
     "type": "Admin",
-    "permission": "manageCampaigns"
+    "permission": [
+      "manageContacts",
+      "manageCampaigns",
+      "moreOptions",
+      "manageUsers"
+    ]
   },
   {
     "id": 7,
@@ -45,13 +65,18 @@
     "id": 8,
     "email": "dev-testing8@gmail.com",
     "type": "Admin",
-    "permission": "manageUsers"
+    "permission": [
+      "manageContacts",
+      "manageCampaigns",
+      "moreOptions",
+      "manageUsers"
+    ]
   },
   {
     "id": 9,
     "email": "dev-testing9@gmail.com",
     "type": "Viewer",
-    "permission": "moreOptions"
+    "permission": null
   },
   {
     "id": 10,

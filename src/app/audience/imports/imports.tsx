@@ -6,6 +6,7 @@ import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import {getTimeFromUnix} from "../../../utils/common";
+import Search from "antd/es/input/Search";
 
 export const ImportsPage: any = () => {
     const {Title} = Typography;
@@ -19,11 +20,13 @@ export const ImportsPage: any = () => {
                 tempObj.push({...itr, importTimestamp: getTimeFromUnix(itr.importTimestamp), key: itr.id});
             });
             setImportContactDS(tempObj);
+            setImportContactOps(tempObj);
         });
     }, []);
 
 
     const [importContactDS, setImportContactDS] = useState<ImportsInterface[]>([]);
+    const [importContactOps, setImportContactOps] = useState<ImportsInterface[]>([]);
     const columns = [
         {
             title: 'File Name',
@@ -59,13 +62,24 @@ export const ImportsPage: any = () => {
         setUploadObj({});
         openRowDetailsPage(false);
     };
-
+    const onSearchImports = (searchParam: string) => {
+        setImportContactDS(importContactOps.filter(value => {
+            return value.fileName.includes(searchParam);
+        }));
+    };
     return !rowDetailsPage ? (
         <div className="pageLayout">
             <div className="secondNav">
                 <Title level={4}>All Imports</Title>
             </div>
-            <div className="thirdNav" style={{height: 'calc(100vh - 228px)'}}>
+            <div className="firstNav">
+                <div className="leftPlacement">
+                    <div className="searchInput">
+                        <Search placeholder="input search text" onSearch={onSearchImports} enterButton/>
+                    </div>
+                </div>
+            </div>
+            <div className="thirdNav">
                 <Table columns={columns} dataSource={importContactDS} bordered/>
             </div>
         </div>

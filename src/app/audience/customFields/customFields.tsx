@@ -183,6 +183,9 @@ export const CustomFieldsPage: any = () => {
         <div className="customFields">
             <div className="tableAndReserved">
                 <div className="pageLayout">
+                    <div className="secondNav">
+                        <Title level={4}>Custom Fields</Title>
+                    </div>
                     <div className="firstNav">
                         <div className="leftPlacement">
                             <Search placeholder="Search Custom field" onSearch={onSearch} enterButton/>
@@ -203,7 +206,7 @@ export const CustomFieldsPage: any = () => {
                                 Field</Button>
                         </div>
                     </div>
-                    <div className="thirdNav" style={{height: 'calc(100vh - 228px)'}}>
+                    <div className="thirdNav">
                         <Modal key={customFields.name} className={'editModal'} title="Add/Edit Custom Field" centered
                                visible={editModal}
                                width={450} footer={null} onCancel={cancelFieldModification}>
