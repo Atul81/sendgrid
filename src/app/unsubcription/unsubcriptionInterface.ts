@@ -4,3 +4,9 @@ export interface GroupNameInterface {
     groupDesc: string,
     globalDisplay: boolean
 }
+
+export interface AccordionHeaderInterface {
+    key: string,
+    name: string,
+    btnName: string
+}

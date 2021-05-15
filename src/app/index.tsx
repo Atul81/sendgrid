@@ -29,6 +29,7 @@ import {DedicatedIpsPage} from "./settings/dedicatedIps/DedicatedIpsLoadable";
 import {CustomEventsPage} from "./settings/customEvents/CustomEventsLoadable";
 import {UsersPage} from "./settings/users/UsersLoadable";
 import {PreferencePage} from "./settings/preferences/PreferenceLoadable";
+import {CustomizeFormPage} from "./unsubcription/customizeForm/CustomizeFormLoadable";
 
 export function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -132,6 +133,7 @@ export function App() {
                                 <Route path="/campaigns/senders" component={SendersPage}/>
                                 <Route path="/templates" component={TemplatesPage}/>
                                 <Route path="/unsubscription/groups" component={GroupsPage}/>
+                                <Route path="/unsubscription/customize-form" component={CustomizeFormPage}/>
                                 <Route path="/settings/domain" component={DomainSettingsPage}/>
                                 <Route path="/settings/dedicated-ips" component={DedicatedIpsPage}/>
                                 <Route path="/settings/custom-events" component={CustomEventsPage}/>

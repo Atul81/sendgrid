@@ -1,0 +1,33 @@
+.customizeForm {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40%, 1fr));;
+  grid-column-gap: 24px;
+  padding-top: 24px;
+
+  .uploadSection {
+    .uploadBtn {
+      height: 120px;
+
+      .anticon svg {
+        height: 52px;
+        width: 52px;
+      }
+    }
+  }
+
+  .accordionSection {
+    .swatch {
+      padding: 5px;
+      border-radius: 1px;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, .1);
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .pickedColor {
+      width: 36px;
+      height: 32px;
+      border-radius: 2px;
+    }
+  }
+}

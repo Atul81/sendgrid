@@ -64,5 +64,37 @@
       "value": "4",
       "children": null
     }
+  ],
+  "accordionHeader": [
+    {
+      "id": "1",
+      "name": "Background Color",
+      "btnName": "Customize"
+    },
+    {
+      "id": "2",
+      "name": "Social Button",
+      "btnName": "Customize"
+    },
+    {
+      "id": "3",
+      "name": "Banner",
+      "btnName": "Customize"
+    },
+    {
+      "id": "4",
+      "name": "Text Descriptions",
+      "btnName": "Customize"
+    },
+    {
+      "id": "5",
+      "name": "Error Messages",
+      "btnName": "Customize"
+    },
+    {
+      "id": "6",
+      "name": "Test Descriptions",
+      "btnName": "Customize"
+    }
   ]
 }

@@ -21,7 +21,6 @@ export const GroupsPage: any = () => {
     const [groupNameDSOps, setGroupNameDSOps] = useState<GroupNameInterface[]>([]);
     const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
     const urlPath = useLocation();
-    const [openCustomizeForm, setCustomizeFormFrame] = useState(false);
     const [groupId, setGroupId] = useState(7);
     const [groupObj, setGroupObj] = useState({
         id: ''
@@ -39,13 +38,7 @@ export const GroupsPage: any = () => {
     useEffect(() => {
         dispatch(updateBreadcrumb(['unsubscription', 'groups']));
         dispatch(updateActiveContent('groups'));
-        let urlRoute = urlPath.pathname.split("/");
-        setCustomizeFormFrame(false);
-        if (urlRoute[2] && urlRoute[2] === 'customize-form') {
-            setCustomizeFormFrame(true);
-        } else {
-            populateAllGroups();
-        }
+        populateAllGroups();
     }, [dispatch, urlPath.pathname]);
 
     const openGroupNameEdit = (record: any) => {
@@ -159,7 +152,7 @@ export const GroupsPage: any = () => {
         }));
     };
 
-    return !openCustomizeForm ? (
+    return (
         <div className={'pageLayout'}>
             <div className="secondNav">
                 <Title level={4}>All Groups</Title>
@@ -227,7 +220,6 @@ export const GroupsPage: any = () => {
             <div className="thirdNav">
                 <Table rowSelection={{...contactRowSelection}} dataSource={groupNameDS} columns={columns} bordered/>
             </div>
-        </div>) : <iframe title={"Analytics Dashboard"}
-                          style={{margin: -24, height: 'calc(100vh - 128px)', width: 'calc(100vw - 232px)'}}
-                          src={'https://programmablesearchengine.google.com/about/'}/>
+        </div>
+    )
 }

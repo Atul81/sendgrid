@@ -1,23 +1,21 @@
 .preference {
+  display: grid;
+  grid-template-columns: 50% auto;
+  grid-column-gap: 16px;
 
   .ant-form-item-control {
-    max-width: 25%;
-    width: 25%;
+    max-width: 40%;
+    width: 31.5%;
   }
 
-  .borderBox {
-    border: 2px solid black;
-    margin-bottom: 1.5%;
+  .ant-picker-range {
+    min-width: 252px;
+  }
 
-    .ant-picker-suffix {
-      .anticon svg {
-        margin-bottom: 0;
-      }
+  .ant-picker-suffix {
+    .anticon svg {
+      margin-bottom: 0;
     }
-  }
-
-  .topContainer {
-    padding: 24px;
   }
 
   .marginBtm1 {
@@ -26,10 +24,7 @@
 
   .trackingContainer {
     display: flex;
-
-    .ant-picker-range {
-      min-width: 253px;
-    }
+    flex-wrap: wrap;
 
     .ant-form-item {
       margin-right: 2%;
