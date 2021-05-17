@@ -21,6 +21,7 @@ export const AmendAutomationPage: any = (props: any) => {
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
     const [elements, setElements] = useState<Elements>([]);
     const dispatch = useDispatch();
+
     useEffect(() => {
         dispatch(updateBreadcrumb(['Campaigns', 'Automation', 'amend-automation']));
 
@@ -50,13 +51,6 @@ export const AmendAutomationPage: any = (props: any) => {
             });
         }
     }, [props.amendObj.key, props.amendObj.viewType, dispatch]);
-
-    useEffect(() => {
-        if (reactFlowInstance && elements.length) {
-            // @ts-ignore
-            reactFlowInstance.fitView();
-        }
-    }, [reactFlowInstance, elements]);
 
     const {Text} = Typography;
     const {Option} = Select;
@@ -152,7 +146,7 @@ export const AmendAutomationPage: any = (props: any) => {
     };
 
     const onLoad = (_reactFlowInstance: any) => {
-        setReactFlowInstance(_reactFlowInstance);
+        setReactFlowInstance(_reactFlowInstance.fitView());
     };
 
     const onElementClick = (event: any, element: any) => {
@@ -207,6 +201,18 @@ export const AmendAutomationPage: any = (props: any) => {
         height: '30px',
         lineHeight: '30px',
     };
+
+    const onNodeDragStop = (event: any, node: any) => {
+        let oldElements: Elements = [...elements];
+        for (let i = 0; i < elements.length; i++) {
+            if (elements[i].id === node.id) {
+                oldElements[i] = node;
+                break;
+            }
+        }
+        setElements(oldElements);
+    }
+
     return (
         <div className='amendAutomation pageLayout'>
             {(props.amendObj && (props.amendObj.viewType === 'edit' || props.amendObj.viewType === 'create')) ? (
@@ -278,7 +284,7 @@ export const AmendAutomationPage: any = (props: any) => {
                 </div>
             </Modal>
             <ReactFlow onElementClick={onElementClick} elements={elements} snapToGrid={true}
-                       snapGrid={[15, 15]}
+                       snapGrid={[15, 15]} onNodeDragStop={onNodeDragStop}
                        onElementsRemove={onElementsRemove} onConnect={onConnect} onLoad={onLoad} deleteKeyCode={46}>
                 <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2}/>
                 <Controls/>
