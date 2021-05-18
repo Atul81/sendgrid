@@ -129,8 +129,8 @@ export function App() {
                                 <Route path="/audience/segments" component={SegmentsPage}/>
                                 <Route path="/audience/imports" component={ImportsPage}/>
                                 <Route path="/audience/exports" component={ExportPage}/>
-                                <Route path="/campaigns/campaigns" component={CampaignPage}/>
-                                <Route path="/campaigns/senders" component={SendersPage}/>
+                                <Route path="/campaign/campaigns" component={CampaignPage}/>
+                                <Route path="/campaign/senders" component={SendersPage}/>
                                 <Route path="/templates" component={TemplatesPage}/>
                                 <Route path="/unsubscription/groups" component={GroupsPage}/>
                                 <Route path="/unsubscription/customize-form" component={CustomizeFormPage}/>
@@ -140,7 +140,7 @@ export function App() {
                                 <Route path="/settings/users" component={UsersPage}/>
                                 <Route path="/settings/preference" component={PreferencePage}/>
                                 <Route path="/audience" component={ContactsPage}/>
-                                <Route path="/campaigns" component={AutomationPage}/>
+                                <Route path="/campaign" component={AutomationPage}/>
                                 <Route path="/unsubscription" component={GroupsPage}/>
                                 <Route path="/settings" component={DomainSettingsPage}/>
                                 <Route path="/" component={DashboardPage}/>

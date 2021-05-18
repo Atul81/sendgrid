@@ -41,9 +41,9 @@ export const routes = [
     },
     {
         key: '3',
-        name: 'campaigns',
+        name: 'campaign',
         icon: <CompassOutlined/>,
-        route: '/campaigns/',
+        route: '/campaign/',
         children: [
             {
                 key: 'automation'

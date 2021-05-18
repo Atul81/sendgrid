@@ -4,11 +4,11 @@
     "data": [
       {
         "id": "4",
-        "position": {
-          "x": 347.3891843767089,
-          "y": 131.7313123521252
-        },
         "type": "input",
+        "position": {
+          "x": 242.3891843767089,
+          "y": -243.2686876478748
+        },
         "data": {
           "label": {
             "key": null,
@@ -17,7 +17,7 @@
               "size": "small",
               "title": "Inp Test1",
               "bordered": false,
-              "children": "Card content1"
+              "children": "Card content"
             },
             "_owner": null,
             "_store": {}
@@ -26,11 +26,11 @@
       },
       {
         "id": "5",
-        "position": {
-          "x": 495.02517296805615,
-          "y": -49.119048973301624
-        },
         "type": "default",
+        "position": {
+          "x": 480.02517296805604,
+          "y": -49.11904897330163
+        },
         "data": {
           "label": {
             "key": null,
@@ -48,11 +48,11 @@
       },
       {
         "id": "6",
-        "position": {
-          "x": 890.3637320056391,
-          "y": 100.4604891891966
-        },
         "type": "output",
+        "position": {
+          "x": 365.3637320056391,
+          "y": 340.4604891891966
+        },
         "data": {
           "label": {
             "key": null,
@@ -83,6 +83,78 @@
         "targetHandle": null,
         "id": "reactflow__edge-5null-6null",
         "label": "Default1 To Output1 Edge"
+      },
+      {
+        "id": "7",
+        "type": "default",
+        "position": {
+          "x": 660,
+          "y": 165
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "New One",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "5",
+        "sourceHandle": null,
+        "target": "7",
+        "targetHandle": null,
+        "id": "reactflow__edge-5null-7null"
+      },
+      {
+        "source": "7",
+        "sourceHandle": null,
+        "target": "6",
+        "targetHandle": null,
+        "id": "reactflow__edge-7null-6null"
+      },
+      {
+        "id": "8",
+        "type": "default",
+        "position": {
+          "x": 210,
+          "y": -15
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "Def2",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "4",
+        "sourceHandle": null,
+        "target": "8",
+        "targetHandle": null,
+        "id": "reactflow__edge-4null-8null"
+      },
+      {
+        "source": "8",
+        "sourceHandle": null,
+        "target": "6",
+        "targetHandle": null,
+        "id": "reactflow__edge-8null-6null"
       }
     ]
   },

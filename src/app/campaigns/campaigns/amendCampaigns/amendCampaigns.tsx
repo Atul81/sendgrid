@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Button, DatePicker, Form, Input, message, Radio, Select, Space, Steps, Switch} from 'antd';
+import {Alert, Button, DatePicker, Form, Input, message, Modal, Radio, Select, Space, Steps, Switch} from 'antd';
 import './amendCampaigns.scss';
 import {
     CheckOutlined,
@@ -21,6 +21,7 @@ import moment from "moment";
 export const AmendCampaignsPage: any = (propsObj: any) => {
     const [campaignForm] = Form.useForm();
     const [pageEditRights, setPageEditRights] = useState(propsObj.amendObj.openType === 'edit');
+    const [showAlertIcon, setShowAlertIcon] = useState(false);
 
     useEffect(() => {
         campaignForm.setFieldsValue(currentFormValues.current);
@@ -43,6 +44,9 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 message.error(reason).then(() => {
                 });
             });
+        }
+        if (propsObj.amendObj && propsObj.amendObj.openType === 'create') {
+            setPageEditRights(true);
         }
 
         getAllServerCall('segments').then(async segmentsRes => {
@@ -161,8 +165,9 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             step2: values.step2 ? values.step2 : currentFormValues.current.step2,
             step1: values.step1 ? values.step1 : currentFormValues.current.step1
         };
-        message.success("Campaign Data cached, please click Done button at Step 5 to save your changes", 0.7).then(() => {
-        });
+        getAlertInfoMsg();
+        // message.success("Campaign Data cached, please click Done button at Step 5 to save your changes", 0.7).then(() => {
+        // });
     };
 
     const createYourMessageRadio = (radioValue: any) => {
@@ -356,8 +361,21 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
         });
     };
 
+    const getAlertInfoMsg = () => {
+        Modal.warning({
+            title: 'Campaign Data cached, please click Done button at Step 5 to save your changes',
+            content: null,
+            onOk() {},
+        });
+    }
+
     return (
         <div className='amendCampaign pageLayout'>
+            {showAlertIcon ? <Alert closeText="Close Now"
+                message="Campaign Data cached, please click Done button at Step 5 to save your changes"
+                banner={true}
+                closable afterClose={() => setShowAlertIcon(false)}
+            /> : null}
             <div className='cancelNav'>
                 <Button className="deleteBtn" icon={<StepBackwardOutlined/>}
                         onClick={propsObj.routeToOverview}>Cancel</Button>

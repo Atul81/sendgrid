@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {
     Button,
+    Divider,
     Dropdown,
     Form,
     Input,
@@ -19,6 +20,7 @@ import {
     CloseOutlined,
     DeleteOutlined,
     DownloadOutlined,
+    DownOutlined,
     EditOutlined,
     ExportOutlined,
     HistoryOutlined,
@@ -101,6 +103,8 @@ export const ContactsPage: any = () => {
     const [serviceInProgress, setServiceInProgress] = useState(false);
     const [openAdditionalModal, setAdditionalModal] = useState(false);
     const [additionalModalInfo, setAdditionalModalInfo] = useState('');
+    const [newTagName, setNewTagName] = useState<string>('');
+    const [tagId, setTagId] = useState<string>("5");
 
     const populateAllContacts = () => {
         getAllServerCall('contacts').then(async response => {
@@ -148,6 +152,8 @@ export const ContactsPage: any = () => {
             title: 'Tags',
             dataIndex: 'tags',
             key: 'tags',
+            width: '10%',
+            ellipsis: true
         },
         {
             title: 'Action',
@@ -404,6 +410,37 @@ export const ContactsPage: any = () => {
         }
     };
 
+    const onNameChange = (event: any) => {
+        setNewTagName(event.target.value);
+    };
+
+    const addItem = () => {
+        if (newTagName && newTagName.length > 1) {
+            let tempTags = [...allTags];
+            let newTagObj = {
+                value: tagId,
+                label: newTagName,
+                children: null
+            };
+            tempTags.push(newTagObj);
+            setTagId(String(Number(tagId) + 1));
+            setAllTags(tempTags);
+            message.success('New Tag has been cached, Server Call needs backend', 0.6).then(() => {
+            });
+            setNewTagName('');
+            // addNewObject({...newTagObj, id: tagId}, 'tags').then(async newTagAsync => {
+            //     let newTagRes = await newTagAsync.json();
+            //     if (newTagRes) {
+            //
+            //     }
+            // });
+        } else {
+            message.error('Please provide a tag name', 0.6).then(() => {
+            });
+        }
+
+    };
+
     return !editPage ? (
         <div className="pageLayout">
             <div className="secondNav">
@@ -438,7 +475,10 @@ export const ContactsPage: any = () => {
                             </Popconfirm>
                         </> : null}
                     <Button className="exportBtn" onClick={exportCsv} icon={<ExportOutlined/>}>Export CSV</Button>
-                    <Dropdown.Button type={'primary'} overlay={addContactMenu}>Add Contact</Dropdown.Button>
+                    <Dropdown overlay={addContactMenu}>
+                        <Button type={'primary'}>Add Contact<DownOutlined/>
+                        </Button>
+                    </Dropdown>
                 </div>
                 <Modal title="Upload Contacts" centered visible={uploadModal} width={'65%'} footer={[
                     <Button key="cancel" onClick={cancelUploadProcess} icon={<CloseOutlined/>}>
@@ -463,7 +503,25 @@ export const ContactsPage: any = () => {
                     {additionalModalInfo === 'addTags' ?
                         <>
                             <Select onChange={onMultiSelectChange} mode={'multiple'} style={{width: 496}}
-                                    placeholder="Select Tags">
+                                    dropdownRender={menu => (
+                                        <div>
+                                            {menu}
+                                            <Divider style={{margin: '4px 0'}}/>
+                                            <div style={{display: 'flex', flexWrap: 'nowrap', padding: 8}}>
+                                                <Input style={{flex: 'auto'}} value={newTagName}
+                                                       onChange={onNameChange}/>
+                                                <a style={{
+                                                    flex: 'none',
+                                                    padding: '8px',
+                                                    display: 'block',
+                                                    cursor: 'pointer'
+                                                }}
+                                                   onClick={addItem}>
+                                                    <PlusOutlined/> Add New Tag
+                                                </a>
+                                            </div>
+                                        </div>
+                                    )} placeholder="Select Tags">
                                 {
                                     allTags.map(itr => {
                                         return <Option value={itr.label} key={itr.value}>{itr.label}</Option>

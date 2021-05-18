@@ -92,20 +92,25 @@ export const AutomationPage: any = () => {
             if (delRes) {
                 message.success(`Automation ${record.name} has been successfully deleted`);
                 populateAllAutomations();
+                deleteObjectById(record.key, 'workFlow').then(async response => {
+                    let delResWf = await response.json();
+                    console.log('Deleted workflow information', delResWf);
+                })
             }
         })
     };
 
     const addNewAutomation = () => {
         if (automationObj.name) {
-            addNewObject({
+            let editObject = {
                 name: automationObj.name,
                 status: 'Un-scheduled',
                 id: automationId
-            }, 'automation').then(async newAutRes => {
+            }
+            addNewObject(editObject, 'automation').then(async newAutRes => {
                 let autRes = newAutRes.json();
                 if (autRes) {
-                    openAutomationRow(null, 'create')
+                    openAutomationRow({id: automationId}, 'create')
                     setAutomationId(automationId + 1);
                     setNewAutomationModal(false);
                     populateAllAutomations();

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Button, Form, Input, message, Modal, Popconfirm, Space, Switch, Table} from "antd";
-import {CloseOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
+import {CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
 import {GroupNameInterface} from "../unsubcriptionInterface";
 import Paragraph from "antd/es/typography/Paragraph";
@@ -209,8 +209,8 @@ export const GroupsPage: any = () => {
                             </Form.Item>
                             <Form.Item>
                                 <Button style={{marginRight: 8}} key="quickAdd" htmlType={'submit'} type="primary"
-                                        icon={<PlusOutlined/>}>
-                                    Add
+                                        icon={groupObj.id ? <CheckOutlined/> : <PlusOutlined/>}>
+                                    {groupObj.id ? 'Save' : 'Add'}
                                 </Button>
                             </Form.Item>
                         </div>

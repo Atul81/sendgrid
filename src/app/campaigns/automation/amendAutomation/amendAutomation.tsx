@@ -13,19 +13,19 @@ import ReactFlow, {
 } from 'react-flow-renderer';
 import './amendAutomation.scss';
 import {StepBackwardOutlined} from "@ant-design/icons";
-import {editObjectById, getObjectById} from "../../../../service/serverCalls/mockServerRest";
+import {addNewObject, editObjectById, getObjectById} from "../../../../service/serverCalls/mockServerRest";
 import {updateBreadcrumb} from "../../../../store/actions/root";
 import {useDispatch} from "react-redux";
 
 export const AmendAutomationPage: any = (props: any) => {
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
+    const [reactFlowInstanceFitView, setReactFlowInstanceFitView] = useState(null);
     const [elements, setElements] = useState<Elements>([]);
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(updateBreadcrumb(['Campaigns', 'Automation', 'amend-automation']));
-
-        if (props.amendObj.viewType !== 'create') {
+        if (props.amendObj.viewType !== 'create' && props.amendObj.key) {
             getObjectById(props.amendObj.key, 'workFlow').then(async response => {
                 let elementsJson = await response.json();
                 if (elementsJson) {
@@ -49,6 +49,13 @@ export const AmendAutomationPage: any = (props: any) => {
                     setElements(tempObj);
                 }
             });
+        } else {
+            addNewObject({data: elements, id: props.amendObj.id}, 'workFlow').then(async newWorkflowAsync => {
+                let newWorkflowRes = await newWorkflowAsync.json();
+                if (newWorkflowRes) {
+                    message.success(`Workflow data for automation ${props.amendObj.name} has been successfully created`, 0.7);
+                }
+            })
         }
     }, [props.amendObj.key, props.amendObj.viewType, dispatch]);
 
@@ -146,7 +153,8 @@ export const AmendAutomationPage: any = (props: any) => {
     };
 
     const onLoad = (_reactFlowInstance: any) => {
-        setReactFlowInstance(_reactFlowInstance.fitView());
+        setReactFlowInstance(_reactFlowInstance);
+        setReactFlowInstanceFitView(_reactFlowInstance.fitView());
     };
 
     const onElementClick = (event: any, element: any) => {
@@ -188,7 +196,10 @@ export const AmendAutomationPage: any = (props: any) => {
     };
 
     const saveJson = () => {
-        editObjectById({data: elements, id: props.amendObj.key}, 'workFlow').then(async editElementsRes => {
+        editObjectById({
+            data: elements,
+            id: props.amendObj.key ? props.amendObj.key : props.amendObj.id
+        }, 'workFlow').then(async editElementsRes => {
             let elementsJson = await editElementsRes.json();
             if (elementsJson && elementsJson.id) {
                 message.success(`Workflow data for automation ${props.amendObj.name} has been successfully updated`, 0.7);
@@ -248,8 +259,8 @@ export const AmendAutomationPage: any = (props: any) => {
                             </div>
                         }
                         <div className='rightPlacement'>
-                            <Text type="warning">Single Click on Any Node for open/edit(ing) properties && Double Click on
-                                any Node for selection & then press "Delete" key on your keyboard for deletion</Text>
+                            <Text type="warning">Click once on a node to edit it. Double click a node and press "Delete" key
+                                on your keyboard to delete it.</Text>
                         </div>
                     </div>)
                 : <div className={'reverseFlex'}>
@@ -283,9 +294,10 @@ export const AmendAutomationPage: any = (props: any) => {
                     <p>Some contents...</p>
                 </div>
             </Modal>
-            <ReactFlow onElementClick={onElementClick} elements={elements} snapToGrid={true}
+            <ReactFlow key={props.amendObj.key} onElementClick={onElementClick} elements={elements} snapToGrid={true}
                        snapGrid={[15, 15]} onNodeDragStop={onNodeDragStop}
-                       onElementsRemove={onElementsRemove} onConnect={onConnect} onLoad={onLoad} deleteKeyCode={46}>
+                       onElementsRemove={onElementsRemove} onConnect={onConnect} onLoad={onLoad}
+                       deleteKeyCode={46}>
                 <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2}/>
                 <Controls/>
                 <Background color="#aaa" gap={16}/>

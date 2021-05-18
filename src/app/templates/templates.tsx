@@ -93,7 +93,7 @@ export const TemplatesPage: any = () => {
     return !openIeFrame ? (
         <div className="templates pageLayout">
             <div className="secondNav">
-                <Title level={4}>All Imports</Title>
+                <Title level={4}>All Templates</Title>
             </div>
             <div className="firstNav">
                 <div className="leftPlacement">

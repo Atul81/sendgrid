@@ -67,7 +67,7 @@ export const CampaignPage: any = () => {
 
     const openAutomationRow = (record: any, openType: string) => {
         setOpenAutomationAmend(true);
-        dispatch(updateBreadcrumb(['Campaigns', 'Automation', 'amend-campaign']));
+        dispatch(updateBreadcrumb(['Campaign', 'Campaigns', 'amend-campaign']));
         setCampaignObj({...record, openType: openType});
     };
 
@@ -110,7 +110,7 @@ export const CampaignPage: any = () => {
     const navigateToLandingPage = () => {
         setOpenAutomationAmend(false);
         setCampaignObj({name: ''});
-        dispatch(updateBreadcrumb(['Campaigns', 'Campaigns']));
+        dispatch(updateBreadcrumb(['Campaign', 'Campaigns']));
     };
 
     const populateAllCampaigns = () => {
