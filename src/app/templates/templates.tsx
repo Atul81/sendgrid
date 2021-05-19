@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {Button, Card, Popover, Skeleton} from "antd";
+import {Button, Card, Modal, Popover, Skeleton} from "antd";
 import {EllipsisOutlined, PlusOutlined} from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
 import './templates.scss';
-import {TemplateIeFrame} from "./templateIeFrame";
 import {useHistory} from "react-router-dom";
 import {getAllServerCall} from "../../service/serverCalls/mockServerRest";
 import Title from "antd/es/typography/Title";
 import Search from "antd/es/input/Search";
+import {BeeTemplatePage} from "./beePlugin/beeTemplatePage";
 
 interface TemplatesInterface {
     "id": number,
@@ -24,43 +24,31 @@ interface TemplatesInterface {
 export const TemplatesPage: any = () => {
 
     const activeMenu = useSelector((state: any) => state.root.activeContent);
-    const [ieFrameType, setIeFrameType] = useState('');
     const [openIeFrame, setOpenIeFrame] = useState(false);
     const [templateObj, setTemplateObj] = useState({});
     const history = useHistory();
     const [templatesDS, setTemplateDS] = useState<TemplatesInterface[]>([]);
     const [templatesDSOps, setTemplateDSOps] = useState<TemplatesInterface[]>([]);
+    const [beeOpenType, setBeeOpenType] = useState('newTemplate');
 
     useEffect(() => {
-        setIeFrameType(activeMenu);
         setOpenIeFrame(false);
-        if (activeMenu === 'template-editor' || activeMenu === 'delivery-testing') {
+        if (activeMenu === 'delivery-testing') {
             setOpenIeFrame(true);
+            setBeeOpenType('newTemplate');
         } else {
             getAllTemplates();
         }
-    }, [activeMenu]);
+    }, [activeMenu, history]);
 
     const addNewSegment = () => {
         setOpenIeFrame(true);
-        setIeFrameType('newTemplate');
-    };
-
-    const getIeFrameSource = () => {
-        switch (ieFrameType) {
-            case 'newTemplate' :
-                return 'https://programmablesearchengine.google.com';
-            case 'template-editor' :
-                return 'https://programmablesearchengine.google.com';
-            case 'delivery-testing' :
-                return 'https://programmablesearchengine.google.com';
-        }
     };
 
     const openEllipsisFrame = (ellipsisType: string) => {
-        setIeFrameType('newTemplate');
         setOpenIeFrame(true);
-    }
+        setBeeOpenType(ellipsisType);
+    };
 
     const templateContent = (
         <div className={'contentListing'}>
@@ -131,6 +119,10 @@ export const TemplatesPage: any = () => {
                 </div>
             </div>
         </div>
-    ) : <TemplateIeFrame existingTemplate={templateObj} ieFrameSrc={getIeFrameSource()}
-                         exitTemplateEdit={exitTemplate}/>;
+    ) : <Modal className={'fullScreenModal'} visible={true} width={'100%'} footer={null}
+               onCancel={exitTemplate}>
+        <div style={{width: '100%', height: 'calc(100vh - 72px)', marginTop: 24}}>
+            <BeeTemplatePage existingTemplate={templateObj} requestType={beeOpenType}/>
+        </div>
+    </Modal>
 }

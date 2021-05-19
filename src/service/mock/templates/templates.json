@@ -20,16 +20,6 @@
     "price": 231
   },
   {
-    "id": 3,
-    "title": "Harry Potter Sorcerer's Stone",
-    "authors": "J.K. Rowling-Mary GrandPré",
-    "average_rating": 4.47,
-    "isbn": 439554934,
-    "language_code": "eng",
-    "ratings_count": 5629932,
-    "price": 232
-  },
-  {
     "id": 4,
     "title": "Harry Potter and the Chamber of Secrets (Harry Potter  #2)",
     "authors": "J.K. Rowling",
