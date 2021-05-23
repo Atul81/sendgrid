@@ -53,19 +53,24 @@
     .output {
       border-color: #ff0072;
     }
+
     .customNodeTwo {
       border-color: greenyellow;
     }
+
     .custom {
       border-color: #531dab;
     }
   }
 
+  .editMode {
+    display: grid;
+    grid-template-columns: auto 80%;
+    grid-row-gap: 16px;
+  }
+
   .gridDisplay {
     height: calc(100vh - 212px);
-    display: grid;
-    grid-template-columns: 80% auto;
-    grid-row-gap: 16px;
 
     .reactflow-wrapper {
       flex-grow: 1;

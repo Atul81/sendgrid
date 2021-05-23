@@ -22,6 +22,7 @@ export const AmendAutomationPage = (props) => {
     const [elements, setElements] = useState([]);
     const dispatch = useDispatch();
     const nodeTypeRedux = useSelector((state) => state.root.nodeType);
+    const openType = (props.amendObj && (props.amendObj.viewType === 'edit' || props.amendObj.viewType === 'create'));
     useEffect(() => {
         dispatch(updateBreadcrumb(['Campaigns', 'Automation', 'amend-automation']));
         if (props.amendObj.viewType !== 'create' && props.amendObj.key) {
@@ -282,7 +283,7 @@ export const AmendAutomationPage = (props) => {
     };
     return (
         <div className='amendAutomation pageLayout'>
-            {(props.amendObj && (props.amendObj.viewType === 'edit' || props.amendObj.viewType === 'create')) ? (
+            {openType ? (
                     <div style={{paddingBottom: 16}} className='firstNav'>
                         {!nodeDrawer ?
                             <div className='leftPlacement' style={{width: '39%'}}>
@@ -356,19 +357,23 @@ export const AmendAutomationPage = (props) => {
                 <Input placeholder="New Automation Name"
                        onChange={(inpEvent) => setNodeTitle(inpEvent.target.value)}/>
             </Modal>
-            <div className='gridDisplay'>
+            <div className={openType ? 'gridDisplay editMode' : 'gridDisplay'}>
                 <ReactFlowProvider>
+                    {openType ? <NodeSideBar/> : null}
                     <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-                        <ReactFlow onElementClick={onElementClick} elements={elements} nodeTypes={nodeTypes} ref={reactFlowInstance}
-                                   onNodeDragStop={onNodeDragStop} onDrop={onDrop} onDragOver={onDragOver}
-                                   onElementsRemove={onElementsRemove} onConnect={onConnect} onLoad={onLoad}
+                        <ReactFlow onElementClick={openType ? onElementClick : undefined} elements={elements}
+                                   nodeTypes={nodeTypes} nodesDraggable={openType} nodesConnectable={openType}
+                                   ref={reactFlowInstance} paneMoveable={openType}
+                                   onNodeDragStop={openType ? onNodeDragStop : undefined}
+                                   onDrop={openType ? onDrop : undefined} onDragOver={openType ? onDragOver : undefined}
+                                   onElementsRemove={openType ? onElementsRemove : undefined}
+                                   onConnect={openType ? onConnect : undefined} onLoad={onLoad}
                                    deleteKeyCode={46}>
                             <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2}/>
                             <Controls/>
                             <Background color="#aaa" gap={16}/>
                         </ReactFlow>
                     </div>
-                    <NodeSideBar/>
                 </ReactFlowProvider>
             </div>
         </div>
