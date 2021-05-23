@@ -1,37 +1,36 @@
 import {Button, Card, Input, message, Modal, Radio, Select, Typography} from "antd";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import ReactFlow, {
     addEdge,
     Background,
-    Connection,
     Controls,
-    Edge,
-    Elements,
     MiniMap,
-    Node,
+    ReactFlowProvider,
     removeElements
 } from 'react-flow-renderer';
 import './amendAutomation.scss';
 import {StepBackwardOutlined} from "@ant-design/icons";
 import {addNewObject, editObjectById, getObjectById} from "../../../../service/serverCalls/mockServerRest";
 import {updateBreadcrumb} from "../../../../store/actions/root";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {NodeSideBar} from "./nodeSideBar";
+import customNode from "./customNode";
+import customNodeTwo from "./customNodeTwo";
 
-export const AmendAutomationPage: any = (props: any) => {
+export const AmendAutomationPage = (props) => {
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
-    const [reactFlowInstanceFitView, setReactFlowInstanceFitView] = useState(null);
-    const [elements, setElements] = useState<Elements>([]);
+    const [elements, setElements] = useState([]);
     const dispatch = useDispatch();
-
+    const nodeTypeRedux = useSelector((state) => state.root.nodeType);
     useEffect(() => {
         dispatch(updateBreadcrumb(['Campaigns', 'Automation', 'amend-automation']));
         if (props.amendObj.viewType !== 'create' && props.amendObj.key) {
             getObjectById(props.amendObj.key, 'workFlow').then(async response => {
                 let elementsJson = await response.json();
                 if (elementsJson) {
-                    let tempObj: Elements = [];
+                    let tempObj = [];
                     let elementsData = elementsJson.data;
-                    elementsData.forEach((itr: any) => {
+                    elementsData.forEach((itr) => {
                         if (itr.data && itr.data.label && itr.data.label.props) {
                             tempObj.push({
                                 ...itr, data: {
@@ -57,23 +56,23 @@ export const AmendAutomationPage: any = (props: any) => {
                 }
             })
         }
-    }, [props.amendObj.key, props.amendObj.viewType, dispatch]);
+    }, []);
 
     const {Text} = Typography;
     const {Option} = Select;
     const deleteConfirm = Modal.confirm;
     const [id, setId] = useState('0');
-    const [nodeDrawer, setNodeDrawer] = useState<boolean>(false);
-    const [nodeTitle, setNodeTitle] = useState<string>("");
-    const [edgeTitle, setEdgeTitle] = useState<string>("");
-    const [elementSelected, setElementSelected] = useState<any>({});
+    const [nodeDrawer, setNodeDrawer] = useState(false);
+    const [nodeTitle, setNodeTitle] = useState("");
+    const [edgeTitle, setEdgeTitle] = useState("");
+    const [elementSelected, setElementSelected] = useState({});
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isEdgeModalVisible, setIsEdgeModalVisible] = useState(false);
-    const [nodeType, setNodeType] = useState<string>("default");
+    const [nodeType, setNodeType] = useState("default");
 
-    const nodeStrokeColor = (n: Node): string => {
+    const nodeStrokeColor = (n) => {
         if (n.style?.background) {
-            return n.style.background as string;
+            return n.style.background;
         }
         if (n.type === 'input') {
             return '#0041d0';
@@ -88,15 +87,15 @@ export const AmendAutomationPage: any = (props: any) => {
         return '#eee';
     };
 
-    const nodeColor = (n: Node): string => {
+    const nodeColor = (n) => {
         if (n.style?.background) {
-            return n.style.background as string;
+            return n.style.background;
         }
 
         return '#fff';
     };
 
-    const onElementsRemove = (elementsToRemove: Elements) => {
+    const onElementsRemove = (elementsToRemove) => {
         if (elementsToRemove[0]) {
             deleteConfirm({
                 title: 'Are you sure delete following node/relation?',
@@ -107,7 +106,7 @@ export const AmendAutomationPage: any = (props: any) => {
                 okType: 'danger',
                 cancelText: 'No',
                 onOk() {
-                    setElements((els: Elements) => removeElements(elementsToRemove, els));
+                    setElements((els) => removeElements(elementsToRemove, els));
                 },
                 onCancel() {
                     console.log('Node deletion cancelled');
@@ -115,15 +114,14 @@ export const AmendAutomationPage: any = (props: any) => {
             });
         }
     };
-    const onConnect = (params: Edge | Connection) => setElements((els) => addEdge(params, els));
+    const onConnect = (params) => setElements((els) => addEdge(params, els));
 
-    const createNewNode = (event: any) => {
+    const createNewNode = (event) => {
         if (nodeTitle.length <= 0) {
             message.error("Node Title Required", 0.5).then(() => {
             });
         } else {
             event.preventDefault();
-            // @ts-ignore
             const position = reactFlowInstance.project({
                 x: Math.random() * window.innerWidth - 100,
                 y: Math.random() * window.innerHeight - 100
@@ -152,12 +150,8 @@ export const AmendAutomationPage: any = (props: any) => {
         return `${newNodeId}`;
     };
 
-    const onLoad = (_reactFlowInstance: any) => {
-        setReactFlowInstance(_reactFlowInstance);
-        setReactFlowInstanceFitView(_reactFlowInstance.fitView());
-    };
 
-    const onElementClick = (event: any, element: any) => {
+    const onElementClick = (event, element) => {
         if (element.data && element.data.label) {
             setNodeTitle(element.data.label.props ? element.data.label.props.title : element.data.label);
             setIsModalVisible(true);
@@ -176,7 +170,7 @@ export const AmendAutomationPage: any = (props: any) => {
         setIsModalVisible(false);
     };
 
-    const radioValueChange = (event: { target: { value: any; }; }) => {
+    const radioValueChange = (event) => {
         console.log('radio checked', event.target.value);
     };
 
@@ -191,7 +185,7 @@ export const AmendAutomationPage: any = (props: any) => {
         setIsEdgeModalVisible(false);
     };
 
-    const onTypeChange = (value: any) => {
+    const onTypeChange = (value) => {
         setNodeType(value);
     };
 
@@ -213,8 +207,8 @@ export const AmendAutomationPage: any = (props: any) => {
         lineHeight: '30px',
     };
 
-    const onNodeDragStop = (event: any, node: any) => {
-        let oldElements: Elements = [...elements];
+    const onNodeDragStop = (event, node) => {
+        let oldElements = [...elements];
         for (let i = 0; i < elements.length; i++) {
             if (elements[i].id === node.id) {
                 oldElements[i] = node;
@@ -222,8 +216,70 @@ export const AmendAutomationPage: any = (props: any) => {
             }
         }
         setElements(oldElements);
-    }
+    };
+    const reactFlowWrapper = useRef(null);
 
+    const onLoad = useCallback(
+        (rfi) => {
+            if (!reactFlowInstance) {
+                setReactFlowInstance(rfi);
+            }
+        }, [reactFlowInstance]
+    );
+
+    const [dragEvent, setDragEvent] = useState(null);
+
+    const onDrop = (event) => {
+        event.preventDefault();
+        setNewDraggedNode(true);
+        setDragEvent(event);
+    };
+
+    const [newDraggedNode, setNewDraggedNode] = useState(false);
+
+    const onDragOver = (event) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+    };
+
+    const eventAfterDrag = () => {
+        if (nodeTitle !== '') {
+            const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+            const position = reactFlowInstance.project({
+                x: dragEvent.clientX - reactFlowBounds.left,
+                y: dragEvent.clientY - reactFlowBounds.top,
+            });
+            const newNode = {
+                id: getId(),
+                position,
+                type: nodeTypeRedux,
+                data: {
+                    label:
+                        <Card size={"small"} title={nodeTitle} bordered={false}>
+                            Card content
+                        </Card>,
+                    title: nodeTitle
+                }
+            };
+            setNewDraggedNode(false);
+            setElements((es) => es.concat(newNode));
+            setDragEvent(null);
+        } else {
+            message.error("Node Title required").then(() => {
+            });
+        }
+    };
+
+    useEffect(() => {
+        if (reactFlowInstance && elements.length > 0) {
+            reactFlowInstance.fitView();
+        }
+    }, [reactFlowInstance, elements.length]);
+
+    const nodeTypes = {
+        customNode: customNode,
+        customNodeTwo: customNodeTwo
+    };
     return (
         <div className='amendAutomation pageLayout'>
             {(props.amendObj && (props.amendObj.viewType === 'edit' || props.amendObj.viewType === 'create')) ? (
@@ -294,14 +350,27 @@ export const AmendAutomationPage: any = (props: any) => {
                     <p>Some contents...</p>
                 </div>
             </Modal>
-            <ReactFlow key={props.amendObj.key} onElementClick={onElementClick} elements={elements} snapToGrid={true}
-                       snapGrid={[15, 15]} onNodeDragStop={onNodeDragStop}
-                       onElementsRemove={onElementsRemove} onConnect={onConnect} onLoad={onLoad}
-                       deleteKeyCode={46}>
-                <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2}/>
-                <Controls/>
-                <Background color="#aaa" gap={16}/>
-            </ReactFlow>
+            <Modal title="Enter Node Title" centered visible={newDraggedNode}
+                   onOk={eventAfterDrag} destroyOnClose={true}
+                   onCancel={() => setNewDraggedNode(false)} width={300}>
+                <Input placeholder="New Automation Name"
+                       onChange={(inpEvent) => setNodeTitle(inpEvent.target.value)}/>
+            </Modal>
+            <div className='gridDisplay'>
+                <ReactFlowProvider>
+                    <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+                        <ReactFlow onElementClick={onElementClick} elements={elements} nodeTypes={nodeTypes} ref={reactFlowInstance}
+                                   onNodeDragStop={onNodeDragStop} onDrop={onDrop} onDragOver={onDragOver}
+                                   onElementsRemove={onElementsRemove} onConnect={onConnect} onLoad={onLoad}
+                                   deleteKeyCode={46}>
+                            <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2}/>
+                            <Controls/>
+                            <Background color="#aaa" gap={16}/>
+                        </ReactFlow>
+                    </div>
+                    <NodeSideBar/>
+                </ReactFlowProvider>
+            </div>
         </div>
     );
 }

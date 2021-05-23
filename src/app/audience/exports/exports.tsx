@@ -39,7 +39,6 @@ export const ExportPage: any = () => {
             key: 'exportTimestamp',
         },
         {
-            title: 'Action',
             dataIndex: '',
             key: 'action',
             width: '75px',

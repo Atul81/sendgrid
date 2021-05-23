@@ -4,6 +4,8 @@ export default {
         selectedBreadCrum: ['dashboard'],
         activeContent: '1',
         activeMenuContent: 'dashboard',
-        allSegments: []
+        allSegments: [],
+        nodeType: 'default',
+        userRole: {}
     }
 };

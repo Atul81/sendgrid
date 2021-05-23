@@ -143,7 +143,6 @@ export const UsersPage: any = () => {
             }),
         },
         {
-            title: 'Action',
             dataIndex: '',
             key: 'action',
             width: '75px',

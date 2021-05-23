@@ -21,8 +21,8 @@ export interface CustomFields {
 export interface SegmentInterface {
     key: string,
     name: string,
-    contacts: number,
-    conditions: number
+    type: number,
+    lastModified: number
 }
 
 export interface ImportsInterface {
@@ -49,7 +49,7 @@ export interface QuickAddContactInterface {
     lastName: string
 }
 
-export interface ExportContactInterface{
+export interface ExportContactInterface {
     key: string,
     fileName: string,
     exportTimestamp: string,

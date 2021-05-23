@@ -70,7 +70,6 @@ export const GroupsPage: any = () => {
             key: 'groupName',
         },
         {
-            title: 'Action',
             dataIndex: '',
             key: 'action',
             width: '75px',

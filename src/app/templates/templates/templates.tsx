@@ -4,42 +4,24 @@ import {Button, Card, Modal, Popover, Skeleton} from "antd";
 import {EllipsisOutlined, PlusOutlined} from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
 import './templates.scss';
-import {useHistory} from "react-router-dom";
-import {getAllServerCall} from "../../service/serverCalls/mockServerRest";
+import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import Title from "antd/es/typography/Title";
 import Search from "antd/es/input/Search";
-import {BeeTemplatePage} from "./beePlugin/beeTemplatePage";
-
-interface TemplatesInterface {
-    "id": number,
-    "title": string,
-    "authors": string,
-    "average_rating": number,
-    "isbn": number,
-    "language_code": string,
-    "ratings_count": number,
-    "price": number
-}
+import {BeeTemplatePage} from "../deliveryTesting/beePlugin/beeTemplatePage";
+import {TemplatesInterface} from "../templatesInterface";
 
 export const TemplatesPage: any = () => {
 
     const activeMenu = useSelector((state: any) => state.root.activeContent);
     const [openIeFrame, setOpenIeFrame] = useState(false);
     const [templateObj, setTemplateObj] = useState({});
-    const history = useHistory();
     const [templatesDS, setTemplateDS] = useState<TemplatesInterface[]>([]);
     const [templatesDSOps, setTemplateDSOps] = useState<TemplatesInterface[]>([]);
     const [beeOpenType, setBeeOpenType] = useState('newTemplate');
 
     useEffect(() => {
-        setOpenIeFrame(false);
-        if (activeMenu === 'delivery-testing') {
-            setOpenIeFrame(true);
-            setBeeOpenType('newTemplate');
-        } else {
-            getAllTemplates();
-        }
-    }, [activeMenu, history]);
+        getAllTemplates();
+    }, [activeMenu]);
 
     const addNewSegment = () => {
         setOpenIeFrame(true);
@@ -59,7 +41,6 @@ export const TemplatesPage: any = () => {
 
     const exitTemplate = () => {
         setOpenIeFrame(false);
-        history.push("/templates/templates");
     };
 
     const getAllTemplates = () => {
@@ -119,7 +100,7 @@ export const TemplatesPage: any = () => {
                 </div>
             </div>
         </div>
-    ) : <Modal className={'fullScreenModal'} visible={true} width={'100%'} footer={null}
+    ) : <Modal className={'fullScreenModal'} title={'Delivery Report'} visible={true} width={'100%'} footer={null}
                onCancel={exitTemplate}>
         <div style={{width: '100%', height: 'calc(100vh - 72px)', marginTop: 24}}>
             <BeeTemplatePage existingTemplate={templateObj} requestType={beeOpenType}/>

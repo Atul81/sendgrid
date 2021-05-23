@@ -4,10 +4,10 @@ import {DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined} from "@ant-desi
 import Title from "antd/lib/typography/Title";
 import Search from "antd/lib/input/Search";
 import {CampaignInterface} from "../campaignInterface";
-import {AmendAutomationPage} from "./amendAutomation/AmendAutomationLoadable";
 import {addNewObject, deleteObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
+import {AmendAutomationPage} from "./amendAutomation/amendAutomation";
 
 export const AutomationPage: any = () => {
     const dispatch = useDispatch();
@@ -24,7 +24,6 @@ export const AutomationPage: any = () => {
     const [selectedAutomationKeys, setAutomationKeys] = useState<string[]>([]);
     const [newAutomationModal, setNewAutomationModal] = useState(false);
     const [automationId, setAutomationId] = useState(3);
-
     const columns = [
         {
             title: 'Name',
@@ -37,7 +36,6 @@ export const AutomationPage: any = () => {
             key: 'status',
         },
         {
-            title: 'Action',
             dataIndex: '',
             key: 'action',
             width: '75px',

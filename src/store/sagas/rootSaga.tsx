@@ -29,10 +29,22 @@ export function* updateAllSegments({type: string}) {
     yield put({type: types.ALL_SEGMENTS_SUCCESS, activeMenuContent: payload});
 }
 
+// @ts-ignore
+export function* updateNodeType({type: string, payload}) {
+    yield put({type: types.NODE_TYPE_SUCCESS, nodeType: payload});
+}
+
+// @ts-ignore
+export function* updateUserRole({type: string, payload}) {
+    yield put({type: types.USER_ROLE_SUCCESS, userRole: payload});
+}
+
 export function* watchRootSaga() {
     yield all([
         takeLatest((types.ACTIVE_CONTENT), updateActiveContent),
         takeLatest((types.ACTIVE_MENU_CONTENT), updateActiveMenuContent),
-        takeLatest((types.ALL_SEGMENTS), updateAllSegments)
+        takeLatest((types.ALL_SEGMENTS), updateAllSegments),
+        takeLatest((types.NODE_TYPE), updateNodeType),
+        takeLatest((types.USER_ROLE), updateUserRole)
     ]);
 }

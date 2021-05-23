@@ -1,32 +1,32 @@
 [
   {
     "id": 1,
-    "name": "John1",
-    "contacts": 132456781,
-    "conditions": 1
+    "name": "Chicago Companies",
+    "type": "Dynamic",
+    "lastModified": "04.02.2021"
   },
   {
     "id": 2,
-    "name": "John2",
-    "contacts": 132456782,
-    "conditions": 2
+    "name": "2021 Leads",
+    "type": "Manual",
+    "lastModified": "03.28.2021"
   },
   {
     "id": 3,
-    "name": "John3",
-    "contacts": 132456783,
-    "conditions": 3
+    "name": "The Xennials",
+    "type": "Dynamic",
+    "lastModified": "03.16.2021"
   },
   {
     "id": 4,
-    "name": "John4",
-    "contacts": 132456784,
-    "conditions": 4
+    "name": "Free Trial Subscribers",
+    "type": "Manual",
+    "lastModified": "02.27.2021"
   },
   {
     "id": 5,
-    "name": "John5",
-    "contacts": 132456785,
-    "conditions": 5
+    "name": "Alex Companies",
+    "type": "Dynamic",
+    "lastModified": "09.30.2021"
   }
 ]

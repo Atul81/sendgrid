@@ -37,7 +37,6 @@ export const CustomEventsPage: any = () => {
             ellipsis: true
         },
         {
-            title: 'Action',
             dataIndex: '',
             key: 'action',
             width: '75px',

@@ -13,6 +13,10 @@ export default function (state = initialState.root, action: any) {
             return {...state, ...{activeContent: action.payload}}
         case types.ALL_SEGMENTS:
             return {...state, ...{allSegments: action.payload}}
+        case types.NODE_TYPE:
+            return {...state, ...{nodeType: action.payload}}
+        case types.USER_ROLE:
+            return {...state, ...{userRole: action.payload}}
         default:
             return state;
     }

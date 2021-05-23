@@ -144,7 +144,7 @@ export const ContactsPage: any = () => {
                 return (
                     <Tag
                         color={record.emailMarketing ? (record.emailMarketing.toLowerCase() === 'Subscribed'.toLowerCase() ? 'green' : 'purple') : ''}
-                        key={record.emailMarketing}>{text}</Tag>
+                        key={record.key}>{text}</Tag>
                 );
             })
         },
@@ -152,11 +152,10 @@ export const ContactsPage: any = () => {
             title: 'Tags',
             dataIndex: 'tags',
             key: 'tags',
-            width: '10%',
+            width: '15%',
             ellipsis: true
         },
         {
-            title: 'Action',
             dataIndex: '',
             key: 'action',
             width: '75px',
@@ -174,8 +173,8 @@ export const ContactsPage: any = () => {
                         <p className={"actionColumn"}><DeleteOutlined/></p>
                     </Popconfirm>
                 </Space>
-            }),
-        },
+            })
+        }
     ];
 
     const quickAddColumns = [
@@ -291,6 +290,8 @@ export const ContactsPage: any = () => {
         setContactObj({});
         setEditPage(false);
         setContactId(contactId + 1);
+        setIdsSelected([]);
+        setShowBtnOnSelection(false);
     };
 
     const deleteAllContact = () => {
@@ -313,15 +314,9 @@ export const ContactsPage: any = () => {
 
     const quickAddContactFormFinish = (values: any) => {
         let tempData = [...quickAddContactDS];
-        let filteredItem = tempData.filter(itr => itr.email.toLowerCase() === values.formObj.email.toLowerCase());
-        if (filteredItem.length > 0) {
-            message.warn('Email Address already in use', 0.6).then(() => {
-            });
-        } else {
-            tempData.push({...values.formObj, key: Math.random()});
-            setQuickAddContactDS(tempData);
-            addContact.resetFields();
-        }
+        tempData.push({...values.formObj, key: Math.random()});
+        setQuickAddContactDS(tempData);
+        addContact.resetFields();
     };
 
     const quickAddContactService = () => {
@@ -428,17 +423,10 @@ export const ContactsPage: any = () => {
             message.success('New Tag has been cached, Server Call needs backend', 0.6).then(() => {
             });
             setNewTagName('');
-            // addNewObject({...newTagObj, id: tagId}, 'tags').then(async newTagAsync => {
-            //     let newTagRes = await newTagAsync.json();
-            //     if (newTagRes) {
-            //
-            //     }
-            // });
         } else {
             message.error('Please provide a tag name', 0.6).then(() => {
             });
         }
-
     };
 
     return !editPage ? (
@@ -458,9 +446,9 @@ export const ContactsPage: any = () => {
                             <Button key="addTags" style={{marginRight: 8}}
                                     onClick={() => openAdditionInfoModal('addTags')}
                                     icon={<PlusOutlined/>}>Add Tags</Button>
-                            <Button key="addSegments" style={{marginRight: 8}}
-                                    onClick={() => openAdditionInfoModal('addSegments')}
-                                    icon={<PlusOutlined/>}>Add Segments</Button>
+                            {/*<Button key="addSegments" style={{marginRight: 8}}*/}
+                            {/*        onClick={() => openAdditionInfoModal('addSegments')}*/}
+                            {/*        icon={<PlusOutlined/>}>Add Segments</Button>*/}
                             <Popconfirm overlayClassName="ant-popover-audience" placement="left"
                                         title={<p><Title level={5}>Are you sure you want to delete?</Title>
                                             This will permanently delete these records and all associated data
@@ -550,7 +538,27 @@ export const ContactsPage: any = () => {
                         <Form form={addContact} layout={'vertical'} onFinish={quickAddContactFormFinish}>
                             <Form.Item label="Email Address">
                                 <Form.Item name={['formObj', 'email']}
-                                           noStyle rules={[{required: true, message: 'Email Address required'}]}>
+                                           noStyle rules={[{
+                                    required: true,
+                                    message: 'Email Address required'
+                                }, () => ({
+                                    validator(_, value) {
+                                        if (value && quickAddContactDS.length > 0) {
+                                            let tempData = [...quickAddContactDS];
+                                            let sameEmail: boolean = false;
+                                            for (let i = 0; i < quickAddContactDS.length; i++) {
+                                                sameEmail = tempData[i].email === value;
+                                            }
+                                            if (sameEmail) {
+                                                return Promise.reject(new Error('Email Address already in use!'));
+                                            } else {
+                                                return Promise.resolve();
+                                            }
+                                        } else {
+                                            return Promise.resolve();
+                                        }
+                                    },
+                                })]}>
                                     <Input placeholder="email+test@gmail.com" type={"email"}/>
                                 </Form.Item>
                             </Form.Item>

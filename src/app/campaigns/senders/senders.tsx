@@ -38,13 +38,6 @@ export const SendersPage: any = () => {
             key: 'lastName',
         },
         {
-            title: 'Domain Verified',
-            dataIndex: 'domainVerified',
-            key: 'domainVerified',
-            width: '140px',
-        },
-        {
-            title: 'Action',
             dataIndex: '',
             key: 'action',
             width: '75px',

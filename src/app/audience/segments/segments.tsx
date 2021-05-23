@@ -36,17 +36,18 @@ export const SegmentsPage: any = () => {
             key: 'name',
         },
         {
-            title: 'Contacts',
-            dataIndex: 'contacts',
-            key: 'contacts',
+            title: 'Type',
+            dataIndex: 'type',
+            key: 'type',
+            width: '15%'
         },
         {
-            title: 'Conditions',
-            dataIndex: 'conditions',
-            key: 'conditions',
+            title: 'Last Modified',
+            dataIndex: 'lastModified',
+            key: 'lastModified',
+            width: '15%'
         },
         {
-            title: 'Action',
             dataIndex: '',
             key: 'action',
             width: '75px',

@@ -12,14 +12,14 @@ import {ContactsPage} from "./audience/contacts/ContactsLoadable";
 import {CustomFieldsPage} from "./audience/customFields/CustomFieldsLoadable";
 import {SegmentsPage} from "./audience/segments/SegmentsLoadable";
 import {useDispatch, useSelector} from "react-redux";
-import {updateActiveContent, updateActiveMenuContent, updateBreadcrumb} from "../store/actions/root";
+import {updateActiveContent, updateActiveMenuContent, updateBreadcrumb, updateUserRole} from "../store/actions/root";
 
 import {CampaignPage} from "./campaigns/campaigns/CampaignLoadable";
 import {AutomationPage} from "./campaigns/automation/AutomationLoadable";
 import {SendersPage} from "./campaigns/senders/SendersLoadable";
 import translation from './../locales/en/translation.json'
 import {routes} from "./routes";
-import {TemplatesPage} from "./templates/TemplatesLoadable";
+import {TemplatesPage} from "./templates/templates/TemplatesLoadable";
 import {DashboardPage} from "./dashboard/DashboardLoadable";
 import {ImportsPage} from "./audience/imports/ImportsLoadable";
 import {ExportPage} from "./audience/exports/ExportsLoadable";
@@ -30,12 +30,14 @@ import {CustomEventsPage} from "./settings/customEvents/CustomEventsLoadable";
 import {UsersPage} from "./settings/users/UsersLoadable";
 import {PreferencePage} from "./settings/preferences/PreferenceLoadable";
 import {CustomizeFormPage} from "./unsubcription/customizeForm/CustomizeFormLoadable";
+import {DeliveryTestingPage} from "./templates/deliveryTesting/DeliveryTestingLoadable";
 
 export function App() {
     const [collapsed, setCollapsed] = useState(false);
     const dispatch = useDispatch();
     const rootState = useSelector((state: any) => state.root);
     const urlPath = useLocation();
+    const [userName, setUserName] = useState('John Doe Admin');
 
     useEffect(() => {
         let urlRoute = urlPath.pathname.split("/");
@@ -49,6 +51,7 @@ export function App() {
                 dispatch(updateBreadcrumb([translation.breadcrumb[urlRoute[1]], translation.breadcrumb[translation.defaultSidebar[urlRoute[1]]]]));
             }
         }
+        dispatch(updateUserRole({roleType: 'Admin', grantPermission: 'password'}));
     }, [dispatch, urlPath.pathname]);
 
     const onMenuTitleClick = (activeMenuContent: string, activeContent: string) => {
@@ -67,6 +70,14 @@ export function App() {
         }
     };
 
+    const toggleUserRole = () => {
+        if(rootState.userRole.roleType === 'Admin') {
+            dispatch(updateUserRole({roleType: 'Standard', grantPermission: 'oauth'}));
+            setUserName('John Doe Standard');
+        } else {
+            dispatch(updateUserRole({roleType: 'Admin', grantPermission: 'password'}));
+        }
+    }
     return (
         <Layout style={{minHeight: "100vh"}}>
             <Sider collapsible collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)}>
@@ -98,10 +109,11 @@ export function App() {
                     <Menu mode="horizontal" selectable={false}>
                         <Menu.Item key="1"><Clock format={'h:mm:ss a'} ticking={true}
                                                   timezone={'Asia/Kolkata'}/></Menu.Item>
-                        <SubMenu key="user" icon={<UserOutlined/>} title="John Doe">
+                        <SubMenu key="user" icon={<UserOutlined/>} title={userName}>
                             <Menu.Item key="1">Log Out</Menu.Item>
                             <Menu.Item key="2"><a rel={'noreferrer'} href={"https://www.gmail.com"} target={"_blank"}>Change
                                 Password</a></Menu.Item>
+                            <Menu.Item key="3" onClick={toggleUserRole}>Toggle User Role</Menu.Item>
                         </SubMenu>
                     </Menu>
                 </Header>
@@ -131,7 +143,8 @@ export function App() {
                                 <Route path="/audience/exports" component={ExportPage}/>
                                 <Route path="/campaign/campaigns" component={CampaignPage}/>
                                 <Route path="/campaign/senders" component={SendersPage}/>
-                                <Route path="/templates" component={TemplatesPage}/>
+                                <Route path="/templates/templates" component={TemplatesPage}/>
+                                <Route path="/templates/delivery-testing" component={DeliveryTestingPage}/>
                                 <Route path="/unsubscription/groups" component={GroupsPage}/>
                                 <Route path="/unsubscription/customize-form" component={CustomizeFormPage}/>
                                 <Route path="/settings/domain" component={DomainSettingsPage}/>

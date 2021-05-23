@@ -15,7 +15,7 @@
   .screenBifurcation {
     //border: 2px solid #141414;
     display: grid;
-    grid-template-columns: 14% auto;
+    grid-template-columns: 16% auto;
     padding: 8px;
     .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-description {
       color: rgba(0, 0, 0, 0.85);
@@ -47,6 +47,6 @@
   }
 
   .ant-steps-vertical {
-    height: calc(100vh - 228px);
+    height: calc(100vh - 250px);
   }
 }

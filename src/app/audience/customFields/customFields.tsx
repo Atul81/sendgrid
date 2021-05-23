@@ -12,6 +12,7 @@ import {
     editObjectById,
     getAllServerCall
 } from "../../../service/serverCalls/mockServerRest";
+import {useSelector} from "react-redux";
 
 export const CustomFieldsPage: any = () => {
 
@@ -26,6 +27,7 @@ export const CustomFieldsPage: any = () => {
     const [customFieldsDSOps, setCustomFieldsDSOps] = useState<CustomFields[]>([]);
     const [selectedFieldKeys, setFieldKeys] = useState<string[]>([]);
     const [customFormId, setCustomFormId] = useState<number>(5);
+    const userRole = useSelector((state: any) => state.root.userRole);
 
     const columns = [
         {
@@ -39,12 +41,11 @@ export const CustomFieldsPage: any = () => {
             key: 'fieldType',
         },
         {
-            title: 'Action',
             dataIndex: '',
             key: 'action',
             width: '75px',
             render: ((text: string, record: any) => {
-                return <Space size="small">
+                return userRole.roleType === 'Admin' ? <Space size="small">
                     <p className={"actionColumn"}
                        onClick={() => openContactEdit(record)}><EditOutlined/></p>
                     <Popconfirm overlayClassName="ant-popover-audience" placement="left"
@@ -58,7 +59,7 @@ export const CustomFieldsPage: any = () => {
                             <DeleteOutlined/>
                         </p>
                     </Popconfirm>
-                </Space>
+                </Space> : null
             }),
         }
     ];

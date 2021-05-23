@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Alert, Button, DatePicker, Form, Input, message, Modal, Radio, Select, Space, Steps, Switch} from 'antd';
+import {Alert, Button, DatePicker, Form, Input, message, Radio, Select, Space, Steps, Switch, Tabs} from 'antd';
 import './amendCampaigns.scss';
 import {
     CheckOutlined,
@@ -23,6 +23,13 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
     const [pageEditRights, setPageEditRights] = useState(propsObj.amendObj.openType === 'edit');
     const [showAlertIcon, setShowAlertIcon] = useState(false);
 
+    const getRangeAsMoment = (rangePickerData: any) => {
+        let serverRangePicker = rangePickerData;
+        if (serverRangePicker) {
+            return [moment(serverRangePicker[0]), moment(serverRangePicker[1])];
+        }
+    }
+
     useEffect(() => {
         campaignForm.setFieldsValue(currentFormValues.current);
         if (propsObj && propsObj.amendObj) {
@@ -30,15 +37,32 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 let campaignFormData = await campaignFormAsync.json();
                 if (campaignFormData && campaignFormData.campaignData) {
                     let currentCampaignData = campaignFormData.campaignData;
-                    let serverRangePicker = currentCampaignData.step4.rangePicker;
-                    if (serverRangePicker) {
-                        campaignFormData.campaignData.step4.rangePicker = [moment(serverRangePicker[0]), moment(serverRangePicker[1])];
+                    if (currentCampaignData.step4) {
+                        if (currentCampaignData.step4.tabOne) {
+                            let rangeData = getRangeAsMoment(currentCampaignData.step4.tabOne.rangePicker);
+                            if (rangeData) {
+                                campaignFormData.campaignData.step4.tabOne.rangePicker = rangeData;
+                            }
+                        }
+                        if (currentCampaignData.step4.tabTwo) {
+                            let rangeData = getRangeAsMoment(currentCampaignData.step4.tabTwo.rangePicker);
+                            if (rangeData) {
+                                campaignFormData.campaignData.step4.tabTwo.rangePicker = rangeData;
+                            }
+                        }
+                        if (currentCampaignData.step4.tabThree) {
+                            let rangeData = getRangeAsMoment(currentCampaignData.step4.tabThree.rangePicker);
+                            if (rangeData) {
+                                campaignFormData.campaignData.step4.tabThree.rangePicker = rangeData;
+                            }
+                        }
                     }
                     currentFormValues.current = currentCampaignData;
                     campaignForm.setFieldsValue(currentCampaignData);
                     if (currentCampaignData.step2.segment === 'existingSegment') {
                         setStep2Segments(true);
                     }
+                    setCampaignType(currentCampaignData.step1.campaignType);
                 }
             }).catch(reason => {
                 message.error(reason).then(() => {
@@ -70,31 +94,31 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
     const history = useHistory();
     const steps = [
         {
-            key: 1,
+            key: 0,
             title: 'Step 1',
             content: 'Create a campaign',
             icon: <MailOutlined/>
         },
         {
-            key: 2,
+            key: 1,
             title: 'Step 2',
             content: 'Choose a segment',
             icon: <TeamOutlined/>
         },
         {
-            key: 3,
+            key: 2,
             title: 'Step 3',
             content: 'Create your message',
             icon: <HighlightOutlined/>
         },
         {
-            key: 4,
+            key: 3,
             title: 'Step 4',
             content: 'Schedule Campaign',
             icon: <HistoryOutlined/>
         },
         {
-            key: 5,
+            key: 4,
             title: 'Step 5',
             content: 'Review and launch',
             icon: <CompassOutlined/>
@@ -106,23 +130,47 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
     const currentFormValues = useRef({
         step1: {
             name: (propsObj.amendObj && propsObj.amendObj.name) ? propsObj.amendObj.name : undefined,
-            campaignType: (propsObj.step1 && propsObj.step1.campaignType) ? propsObj.step1.campaignType : undefined,
-            sender: (propsObj.step1 && propsObj.step1.sender) ? propsObj.step1.sender : undefined
+            campaignType: undefined,
+            sender: undefined
         },
         step2: {
-            segment: (propsObj.step2 && propsObj.step2.segment) ? propsObj.step2.segment : undefined,
-            segmentType: (propsObj.step2 && propsObj.step2.segmentType) ? propsObj.step2.segmentType : undefined,
-            segmentHoldOut: (propsObj.step2 && propsObj.step2.segmentHoldOut) ? propsObj.step2.segmentHoldOut : undefined
+            segment: undefined,
+            segmentType: undefined,
+            segmentHoldOut: undefined
         },
         step3: {
-            segmentType: (propsObj.step3 && propsObj.step3.segmentType) ? propsObj.step3.segmentType : undefined,
-            emailTemplate: (propsObj.step3 && propsObj.step3.emailTemplate) ? propsObj.step3.emailTemplate : undefined,
+            tabOne: {
+                segmentType: undefined,
+                emailTemplate: undefined,
+            },
+            tabTwo: {
+                segmentType: undefined,
+                emailTemplate: undefined,
+            },
+            tabThree: {
+                segmentType: undefined,
+                emailTemplate: undefined,
+            }
         },
         step4: {
-            campaignTime: (propsObj.step4 && propsObj.step4.campaignTime) ? propsObj.step4.campaignTime : undefined,
-            campaignFrequency: (propsObj.step4 && propsObj.step4.campaignFrequency) ? propsObj.step4.campaignFrequency : undefined,
-            rangePicker: undefined,
-            timeZone: (propsObj.step4 && propsObj.step4.timeZone) ? propsObj.step4.timeZone : undefined,
+            tabOne: {
+                campaignTime: undefined,
+                campaignFrequency: undefined,
+                rangePicker: undefined,
+                timeZone: undefined
+            },
+            tabTwo: {
+                campaignTime: undefined,
+                campaignFrequency: undefined,
+                rangePicker: undefined,
+                timeZone: undefined
+            },
+            tabThree: {
+                campaignTime: undefined,
+                campaignFrequency: undefined,
+                rangePicker: undefined,
+                timeZone: undefined
+            }
         },
         step5: {
             msgPerEP: (propsObj.step5 && propsObj.step5.msgPerEP) ? propsObj.step5.msgPerEP : undefined,
@@ -157,17 +205,34 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
         return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
     };
 
+    const populateNestedStep = (currentValue: any, oldValue: any) => {
+        let tempObj = oldValue;
+        if (currentValue) {
+            if (currentValue.tabOne) {
+                tempObj.tabOne = currentValue.tabOne;
+            }
+            if (currentValue.tabTwo) {
+                tempObj.tabTwo = currentValue.tabTwo;
+            }
+            if (currentValue.tabThree) {
+                tempObj.tabThree = currentValue.tabThree;
+            }
+        }
+        return tempObj;
+    }
+
     const saveCampaignForm = (values: any) => {
+        let step4Data = populateNestedStep(values, currentFormValues.current.step4);
+        let step3Data = populateNestedStep(values, currentFormValues.current.step3);
         currentFormValues.current = {
             step5: values.step5 ? values.step5 : currentFormValues.current.step5,
-            step4: values.step4 ? values.step4 : currentFormValues.current.step4,
-            step3: values.step3 ? values.step3 : currentFormValues.current.step3,
+            step4: step4Data,
+            step3: step3Data,
             step2: values.step2 ? values.step2 : currentFormValues.current.step2,
             step1: values.step1 ? values.step1 : currentFormValues.current.step1
         };
-        getAlertInfoMsg();
-        // message.success("Campaign Data cached, please click Done button at Step 5 to save your changes", 0.7).then(() => {
-        // });
+        setShowAlertIcon(true);
+        nextState();
     };
 
     const createYourMessageRadio = (radioValue: any) => {
@@ -189,16 +254,177 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
         }
     };
 
+    const {TabPane} = Tabs;
+    const [campaignType, setCampaignType] = useState('emailCampaign');
+
+    const step3TabOne =
+        <>
+            <Form.Item label="Campaign Type" name={['step3', 'tabOne', 'campaignType']}>
+                <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
+                    <Radio value='existingTemplate'>Use Existing template</Radio>
+                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
+                </Radio.Group>
+            </Form.Item>
+            <Form.Item label="Select Templates" name={['step3', 'tabOne', 'templateType']}>
+                <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                        placeholder="Welcome Email Template"
+                        optionFilterProp="children"
+                        filterOption={(input, option) => filterCountryOption(input, option)}>
+                    <Option value="ind">India</Option>
+                    <Option value="usa">United States</Option>
+                    <Option value="uk">United Kingdom</Option>
+                </Select>
+            </Form.Item>
+        </>;
+
+    const step3TabTwo =
+        <>
+            <Form.Item label="Campaign Type" name={['step3', 'tabTwo', 'campaignType']}>
+                <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
+                    <Radio value='existingTemplate'>Use Existing template</Radio>
+                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
+                </Radio.Group>
+            </Form.Item>
+            <Form.Item label="Select Templates" name={['step3', 'tabTwo', 'templateType']}>
+                <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                        placeholder="Welcome Email Template"
+                        optionFilterProp="children"
+                        filterOption={(input, option) => filterCountryOption(input, option)}>
+                    <Option value="ind">India</Option>
+                    <Option value="usa">United States</Option>
+                    <Option value="uk">United Kingdom</Option>
+                </Select>
+            </Form.Item>
+        </>;
+
+    const step3TabThree =
+        <>
+            <Form.Item label="Campaign Type" name={['step3', 'tabThree', 'campaignType']}>
+                <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
+                    <Radio value='existingTemplate'>Use Existing template</Radio>
+                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
+                </Radio.Group>
+            </Form.Item>
+            <Form.Item label="Select Templates" name={['step3', 'tabThree', 'templateType']}>
+                <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                        placeholder="Welcome Email Template"
+                        optionFilterProp="children"
+                        filterOption={(input, option) => filterCountryOption(input, option)}>
+                    <Option value="ind">India</Option>
+                    <Option value="usa">United States</Option>
+                    <Option value="uk">United Kingdom</Option>
+                </Select>
+            </Form.Item>
+        </>;
+
+    const step4TabOne = <>
+        <Form.Item label="Campaign Time" name={['step4', 'tabOne', 'campaignTime']}
+                   tooltip="When to send the campaign">
+            <Radio.Group disabled={!pageEditRights}>
+                <Radio value='specificTime'>At a specific time</Radio>
+                <Radio value='eventTrigger'>At event trigger</Radio>
+            </Radio.Group>
+        </Form.Item>
+        <Form.Item label="Campaign Frequency" name={['step4', 'tabOne', 'campaignFrequency']}>
+            <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                    placeholder="Select Frequency"
+                    optionFilterProp="children"
+                    filterOption={(input, option) => filterCountryOption(input, option)}>
+                <Option value="weekly">Weekly</Option>
+                <Option value="monthly">Monthly</Option>
+                <Option value="yearly">Yearly</Option>
+            </Select>
+        </Form.Item>
+        <Form.Item label="Time Range" name={['step4', 'tabOne', 'rangePicker']}>
+            <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
+        </Form.Item>
+        <Form.Item label="Time Zone" name={['step4', 'tabOne', 'timeZone']}>
+            <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                    placeholder="Select Time Zone"
+                    optionFilterProp="children"
+                    filterOption={(input, option) => filterCountryOption(input, option)}>
+                <Option value="ist">India-IST</Option>
+                <Option value="gmt">Greenwich-GMT</Option>
+                <Option value="sgt">Singapore-SGT</Option>
+            </Select>
+        </Form.Item>
+    </>;
+
+    const step4TabTwo = <>
+        <Form.Item label="Campaign Time" name={['step4', 'tabTwo', 'campaignTime']}
+                   tooltip="When to send the campaign">
+            <Radio.Group disabled={!pageEditRights}>
+                <Radio value='specificTime'>At a specific time</Radio>
+                <Radio value='eventTrigger'>At event trigger</Radio>
+            </Radio.Group>
+        </Form.Item>
+        <Form.Item label="Campaign Frequency" name={['step4', 'tabTwo', 'campaignFrequency']}>
+            <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                    placeholder="Select Frequency"
+                    optionFilterProp="children"
+                    filterOption={(input, option) => filterCountryOption(input, option)}>
+                <Option value="weekly">Weekly</Option>
+                <Option value="monthly">Monthly</Option>
+                <Option value="yearly">Yearly</Option>
+            </Select>
+        </Form.Item>
+        <Form.Item label="Time Range" name={['step4', 'tabTwo', 'rangePicker']}>
+            <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
+        </Form.Item>
+        <Form.Item label="Time Zone" name={['step4', 'tabTwo', 'timeZone']}>
+            <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                    placeholder="Select Time Zone"
+                    optionFilterProp="children"
+                    filterOption={(input, option) => filterCountryOption(input, option)}>
+                <Option value="ist">India-IST</Option>
+                <Option value="gmt">Greenwich-GMT</Option>
+                <Option value="sgt">Singapore-SGT</Option>
+            </Select>
+        </Form.Item>
+    </>
+    const step4TabThree = <>
+        <Form.Item label="Campaign Time" name={['step4', 'tabThree', 'campaignTime']}
+                   tooltip="When to send the campaign">
+            <Radio.Group disabled={!pageEditRights}>
+                <Radio value='specificTime'>At a specific time</Radio>
+                <Radio value='eventTrigger'>At event trigger</Radio>
+            </Radio.Group>
+        </Form.Item>
+        <Form.Item label="Campaign Frequency" name={['step4', 'tabThree', 'campaignFrequency']}>
+            <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                    placeholder="Select Frequency"
+                    optionFilterProp="children"
+                    filterOption={(input, option) => filterCountryOption(input, option)}>
+                <Option value="weekly">Weekly</Option>
+                <Option value="monthly">Monthly</Option>
+                <Option value="yearly">Yearly</Option>
+            </Select>
+        </Form.Item>
+        <Form.Item label="Time Range" name={['step4', 'tabThree', 'rangePicker']}>
+            <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
+        </Form.Item>
+        <Form.Item label="Time Zone" name={['step4', 'tabThree', 'timeZone']}>
+            <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                    placeholder="Select Time Zone"
+                    optionFilterProp="children"
+                    filterOption={(input, option) => filterCountryOption(input, option)}>
+                <Option value="ist">India-IST</Option>
+                <Option value="gmt">Greenwich-GMT</Option>
+                <Option value="sgt">Singapore-SGT</Option>
+            </Select>
+        </Form.Item>
+    </>
+
     const switchForm = () => {
         switch (current) {
             case 0: {
                 return <>
                     <Form.Item label="Campaign Name" name={['step1', 'name']}
                                tooltip="This is a required field">
-                        <Input style={{width: '50%'}} disabled={true} placeholder="Eg: Sales Campaign"/>
+                        <Input style={{width: '50%'}} disabled={!pageEditRights} placeholder="Eg: Sales Campaign"/>
                     </Form.Item>
                     <Form.Item label="Campaign Type" name={['step1', 'campaignType']}>
-                        <Radio.Group disabled={!pageEditRights}>
+                        <Radio.Group disabled={!pageEditRights} onChange={(e) => setCampaignType(e.target.value)}>
                             <Radio style={radioStyle} value='emailCampaign'>Email
                                 Campaign</Radio>
                             <Radio style={radioStyle} value='testingCampaign'>A/B Testing
@@ -245,56 +471,38 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             }
             case 2: {
                 return <>
-                    <Form.Item label="Campaign Type" name={['step3', 'segmentType']}>
-                        <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
-                            <Radio value='emailCampaign'>Use Existing template</Radio>
-                            <Radio.Button value='testingCampaign'>Create New Template</Radio.Button>
-                        </Radio.Group>
-                    </Form.Item>
-                    <Form.Item label="Select Templates" name={['step3', 'emailTemplate']}>
-                        <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
-                                placeholder="Welcome Email Template"
-                                optionFilterProp="children"
-                                filterOption={(input, option) => filterCountryOption(input, option)}>
-                            <Option value="ind">India</Option>
-                            <Option value="usa">United States</Option>
-                            <Option value="uk">United Kingdom</Option>
-                        </Select>
-                    </Form.Item>
+                    <Tabs key={'step2'} defaultActiveKey="1">
+                        <TabPane tab="Criteria 1" key="s2TabOne">
+                            {step3TabOne}
+                        </TabPane>
+                        {campaignType === 'testingCampaign' ?
+                            <>
+                                <TabPane tab="Criteria 2" key="s2TabTwo">
+                                    {step3TabTwo}
+                                </TabPane>
+                                <TabPane tab="Criteria 3" key="s2TabThree">
+                                    {step3TabThree}
+                                </TabPane>
+                            </> : null}
+                    </Tabs>
                 </>
             }
             case 3: {
                 return <>
-                    <Form.Item label="Campaign Time" name={['step4', 'campaignTime']}
-                               tooltip="When to send the campaign">
-                        <Radio.Group disabled={!pageEditRights}>
-                            <Radio value='specificTime'>At a specific time</Radio>
-                            <Radio value='eventTrigger'>At event trigger</Radio>
-                        </Radio.Group>
-                    </Form.Item>
-                    <Form.Item label="Campaign Frequency" name={['step4', 'campaignFrequency']}>
-                        <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
-                                placeholder="Select Frequency"
-                                optionFilterProp="children"
-                                filterOption={(input, option) => filterCountryOption(input, option)}>
-                            <Option value="weekly">Weekly</Option>
-                            <Option value="monthly">Monthly</Option>
-                            <Option value="yearly">Yearly</Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item label="Time Range" name={['step4', 'rangePicker']}>
-                        <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
-                    </Form.Item>
-                    <Form.Item label="Time Zone" name={['step4', 'timeZone']}>
-                        <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
-                                placeholder="Select Time Zone"
-                                optionFilterProp="children"
-                                filterOption={(input, option) => filterCountryOption(input, option)}>
-                            <Option value="ist">India-IST</Option>
-                            <Option value="gmt">Greenwich-GMT</Option>
-                            <Option value="sgt">Singapore-SGT</Option>
-                        </Select>
-                    </Form.Item>
+                    <Tabs key={'step3'} defaultActiveKey="1">
+                        <TabPane tab="Criteria 1" key="s3TabOne">
+                            {step4TabOne}
+                        </TabPane>
+                        {campaignType === 'testingCampaign' ?
+                            <>
+                                <TabPane tab="Criteria 2" key="s3TabTwo">
+                                    {step4TabTwo}
+                                </TabPane>
+                                <TabPane tab="Criteria 3" key="s3TabThree">
+                                    {step4TabThree}
+                                </TabPane>
+                            </> : null}
+                    </Tabs>
                 </>
             }
             case 4: {
@@ -350,6 +558,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
     };
 
     const submitCampaignData = () => {
+        console.log(currentFormValues.current);
         editObjectById({
             campaignData: currentFormValues.current,
             id: propsObj.amendObj.key
@@ -359,22 +568,26 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 message.success("Campaign Data successfully saved", 0.6);
             }
         });
+        if (currentFormValues.current.step1 && currentFormValues.current.step1.name !== propsObj.amendObj.name) {
+            editObjectById({
+                status: propsObj.amendObj.status,
+                id: propsObj.amendObj.id,
+                name: currentFormValues.current.step1.name
+            }, 'campaigns').then(async editCampaignAsync => {
+                let editCampaignRes = await editCampaignAsync.json();
+                if (editCampaignRes) {
+                    console.log('Campaign name has been updated');
+                }
+            });
+        }
     };
-
-    const getAlertInfoMsg = () => {
-        Modal.warning({
-            title: 'Campaign Data cached, please click Done button at Step 5 to save your changes',
-            content: null,
-            onOk() {},
-        });
-    }
 
     return (
         <div className='amendCampaign pageLayout'>
-            {showAlertIcon ? <Alert closeText="Close Now"
-                message="Campaign Data cached, please click Done button at Step 5 to save your changes"
-                banner={true}
-                closable afterClose={() => setShowAlertIcon(false)}
+            {showAlertIcon && pageEditRights ? <Alert closeText="Close Now" style={{marginBottom: 6}}
+                                                      message="Campaign Data cached, please click Done button at Step 5 to save your changes"
+                                                      banner={true}
+                                                      closable afterClose={() => setShowAlertIcon(false)}
             /> : null}
             <div className='cancelNav'>
                 <Button className="deleteBtn" icon={<StepBackwardOutlined/>}
@@ -388,42 +601,40 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                     ))}
                 </Steps>
                 <div className='contentDisplay'>
-                    <div className="firstNav">
-                        <div className="leftPlacement">
-                            <Title level={4}>{steps[current].content}</Title>
+                    <Form onFinish={saveCampaignForm}
+                          form={campaignForm}
+                          layout="vertical"
+                          requiredMark={true}>
+                        <div className="firstNav">
+                            <div className="leftPlacement">
+                                <Title level={4}>{steps[current].content}</Title>
+                            </div>
+                            <div className="rightPlacement">
+                                {current > 0 && (
+                                    <Button className={'prevBtn'} icon={<LeftOutlined/>} style={{margin: '0 8px'}}
+                                            onClick={() => prevState()}>
+                                        Previous
+                                    </Button>
+                                )}
+                                {pageEditRights && current === steps.length - 1 && (
+                                    <Button type="primary" className={'submitBtn'} icon={<CheckOutlined/>}
+                                            onClick={submitCampaignData}>
+                                        Submit
+                                    </Button>
+                                )}
+                                {current < steps.length - 1 && (
+                                    <Button className={'nextBtn'} type="primary" icon={<RightOutlined/>}
+                                            htmlType={'submit'}>
+                                        Next
+                                    </Button>
+                                )}
+                            </div>
                         </div>
-                        <div className="rightPlacement">
-                            {current > 0 && (
-                                <Button className={'prevBtn'} icon={<LeftOutlined/>} style={{margin: '0 8px'}}
-                                        onClick={() => prevState()}>
-                                    Previous
-                                </Button>
-                            )}
-                            {pageEditRights && current === steps.length - 1 && (
-                                <Button type="primary" className={'submitBtn'} icon={<CheckOutlined/>}
-                                        onClick={submitCampaignData}>
-                                    Submit
-                                </Button>
-                            )}
-                            {current < steps.length - 1 && (
-                                <Button className={'nextBtn'} type="primary" icon={<RightOutlined/>}
-                                        onClick={() => nextState()}>
-                                    Next
-                                </Button>
-                            )}
-                        </div>
-                    </div>
-                    <div className='formContainer'>
-                        <Form onFinish={saveCampaignForm}
-                              form={campaignForm}
-                              layout="vertical"
-                              requiredMark={true}>
+                        <div className='formContainer'>
                             {switchForm()}
-                            {pageEditRights ? <Form.Item>
-                                <Button type="primary" htmlType={'submit'}>Save</Button>
-                            </Form.Item> : null}
-                        </Form>
-                    </div>
+                            {pageEditRights ? <Form.Item/> : null}
+                        </div>
+                    </Form>
                 </div>
             </div>
         </div>

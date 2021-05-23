@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import {Button, Table, Typography} from "antd";
-import {useDispatch} from "react-redux";
 import {ImportsDetailsInterface} from "../../audienceInterface";
 import Title from "antd/lib/typography/Title";
 import {DownOutlined, StepBackwardOutlined} from "@ant-design/icons";
@@ -8,22 +7,21 @@ import {exportCSVFile} from "../../../../utils/common";
 
 export const RowDetailsPage: any = (props: any) => {
     const {Title} = Typography;
-    const dispatch = useDispatch();
     const [uploadDetailsDS, setUploadDetailsDS] = useState<ImportsDetailsInterface[]>([
         {
             key: '1',
-            email: 'test+email@gmail.com',
+            email: '-',
             firstName: 'John',
-            lastName: 'Pandey',
+            lastName: 'Dow',
             city: 'Subscribed',
-            postalCode: 'Prospect'
+            postalCode: '-'
         },
         {
             key: '2',
-            email: 'John.pandey@solulever.com',
-            firstName: 'John Kumar',
-            lastName: 'Pandey',
-            city: 'Not Subscribed',
+            email: 'john.doe@solulever.com',
+            firstName: '-',
+            lastName: 'Doe',
+            city: '-',
             postalCode: 'Zoho Campaign'
         }
     ]);

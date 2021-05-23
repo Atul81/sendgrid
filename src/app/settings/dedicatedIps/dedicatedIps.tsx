@@ -63,7 +63,6 @@ export const DedicatedIpsPage: any = () => {
             width: '10%'
         },
         {
-            title: 'Action',
             dataIndex: '',
             key: 'action',
             width: '75px',

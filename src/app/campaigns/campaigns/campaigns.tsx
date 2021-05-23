@@ -39,7 +39,6 @@ export const CampaignPage: any = () => {
             key: 'status',
         },
         {
-            title: 'Action',
             dataIndex: '',
             key: 'action',
             width: '75px',
@@ -111,6 +110,7 @@ export const CampaignPage: any = () => {
         setOpenAutomationAmend(false);
         setCampaignObj({name: ''});
         dispatch(updateBreadcrumb(['Campaign', 'Campaigns']));
+        populateAllCampaigns();
     };
 
     const populateAllCampaigns = () => {
@@ -186,5 +186,5 @@ export const CampaignPage: any = () => {
                        bordered/>
             </div>
         </div>
-    ) : <AmendCampaignsPage amendObj={campaignObj} routeToOverview={navigateToLandingPage}/>;
+    ) : <AmendCampaignsPage key={campaignId} amendObj={campaignObj} routeToOverview={navigateToLandingPage}/>;
 }

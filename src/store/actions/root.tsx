@@ -19,3 +19,13 @@ export const populateAllSegments = () => ({
     type: types.ALL_SEGMENTS,
 });
 
+export const updateNodeType = (payload: any) => ({
+    type: types.NODE_TYPE,
+    payload
+});
+
+export const updateUserRole = (payload: any) => ({
+    type: types.USER_ROLE,
+    payload
+})
+
