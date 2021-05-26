@@ -117,6 +117,10 @@ export const AmendAutomationPage = (props) => {
     };
     const onConnect = (params) => setElements((els) => addEdge(params, els));
 
+    const returnCoordinates = () => {
+        return Math.floor(Math.random() * (400 - 40) + 40)
+    }
+
     const createNewNode = (event) => {
         if (nodeTitle.length <= 0) {
             message.error("Node Title Required", 0.5).then(() => {
@@ -124,8 +128,8 @@ export const AmendAutomationPage = (props) => {
         } else {
             event.preventDefault();
             const position = reactFlowInstance.project({
-                x: Math.random() * window.innerWidth - 100,
-                y: Math.random() * window.innerHeight - 100
+                x: returnCoordinates(),
+                y: returnCoordinates()
             });
             const newNode = {
                 id: getId(),

@@ -88,7 +88,7 @@ export const ContactsPage: any = () => {
     const [idsSelected, setIdsSelected] = useState<string[]>([]);
     const [contactDS, setContactDS] = useState<ContactsInterface[]>([]);
     const [contactDSOps, setContactDSOps] = useState<ContactsInterface[]>([]);
-    const [contactId, setContactId] = useState<number>(13);
+    const [contactId, setContactId] = useState<number>(110);
     const [quickAddContactDS, setQuickAddContactDS] = useState<QuickAddContactInterface[]>([]);
     const tableLabel = 'All Contacts';
     const [editPage, setEditPage] = useState(false);
@@ -422,12 +422,20 @@ export const ContactsPage: any = () => {
             setAllTags(tempTags);
             message.success('New Tag has been cached, Server Call needs backend', 0.6).then(() => {
             });
+            let tempSelected = [...multiSelectValue];
+            tempSelected.push(newTagName);
+            setMultiSelectValue(tempSelected);
             setNewTagName('');
         } else {
             message.error('Please provide a tag name', 0.6).then(() => {
             });
         }
     };
+
+    const validateTextRegex = (inp: string) => {
+        const textRegex = /[^A-Za-z]/
+        return textRegex.test(inp);
+    }
 
     return !editPage ? (
         <div className="pageLayout">
@@ -490,7 +498,8 @@ export const ContactsPage: any = () => {
                 ]} onCancel={closeAdditionalInfo}>
                     {additionalModalInfo === 'addTags' ?
                         <>
-                            <Select onChange={onMultiSelectChange} mode={'multiple'} style={{width: 496}}
+                            <Select onChange={onMultiSelectChange} value={multiSelectValue} mode={'multiple'}
+                                    style={{width: 496}}
                                     dropdownRender={menu => (
                                         <div>
                                             {menu}
@@ -564,12 +573,34 @@ export const ContactsPage: any = () => {
                             </Form.Item>
                             <div className='flexEqualSpacing flexFormItems'>
                                 <Form.Item label="First Name">
-                                    <Form.Item name={['formObj', 'firstName']} noStyle>
+                                    <Form.Item name={['formObj', 'firstName']} noStyle rules={[{
+                                        required: true,
+                                        message: 'First Name required'
+                                    }, () => ({
+                                        validator(_, value) {
+                                            if (value && validateTextRegex(value)) {
+                                                return Promise.reject(new Error('Only text value allowed!'));
+                                            } else {
+                                                return Promise.resolve();
+                                            }
+                                        }
+                                    })]}>
                                         <Input placeholder="Text Only" type={'text'}/>
                                     </Form.Item>
                                 </Form.Item>
                                 <Form.Item label="Last Name">
-                                    <Form.Item name={['formObj', 'lastName']} noStyle>
+                                    <Form.Item name={['formObj', 'lastName']} noStyle rules={[{
+                                        required: true,
+                                        message: 'Last Name required'
+                                    }, () => ({
+                                        validator(_, value) {
+                                            if (value && validateTextRegex(value)) {
+                                                return Promise.reject(new Error('Only text value allowed!'));
+                                            } else {
+                                                return Promise.resolve();
+                                            }
+                                        }
+                                    })]}>
                                         <Input placeholder="Text Only" type={'text'}/>
                                     </Form.Item>
                                 </Form.Item>

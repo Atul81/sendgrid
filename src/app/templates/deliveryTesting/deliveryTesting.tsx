@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Modal, Space, Table, Tag, Typography} from "antd";
+import {Button, Space, Table, Tag, Typography} from "antd";
 import {useDispatch} from "react-redux";
 import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import {getTimeFromUnix} from "../../../utils/common";
@@ -7,7 +7,7 @@ import {updateBreadcrumb} from "../../../store/actions/root";
 import Search from "antd/es/input/Search";
 import {DeliveryTestingInterface} from "../templatesInterface";
 import {BeeTemplatePage} from "./beePlugin/beeTemplatePage";
-import {EyeOutlined} from "@ant-design/icons";
+import {EyeOutlined, StepBackwardOutlined} from "@ant-design/icons";
 
 export const DeliveryTestingPage = () => {
     const {Title} = Typography;
@@ -33,8 +33,12 @@ export const DeliveryTestingPage = () => {
             title: 'Test Name',
             dataIndex: 'testName',
             key: 'testName',
-            render: (text: string, record: any) => <span style={{cursor: "pointer", color: "#1890FF"}}
-                                                         onClick={() => openBeePlugin(record)}>{text}</span>,
+            render: (text: string, record: any) => {
+                return record.status === 'Done' ?
+                    <span style={{cursor: "pointer", color: "#1890FF"}}
+                          onClick={() => openBeePlugin(record)}>{text}</span> :
+                    <span>{text}</span>
+            },
         },
         {
             title: 'Date & Time',
@@ -63,42 +67,56 @@ export const DeliveryTestingPage = () => {
         }
     ];
 
-    const [deliveryObj, setDeliveryObj] = useState({});
+    const [deliveryObj, setDeliveryObj] = useState({
+        testName: ''
+    });
     const [openIeFrame, setOpenIeFrame] = useState(false);
+
     const openBeePlugin = (record: any) => {
         setDeliveryObj(record);
         setOpenIeFrame(true);
+        dispatch(updateBreadcrumb(['templates', 'delivery-testing', 'delivery-report']));
     };
     const navigateToLandingPage = () => {
         dispatch(updateBreadcrumb(['templates', 'delivery-testing']));
-        setDeliveryObj({});
+        setDeliveryObj({testName: ''});
         setOpenIeFrame(false);
     };
+
     const onSearchImports = (searchParam: string) => {
         setDeliveryTesting(deliveryTestingOps.filter(value => {
             return value.testName.includes(searchParam);
         }));
     };
     return !openIeFrame ? (
-        <div className="pageLayout">
-            <div className="secondNav">
-                <Title level={4}>All Tests</Title>
-            </div>
-            <div className="firstNav">
-                <div className="leftPlacement">
-                    <div className="searchInput">
-                        <Search placeholder="input search text" onSearch={onSearchImports} enterButton/>
+            <div className="pageLayout">
+                <div className="secondNav">
+                    <Title level={4}>All Tests</Title>
+                </div>
+                <div className="firstNav">
+                    <div className="leftPlacement">
+                        <div className="searchInput">
+                            <Search placeholder="input search text" onSearch={onSearchImports} enterButton/>
+                        </div>
                     </div>
                 </div>
+                <div className="thirdNav">
+                    <Table columns={columns} dataSource={deliveryTesting} bordered/>
+                </div>
             </div>
-            <div className="thirdNav">
-                <Table columns={columns} dataSource={deliveryTesting} bordered/>
+        ) :
+        <div className="pageLayout">
+            <div className="firstNav">
+                <div className="leftPlacement">
+                    <Title level={4}>{deliveryObj.testName}</Title>
+                </div>
+                <div className='rightPlacement'>
+                    <Button className="deleteBtn" icon={<StepBackwardOutlined/>}
+                            onClick={navigateToLandingPage}>Cancel</Button>
+                </div>
+            </div>
+            <div style={{width: '100%', height: 'calc(100vh - 104px)'}}>
+                <BeeTemplatePage existingTemplate={deliveryObj} requestType={'view'}/>
             </div>
         </div>
-    ) : <Modal className={'fullScreenModal'} title={'Delivery Report'} visible={true} width={'100%'} footer={null}
-               onCancel={navigateToLandingPage}>
-        <div style={{width: '100%', height: 'calc(100vh - 104px)'}}>
-            <BeeTemplatePage existingTemplate={deliveryObj} requestType={'view'}/>
-        </div>
-    </Modal>
 }
