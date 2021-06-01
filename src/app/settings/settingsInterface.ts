@@ -23,5 +23,12 @@ export interface UsersInterface {
     key: string,
     email: string,
     type: string,
-    permission:string
+    permission: string
+}
+
+export interface DomainModal {
+    key: string,
+    name: string,
+    type: string,
+    value: string
 }

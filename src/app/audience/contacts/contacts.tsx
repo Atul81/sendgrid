@@ -41,6 +41,7 @@ import {
 import './contacts.scss';
 import {DropDown} from "../../../utils/Interfaces";
 import {ContactEditPage} from "./edit/ContactEditLoadable";
+import {textOnlyValidation} from "../../../utils/common";
 
 export const ContactsPage: any = () => {
 
@@ -432,11 +433,6 @@ export const ContactsPage: any = () => {
         }
     };
 
-    const validateTextRegex = (inp: string) => {
-        const textRegex = /[^A-Za-z]/
-        return textRegex.test(inp);
-    }
-
     return !editPage ? (
         <div className="pageLayout">
             <div className="secondNav">
@@ -566,7 +562,7 @@ export const ContactsPage: any = () => {
                                         } else {
                                             return Promise.resolve();
                                         }
-                                    },
+                                    }
                                 })]}>
                                     <Input placeholder="email+test@gmail.com" type={"email"}/>
                                 </Form.Item>
@@ -576,15 +572,7 @@ export const ContactsPage: any = () => {
                                     <Form.Item name={['formObj', 'firstName']} noStyle rules={[{
                                         required: true,
                                         message: 'First Name required'
-                                    }, () => ({
-                                        validator(_, value) {
-                                            if (value && validateTextRegex(value)) {
-                                                return Promise.reject(new Error('Only text value allowed!'));
-                                            } else {
-                                                return Promise.resolve();
-                                            }
-                                        }
-                                    })]}>
+                                    }, textOnlyValidation]}>
                                         <Input placeholder="Text Only" type={'text'}/>
                                     </Form.Item>
                                 </Form.Item>
@@ -592,15 +580,7 @@ export const ContactsPage: any = () => {
                                     <Form.Item name={['formObj', 'lastName']} noStyle rules={[{
                                         required: true,
                                         message: 'Last Name required'
-                                    }, () => ({
-                                        validator(_, value) {
-                                            if (value && validateTextRegex(value)) {
-                                                return Promise.reject(new Error('Only text value allowed!'));
-                                            } else {
-                                                return Promise.resolve();
-                                            }
-                                        }
-                                    })]}>
+                                    }, textOnlyValidation]}>
                                         <Input placeholder="Text Only" type={'text'}/>
                                     </Form.Item>
                                 </Form.Item>

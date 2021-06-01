@@ -167,6 +167,7 @@
   &.ant-menu-dark {
     background: #5C18FF;
   }
+
   &.ant-menu-inline {
     &.ant-menu-sub {
       background: #4300E4;
@@ -188,4 +189,14 @@
 
 .ant-menu-horizontal {
   border-bottom: 0;
+}
+
+.ant-table-column-sorters-with-tooltip {
+  .ant-table-column-sorters {
+    display: flex;
+    justify-content: space-between;
+    .anticon svg {
+      margin-bottom: 2px;
+    }
+  }
 }

@@ -1,64 +1,68 @@
 import React, {useEffect, useState} from "react";
-import {Button, message, Table} from "antd";
+import {Button, Popconfirm, Space, Table} from "antd";
 import Title from "antd/lib/typography/Title";
-import {CheckOutlined, CopyOutlined, PlusOutlined} from "@ant-design/icons";
+import {DeleteOutlined, EyeOutlined, PlusOutlined} from "@ant-design/icons";
 import {DnsRecordsInterface} from "../../settingsInterface";
 import './../domain.scss';
 import {getAllServerCall} from "../../../../service/serverCalls/mockServerRest";
 import Search from "antd/es/input/Search";
+import Tag from "antd/es/tag";
+import {DomainModalPage} from "../modal/domainModal";
 
 export const DnsRecordsPage: any = (props: any) => {
-
-    const generateCopiedMessage = (text: any) => {
-        const columnVal = document.createElement('textarea');
-        columnVal.value = text;
-        document.body.appendChild(columnVal);
-        columnVal.select();
-        document.execCommand('copy');
-        message.success(text.concat(' has been copied on your clipboard'), 0.7).then(() => {
-        });
-        document.body.removeChild(columnVal);
-    };
-
     const columns = [
         {
-            title: 'Type',
-            dataIndex: 'type',
-            key: 'type'
+            title: 'Domain',
+            dataIndex: 'domain',
+            key: 'domain',
+            width: '70%',
+            sorter: (a: any, b: any) => a.domain.length - b.domain.length
         },
         {
-            title: 'DNS Name',
-            dataIndex: 'dnsName',
-            key: 'dnsName',
-            render: ((text: string, record: any) => {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            sorter: (a: any, b: any) => a.status.length - b.status.length,
+            render: (text: any, record: any) => {
                 return (
-                    <div className='flexEqualSpacing' style={{paddingRight: '12%'}}>
-                        <div>{record.dnsName} </div>
-                        <div className={'copyText'} onClick={() => generateCopiedMessage(record.dnsName)}>
-                            <CopyOutlined/></div>
-                    </div>
+                    <Tag color={record.status === 'Active' ? 'green' : 'purple'} key={record.key}>{text}</Tag>
                 );
-            })
+            }
         },
         {
-            title: 'Canonical Name',
-            dataIndex: 'canonicalName',
-            key: 'canonicalName',
+            dataIndex: '',
+            key: 'action',
+            width: '75px',
             render: ((text: string, record: any) => {
-                return (
-                    <div className='flexEqualSpacing' style={{paddingRight: '12%'}}>
-                        <div>{record.canonicalName} </div>
-                        <div className={'copyText'} onClick={() => generateCopiedMessage(record.canonicalName)}>
-                            <CopyOutlined/>
-                        </div>
-                    </div>
-                );
+                return <Space size="small">
+                    {record.status === 'Active' ?
+                        <p className={"actionColumn"} onClick={() => viewDomainSettings(record)}><EyeOutlined/>
+                        </p> : null}
+                    <Popconfirm overlayClassName="ant-popover-audience" placement="left"
+                                title={<p><Title level={5}>Are you sure you want to delete?</Title>
+                                    This will permanently delete these records and all associated data from your
+                                    account. Deleting and re-adding records can alter your monthly contact limits.
+                                    <a href={'https://programmablesearchengine.google.com/about/'} target={'_blank'}
+                                       rel={'noreferrer'}>Learn More</a></p>}
+                                okText="Delete" cancelText="Cancel"
+                                onConfirm={() => deleteSetting(record)}>
+                        <p className={"actionColumn"}><DeleteOutlined/></p>
+                    </Popconfirm>
+                </Space>
             })
         }
     ];
-    const verifyDomainSettings = () => {
-        message.warn("Value has been successfully verified", 0.7).then(() => {
-        });
+
+    const [domainObj, setDomainObj] = useState({});
+    const [openDomainModal, setDomainModal] = useState(false);
+
+    const viewDomainSettings = (record: any) => {
+        setDomainObj(record);
+        setDomainModal(true);
+    }
+
+    const deleteSetting = (record: any) => {
+        console.log(record)
     }
 
     const [dnsRecordsDS, setDnsRecordsDS] = useState<DnsRecordsInterface[]>([]);
@@ -94,15 +98,16 @@ export const DnsRecordsPage: any = (props: any) => {
                     <Search placeholder="input search text" onSearch={onSearchDnsRecords} enterButton/>
                 </div>
                 <div className="rightPlacement">
-                    <Button style={{width: 72, marginRight: 8}} type={'primary'} onClick={verifyDomainSettings}
-                            icon={<CheckOutlined/>}>Verify</Button>
-                    <Button style={{width: 112}} icon={<PlusOutlined/>} onClick={props.exitToLandingPage}>Add
+                    <Button style={{width: 112}} type={'primary'} icon={<PlusOutlined/>}
+                            onClick={props.exitToLandingPage}>Add
                         Domain</Button>
                 </div>
             </div>
             <div className="thirdNav">
-                <Table scroll={{y: 'calc(100vh - 326px)'}} dataSource={dnsRecordsDS} columns={columns} bordered/>
+                <Table scroll={{y: 'calc(100vh - 416px)'}} dataSource={dnsRecordsDS} columns={columns} bordered/>
             </div>
+            {openDomainModal ? <DomainModalPage visibility={openDomainModal} domainObj={domainObj} openType={'view'}
+                                                closeDomainPage={() => setDomainModal(false)}/> : null}
         </div>
     )
 }

@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from "react";
-import {Button, Form, Input, message, Select} from "antd";
+import {Button, Checkbox, Form, Input, message} from "antd";
 import {CheckOutlined, StepBackwardOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
-import {filterSelectOptions} from "../../../utils/common";
-import {DropDown} from "../../../utils/Interfaces";
 import './domain.scss';
 import {DnsRecordsPage} from "./dnsRecords/DnsRecordsLoadable";
-import {addNewObject, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
+import {addNewObject} from "../../../service/serverCalls/mockServerRest";
 import {useDispatch} from "react-redux";
 import {updateActiveContent, updateBreadcrumb} from "../../../store/actions/root";
+import {urlRegexValidation} from "../../../utils/common";
+import {DomainModalPage} from "./modal/domainModal";
 
 export const DomainSettingsPage: any = () => {
     const dispatch = useDispatch();
@@ -16,40 +16,29 @@ export const DomainSettingsPage: any = () => {
     useEffect(() => {
         dispatch(updateBreadcrumb(['Settings', 'domain']));
         dispatch(updateActiveContent('domain'));
-        getAllServerCall('utils').then(async allDnsHostsAsync => {
-            let allDnsHostsRes = await allDnsHostsAsync.json();
-            let tempItrObj: DropDown[] = [];
-            if (allDnsHostsRes && Array.isArray(allDnsHostsRes.dnsHosts)) {
-                allDnsHostsRes.dnsHosts.forEach((itr: any) => {
-                    tempItrObj.push(itr)
-                });
-            }
-            setAllDnsHost(tempItrObj);
-        });
     }, [dispatch]);
 
     const [domainForm] = Form.useForm();
-    const {Option} = Select;
 
-    const [allDnsHost, setAllDnsHost] = useState<DropDown[]>([]);
     const [newDomainSettings, setNewDomainSettings] = useState(false);
     const [domainId, setDomainId] = useState(12);
-
+    const [domainObj, setDomainObj] = useState({});
     const proceedDomainSettings = (values: any) => {
         let newDomainObj = values.formObj;
         addNewObject({
             id: domainId,
-            type: newDomainObj.dnsHost,
-            dnsName: newDomainObj.dnsName,
-            canonicalName: newDomainObj.dnsName
-        }, 'domain').then(async newDnsRecordAsync => {
-            let newDnsRecordRes = await newDnsRecordAsync.json();
+            domain: newDomainObj.domainName,
+            dkimSettings: newDomainObj.dkimSettings,
+            status: 'Processed'
+        }, 'domain').then(async newDomainObjAsync => {
+            let newDnsRecordRes = await newDomainObjAsync.json();
             if (newDnsRecordRes) {
                 setDomainId(domainId + 1);
-                message.success("New DNS Record has been installed", 0.6);
+
+                setDomainModal(true);
+                setDomainObj(newDnsRecordRes);
             }
         });
-        setNewDomainSettings(false);
         domainForm.resetFields();
     };
 
@@ -63,42 +52,41 @@ export const DomainSettingsPage: any = () => {
         dispatch(updateBreadcrumb(['Settings', 'domain']));
     };
 
+    const [dkimSelect, setDkimSelect] = useState(false);
+    const [openDomainModal, setDomainModal] = useState(false);
+
     return newDomainSettings ? (<div className={'domain'}>
-        <Form className={'maxWidth'} form={domainForm} layout={'vertical'} onFinish={proceedDomainSettings}>
+        <Form form={domainForm} layout={'vertical'} onFinish={proceedDomainSettings}>
             <div className="pageLayout">
                 <div className="firstNav">
                     <div className="leftPlacement">
-                        <Title level={4}>Domain Settings</Title>
+                        <Title level={4}>Add Domain</Title>
                     </div>
                     <div className="rightPlacement">
-                        <Button style={{width: 88}} type={'primary'} htmlType={"submit"}
-                                icon={<CheckOutlined/>}>Proceed</Button>
-                        <Button style={{width: 76, marginLeft: 8}} onClick={cancelNewDomain}
+                        <Button style={{width: 76}} onClick={cancelNewDomain}
                                 icon={<StepBackwardOutlined/>}>Cancel</Button>
+                        <Button style={{width: 144, marginLeft: 8}} type={'primary'} htmlType={"submit"}
+                                icon={<CheckOutlined/>}>Verify This Domain</Button>
                     </div>
                 </div>
                 <div className="thirdNav" style={{height: 'calc(100vh - 238px)'}}>
-                    <Form.Item label="DNS (Domain Name Server) Host">
-                        <Form.Item name={['formObj', 'dnsHost']}
-                                   noStyle rules={[{required: true, message: 'DNS Host required'}]}>
-                            <Select showSearch allowClear
-                                    placeholder="Select Segments"
-                                    optionFilterProp="children"
-                                    filterOption={(input, option) => filterSelectOptions(input, option)}>
-                                {allDnsHost.map(value => {
-                                    return <Option key={value.value} value={value.label}>{value.label}</Option>
-                                })}
-                            </Select>
+                    <Form.Item label={<strong>Domain</strong>}>
+                        <Form.Item name={['formObj', 'domainName']}
+                                   noStyle
+                                   rules={[{required: true, message: 'Domain Name required'}, urlRegexValidation]}>
+                            <Input className={'maxWidth'} placeholder="Form Domain" type={'text'}/>
                         </Form.Item>
                     </Form.Item>
-                    <Form.Item label="Sender Domain Name">
-                        <Form.Item name={['formObj', 'dnsName']} noStyle
-                                   rules={[{required: true, message: 'Domain Name required'}]}>
-                            <Input placeholder="Form Domain" type={'text'}/>
+                    <Form.Item>
+                        <Form.Item name={['formObj', 'dkimSettings']} noStyle>
+                            <Checkbox value={dkimSelect}
+                                      onChange={(e => setDkimSelect(e.target.value))}><span>Generate DKIM Settings <span
+                                style={{color: "gray"}}>(optional)</span></span></Checkbox>
                         </Form.Item>
                     </Form.Item>
                 </div>
             </div>
         </Form>
+        {openDomainModal ? <DomainModalPage visibility={openDomainModal} domainObj={domainObj} openType={'create'} closeDomainPage={() => setDomainModal(false)}/> : null}
     </div>) : <DnsRecordsPage exitToLandingPage={exitToDataView}/>
 }

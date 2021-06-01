@@ -1,68 +1,68 @@
 [
   {
     "id": 1,
-    "type": "CNAME1",
-    "dnsName": "John1",
-    "canonicalName": "Doe1"
+    "domain": "mydomain.com",
+    "status": "Active",
+    "dkimSettings": false
   },
   {
     "id": 2,
-    "type": "CNAME2",
-    "dnsName": "John2",
-    "canonicalName": "Doe2"
+    "domain": "anotherdomain.com",
+    "status": "Pending",
+    "dkimSettings": false
   },
   {
     "id": 3,
-    "type": "CNAME3",
-    "dnsName": "John3",
-    "canonicalName": "Doe3"
+    "domain": "domainjohn",
+    "status": "John3",
+    "dkimSettings": false
   },
   {
     "id": 4,
-    "type": "CNAME4",
-    "dnsName": "John4",
-    "canonicalName": "Doe4"
+    "domain": "domaincname4",
+    "status": "John4",
+    "dkimSettings": false
   },
   {
     "id": 5,
-    "type": "CNAME5",
-    "dnsName": "John5",
-    "canonicalName": "Doe5"
+    "domain": "domaincname5",
+    "status": "John5",
+    "dkimSettings": false
   },
   {
     "id": 6,
-    "type": "CNAME6",
-    "dnsName": "John6",
-    "canonicalName": "Doe6"
+    "domain": "domaincname6",
+    "status": "John6",
+    "dkimSettings": false
   },
   {
     "id": 7,
-    "type": "CNAME7",
-    "dnsName": "John7",
-    "canonicalName": "Doe7"
+    "domain": "domaincname7",
+    "status": "John7",
+    "dkimSettings": false
   },
   {
     "id": 8,
-    "type": "CNAME8",
-    "dnsName": "John8",
-    "canonicalName": "Doe8"
+    "domain": "domaincname8",
+    "status": "John8",
+    "dkimSettings": false
   },
   {
     "id": 9,
-    "type": "CNAME9",
-    "dnsName": "John9",
-    "canonicalName": "Doe9"
+    "domain": "domaincname9",
+    "status": "John9",
+    "dkimSettings": false
   },
   {
     "id": 10,
-    "type": "CNAME10",
-    "dnsName": "John10",
-    "canonicalName": "Doe10"
+    "domain": "domaincname10",
+    "status": "John10",
+    "dkimSettings": false
   },
   {
     "id": 11,
-    "type": "CNAME11",
-    "dnsName": "John11",
-    "canonicalName": "Doe11"
+    "domain": "domaincname11",
+    "status": "John11",
+    "dkimSettings": false
   }
 ]

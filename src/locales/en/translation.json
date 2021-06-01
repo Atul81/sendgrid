@@ -29,7 +29,7 @@
     "amend-sender": "Create/Modify Sender",
     "amend-automation": "Create/Modify Automation",
     "amend-campaign": "Create/Modify Campaign",
-    "add-domain": "Add New Domain"
+    "add-domain": "Add Domain"
   },
   "defaultSidebar": {
     "dashboard": "1",

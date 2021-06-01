@@ -39,4 +39,38 @@ export const getTimeFromUnix = (unixTime: number) => {
     let minutes = "0" + date.getMinutes();
     let seconds = "0" + date.getSeconds();
     return hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+};
+
+export const textOnlyValidation = () => {
+    return {
+        validator(_: any, value: string) {
+            if (value && validateTextRegex(value)) {
+                return Promise.reject(new Error('Only text value allowed!'));
+            } else {
+                return Promise.resolve();
+            }
+        }
+    };
+}
+
+export const urlRegexValidation = () => {
+    return {
+        validator(_: any, value: string) {
+            if (value && validateDomainRegex(value)) {
+                return Promise.reject(new Error('Text value with dot allowed!'));
+            } else {
+                return Promise.resolve();
+            }
+        }
+    };
+}
+
+export const validateTextRegex = (inp: string) => {
+    const textRegex = /[^A-Za-z]/
+    return textRegex.test(inp);
+}
+
+export const validateDomainRegex = (inp: string) => {
+    const textRegex = /[^A-Za-z.]/
+    return textRegex.test(inp);
 }

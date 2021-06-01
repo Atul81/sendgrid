@@ -96,5 +96,23 @@
       "name": "Test Descriptions",
       "btnName": "Customize"
     }
-  ]
+  ],
+  "domainSettings": {
+    "verificationRecord": {
+      "type": "TXT",
+      "value": "IslB4DWhasIdGJAuAJK5H6"
+    },
+    "records": [
+      {
+        "name": "hSA7gy895Bnwe.",
+        "type": "CNAME",
+        "value": "dkms.ser."
+      },
+      {
+        "name": "hSA7gy895Bnwe.",
+        "type": "CNAME",
+        "value": "dkms2.ser."
+      }
+    ]
+  }
 }
