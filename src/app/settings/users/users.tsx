@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Checkbox, Form, Input, message, Modal, Popconfirm, Radio, Select, Space, Table, Tag} from "antd";
+import {Button, Checkbox, Form, Input, message, Modal, Popconfirm, Select, Space, Table, Tag} from "antd";
 import {CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import {UsersInterface} from "../settingsInterface";
 import {DropDown} from "../../../utils/Interfaces";
@@ -30,7 +30,8 @@ export const UsersPage: any = () => {
         {value: 'manageContacts', label: 'Manage Contacts'},
         {value: 'manageCampaigns', label: 'Manage Campaigns'},
         {value: 'manageUsers', label: 'Manage Users'},
-        {value: 'moreOptions', label: 'More Options...'},
+        {value: 'manageTemplates', label: 'Manage Templates'},
+        {value: 'manageUnsubscription', label: 'Manage Unsubscription'}
     ];
 
     const [currentUserRole, setCurrentUserRole] = useState('');
@@ -122,6 +123,8 @@ export const UsersPage: any = () => {
                 return 'green';
             case 'Viewer':
                 return 'purple';
+            case 'Custom':
+                return 'yellow'
         }
     };
 
@@ -204,27 +207,59 @@ export const UsersPage: any = () => {
 
     const onRoleSelectChange = (roleSelected: string) => {
         setCurrentUserRole(roleSelected);
-        console.log(userObj);
-        if (roleSelected === 'Admin') {
-            userModalForm.setFieldsValue({
-                formObj: {
-                    userEmail: userObj.email,
-                    userPermission: [
-                        "manageContacts",
-                        "manageCampaigns",
-                        "moreOptions",
-                        "manageUsers"
-                    ]
-                }
-            });
-        } else {
-            userModalForm.setFieldsValue({
-                formObj: {
-                    userEmail: userObj.email,
-                    userPermission: []
-                }
-            });
+        switch (roleSelected) {
+            case 'Admin': {
+                userModalForm.setFieldsValue({
+                    formObj: {
+                        userEmail: userObj.email,
+                        userPermission: [
+                            "manageContacts",
+                            "manageCampaigns",
+                            "manageTemplates",
+                            "manageUnsubscription",
+                            "manageUsers"
+                        ]
+                    }
+                });
+                break;
+            }
+            case 'Standard': {
+                userModalForm.setFieldsValue({
+                    formObj: {
+                        userEmail: userObj.email,
+                        userPermission: [
+                            "manageContacts"
+                        ]
+                    }
+                });
+                break;
+            }
+            case 'Auditor': {
+                userModalForm.setFieldsValue({
+                    formObj: {
+                        userEmail: userObj.email,
+                        userPermission: [
+                            "manageContacts",
+                            "manageCampaigns",
+                            "manageTemplates",
+                        ]
+                    }
+                });
+                break;
+            }
+            default: {
+                userModalForm.setFieldsValue({
+                    formObj: {
+                        userEmail: userObj.email,
+                        userPermission: []
+                    }
+                });
+            }
         }
+    };
+
+    const onPermissionsChange = () => {
+        console.log(userModalForm.getFieldsValue());
     }
     return (
         <div className="domain pageLayout">
@@ -275,12 +310,13 @@ export const UsersPage: any = () => {
                                        rules={[{required: true, message: 'Permission required'}]}>
                                 {currentUserRole === 'Admin' ?
                                     <Checkbox.Group disabled options={userPermissionOptions}/> :
-                                    <Radio.Group>
-                                        <Radio value={'manageContacts'}>Manage Contacts</Radio>
-                                        <Radio value={'manageCampaigns'}>Manage Campaigns</Radio>
-                                        <Radio value={'manageUsers'}>Manage Users</Radio>
-                                        <Radio value={'moreOptions'}>More Options...</Radio>
-                                    </Radio.Group>
+                                    <Checkbox.Group onChange={onPermissionsChange}>
+                                        <Checkbox value={'manageContacts'}>Manage Contacts</Checkbox>
+                                        <Checkbox value={'manageCampaigns'}>Manage Campaigns</Checkbox>
+                                        <Checkbox value={'manageUsers'}>Manage Users</Checkbox>
+                                        <Checkbox value={'manageTemplates'}>Manage Templates</Checkbox>
+                                        <Checkbox value={'manageUnsubscription'}>Manage Unsubscription</Checkbox>
+                                    </Checkbox.Group>
                                 }
                             </Form.Item>
                         </Form.Item> : <Paragraph style={{color: "red"}}>No permission access

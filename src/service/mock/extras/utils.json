@@ -41,6 +41,11 @@
       "label": "Auditor",
       "value": "audit",
       "children": null
+    },
+    {
+      "label": "Custom",
+      "value": "custom",
+      "children": null
     }
   ],
   "tags": [

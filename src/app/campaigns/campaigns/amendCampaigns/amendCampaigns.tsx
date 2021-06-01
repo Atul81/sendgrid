@@ -43,6 +43,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                             if (rangeData) {
                                 campaignFormData.campaignData.step4.tabOne.rangePicker = rangeData;
                             }
+                            setCampaignTime(currentCampaignData.step4.tabOne.campaignTime)
                         }
                         if (currentCampaignData.step4.tabTwo) {
                             let rangeData = getRangeAsMoment(currentCampaignData.step4.tabTwo.rangePicker);
@@ -86,6 +87,21 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 });
             }
             setAllSegments(tempData);
+        });
+
+        getAllServerCall('customEvents').then(async getAllSegmentsAsync => {
+            let allCustomEvents = await getAllSegmentsAsync.json();
+            let tempData: DropDown[] = [];
+            if (allCustomEvents && Array.isArray(allCustomEvents)) {
+                allCustomEvents.forEach((itr: any) => {
+                    tempData.push({
+                        value: itr.id,
+                        label: itr.name,
+                        children: null
+                    });
+                });
+            }
+            setCustomEvents(tempData);
         });
     }, [campaignForm, propsObj]);
 
@@ -157,19 +173,22 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 campaignTime: undefined,
                 campaignFrequency: undefined,
                 rangePicker: undefined,
-                timeZone: undefined
+                timeZone: undefined,
+                campaignEventTrigger: undefined
             },
             tabTwo: {
                 campaignTime: undefined,
                 campaignFrequency: undefined,
                 rangePicker: undefined,
-                timeZone: undefined
+                timeZone: undefined,
+                campaignEventTrigger: undefined
             },
             tabThree: {
                 campaignTime: undefined,
                 campaignFrequency: undefined,
                 rangePicker: undefined,
-                timeZone: undefined
+                timeZone: undefined,
+                campaignEventTrigger: undefined
             }
         },
         step5: {
@@ -222,8 +241,8 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
     }
 
     const saveCampaignForm = (values: any) => {
-        let step4Data = populateNestedStep(values, currentFormValues.current.step4);
-        let step3Data = populateNestedStep(values, currentFormValues.current.step3);
+        let step4Data = populateNestedStep(values.step4, currentFormValues.current.step4);
+        let step3Data = populateNestedStep(values.step3, currentFormValues.current.step3);
         currentFormValues.current = {
             step5: values.step5 ? values.step5 : currentFormValues.current.step5,
             step4: step4Data,
@@ -256,7 +275,11 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
 
     const {TabPane} = Tabs;
     const [campaignType, setCampaignType] = useState('emailCampaign');
-
+    const [campaignTime, setCampaignTime] = useState('specificTime');
+    const [customEvents, setCustomEvents] = useState<DropDown[]>([]);
+    const onCampaignTimeChange = (e: any) => {
+        setCampaignTime(e.target.value);
+    };
     const step3TabOne =
         <>
             <Form.Item label="Campaign Type" name={['step3', 'tabOne', 'campaignType']}>
@@ -320,34 +343,45 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
     const step4TabOne = <>
         <Form.Item label="Campaign Time" name={['step4', 'tabOne', 'campaignTime']}
                    tooltip="When to send the campaign">
-            <Radio.Group disabled={!pageEditRights}>
+            <Radio.Group disabled={!pageEditRights} onChange={onCampaignTimeChange}>
                 <Radio value='specificTime'>At a specific time</Radio>
                 <Radio value='eventTrigger'>At event trigger</Radio>
             </Radio.Group>
         </Form.Item>
-        <Form.Item label="Campaign Frequency" name={['step4', 'tabOne', 'campaignFrequency']}>
-            <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
-                    placeholder="Select Frequency"
-                    optionFilterProp="children"
-                    filterOption={(input, option) => filterCountryOption(input, option)}>
-                <Option value="weekly">Weekly</Option>
-                <Option value="monthly">Monthly</Option>
-                <Option value="yearly">Yearly</Option>
-            </Select>
-        </Form.Item>
-        <Form.Item label="Time Range" name={['step4', 'tabOne', 'rangePicker']}>
-            <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
-        </Form.Item>
-        <Form.Item label="Time Zone" name={['step4', 'tabOne', 'timeZone']}>
-            <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
-                    placeholder="Select Time Zone"
-                    optionFilterProp="children"
-                    filterOption={(input, option) => filterCountryOption(input, option)}>
-                <Option value="ist">India-IST</Option>
-                <Option value="gmt">Greenwich-GMT</Option>
-                <Option value="sgt">Singapore-SGT</Option>
-            </Select>
-        </Form.Item>
+        {campaignTime === 'specificTime' ? <>
+                <Form.Item label="Campaign Frequency" name={['step4', 'tabOne', 'campaignFrequency']}>
+                    <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                            placeholder="Select Frequency"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => filterCountryOption(input, option)}>
+                        <Option value="weekly">Weekly</Option>
+                        <Option value="monthly">Monthly</Option>
+                        <Option value="yearly">Yearly</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item label="Time Range" name={['step4', 'tabOne', 'rangePicker']}>
+                    <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
+                </Form.Item>
+                <Form.Item label="Time Zone" name={['step4', 'tabOne', 'timeZone']}>
+                    <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                            placeholder="Select Time Zone"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => filterCountryOption(input, option)}>
+                        <Option value="ist">India-IST</Option>
+                        <Option value="gmt">Greenwich-GMT</Option>
+                        <Option value="sgt">Singapore-SGT</Option>
+                    </Select>
+                </Form.Item>
+            </> :
+            <Form.Item label="Custom Event" name={['step4', 'tabOne', 'campaignEventTrigger']}>
+                <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                        placeholder="Select Event"
+                        optionFilterProp="children"
+                        filterOption={(input, option) => filterCountryOption(input, option)}>
+                    {customEvents.map((value) => <Option key={value.value} value={value.label}>{value.label}</Option>)}
+                </Select>
+            </Form.Item>}
+
     </>;
 
     const step4TabTwo = <>
@@ -415,6 +449,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
         </Form.Item>
     </>
 
+
     const switchForm = () => {
         switch (current) {
             case 0: {
@@ -472,15 +507,15 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             case 2: {
                 return <>
                     <Tabs key={'step2'} defaultActiveKey="1">
-                        <TabPane tab="Criteria 1" key="s2TabOne">
+                        <TabPane tab="Variant 1 Options" key="s2TabOne">
                             {step3TabOne}
                         </TabPane>
                         {campaignType === 'testingCampaign' ?
                             <>
-                                <TabPane tab="Criteria 2" key="s2TabTwo">
+                                <TabPane tab="Variant 2 Options" key="s2TabTwo">
                                     {step3TabTwo}
                                 </TabPane>
-                                <TabPane tab="Criteria 3" key="s2TabThree">
+                                <TabPane tab="Variant 3 Options" key="s2TabThree">
                                     {step3TabThree}
                                 </TabPane>
                             </> : null}
@@ -490,15 +525,15 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             case 3: {
                 return <>
                     <Tabs key={'step3'} defaultActiveKey="1">
-                        <TabPane tab="Criteria 1" key="s3TabOne">
+                        <TabPane tab="Variant 1 Options" key="s3TabOne">
                             {step4TabOne}
                         </TabPane>
                         {campaignType === 'testingCampaign' ?
                             <>
-                                <TabPane tab="Criteria 2" key="s3TabTwo">
+                                <TabPane tab="Variant 2 Options" key="s3TabTwo">
                                     {step4TabTwo}
                                 </TabPane>
-                                <TabPane tab="Criteria 3" key="s3TabThree">
+                                <TabPane tab="Variant 3 Options" key="s3TabThree">
                                     {step4TabThree}
                                 </TabPane>
                             </> : null}
@@ -594,12 +629,14 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                         onClick={propsObj.routeToOverview}>Cancel</Button>
             </div>
             <div className='screenBifurcation'>
-                <Steps current={current} direction={"vertical"} onChange={onStepChange}>
-                    {steps.map(item => (
-                        <Step icon={item.icon} key={item.key} title={item.title}
-                              description={item.content}/>
-                    ))}
-                </Steps>
+                <div className="antSteps">
+                    <Steps current={current} direction={"vertical"} onChange={onStepChange} >
+                        {steps.map(item => (
+                            <Step icon={item.icon} key={item.key} title={item.title}
+                                  description={item.content}/>
+                        ))}
+                    </Steps>
+                </div>
                 <div className='contentDisplay'>
                     <Form onFinish={saveCampaignForm}
                           form={campaignForm}

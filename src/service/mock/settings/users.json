@@ -6,8 +6,9 @@
     "permission": [
       "manageContacts",
       "manageCampaigns",
-      "moreOptions",
-      "manageUsers"
+      "manageUsers",
+      "manageTemplates",
+      "manageUnsubscription"
     ]
   },
   {
@@ -17,7 +18,8 @@
     "permission": [
       "manageContacts",
       "manageCampaigns",
-      "moreOptions",
+      "manageTemplates",
+      "manageUnsubscription",
       "manageUsers"
     ]
   },
@@ -34,7 +36,8 @@
     "permission": [
       "manageContacts",
       "manageCampaigns",
-      "moreOptions",
+      "manageTemplates",
+      "manageUnsubscription",
       "manageUsers"
     ]
   },
@@ -51,7 +54,8 @@
     "permission": [
       "manageContacts",
       "manageCampaigns",
-      "moreOptions",
+      "manageTemplates",
+      "manageUnsubscription",
       "manageUsers"
     ]
   },
@@ -59,7 +63,10 @@
     "id": 7,
     "email": "dev-testing7@gmail.com",
     "type": "Auditor",
-    "permission": "moreOptions"
+    "permission": [
+      "manageTemplates",
+      "manageUnsubscription"
+    ]
   },
   {
     "id": 8,
@@ -68,7 +75,8 @@
     "permission": [
       "manageContacts",
       "manageCampaigns",
-      "moreOptions",
+      "manageTemplates",
+      "manageUnsubscription",
       "manageUsers"
     ]
   },
