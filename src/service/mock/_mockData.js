@@ -9,6 +9,7 @@ for (let i = 0; i < 110; i++) {
             "lastName": "Doe",
             "emailMarketing": "Un-subscribed",
             "tags": "Prospect",
+            "segments": "2021 Leads",
             "address": null,
             "city": null,
             "country": null,
@@ -22,6 +23,7 @@ for (let i = 0; i < 110; i++) {
             "lastName": "Doe",
             "emailMarketing": "Subscribed",
             "tags": "Campaign",
+            "segments": "Chicago Companies",
             "address": null,
             "city": null,
             "country": null,
@@ -32,6 +34,7 @@ for (let i = 0; i < 110; i++) {
 const customFields = require('./audience/customFields.json');
 const segments = require('./audience/segments.json');
 const imports = require('./audience/imports.json');
+const importsRow = require('./audience/importsRow.json');
 const exportsData = require('./audience/exports.json');
 const automation = require('./campaigns/automation.json');
 const workFlow = require('./campaigns/workFlow.json');
@@ -53,6 +56,7 @@ module.exports = () => ({
     customFields,
     segments,
     imports,
+    importsRow,
     exportsData,
     automation,
     workFlow,

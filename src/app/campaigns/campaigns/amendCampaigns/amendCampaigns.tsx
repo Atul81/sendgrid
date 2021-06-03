@@ -282,13 +282,13 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
     };
     const step3TabOne =
         <>
-            <Form.Item label="Campaign Type" name={['step3', 'tabOne', 'campaignType']}>
+            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabOne', 'campaignType']}>
                 <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
                     <Radio value='existingTemplate'>Use Existing template</Radio>
                     <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
                 </Radio.Group>
             </Form.Item>
-            <Form.Item label="Select Templates" name={['step3', 'tabOne', 'templateType']}>
+            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabOne', 'templateType']}>
                 <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
                         placeholder="Welcome Email Template"
                         optionFilterProp="children"
@@ -302,13 +302,13 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
 
     const step3TabTwo =
         <>
-            <Form.Item label="Campaign Type" name={['step3', 'tabTwo', 'campaignType']}>
+            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabTwo', 'campaignType']}>
                 <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
                     <Radio value='existingTemplate'>Use Existing template</Radio>
                     <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
                 </Radio.Group>
             </Form.Item>
-            <Form.Item label="Select Templates" name={['step3', 'tabTwo', 'templateType']}>
+            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabTwo', 'templateType']}>
                 <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
                         placeholder="Welcome Email Template"
                         optionFilterProp="children"
@@ -322,13 +322,13 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
 
     const step3TabThree =
         <>
-            <Form.Item label="Campaign Type" name={['step3', 'tabThree', 'campaignType']}>
+            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabThree', 'campaignType']}>
                 <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
                     <Radio value='existingTemplate'>Use Existing template</Radio>
                     <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
                 </Radio.Group>
             </Form.Item>
-            <Form.Item label="Select Templates" name={['step3', 'tabThree', 'templateType']}>
+            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabThree', 'templateType']}>
                 <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
                         placeholder="Welcome Email Template"
                         optionFilterProp="children"
@@ -341,7 +341,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
         </>;
 
     const step4TabOne = <>
-        <Form.Item label="Campaign Time" name={['step4', 'tabOne', 'campaignTime']}
+        <Form.Item label={<strong>Campaign Time</strong>} name={['step4', 'tabOne', 'campaignTime']}
                    tooltip="When to send the campaign">
             <Radio.Group disabled={!pageEditRights} onChange={onCampaignTimeChange}>
                 <Radio value='specificTime'>At a specific time</Radio>
@@ -349,7 +349,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             </Radio.Group>
         </Form.Item>
         {campaignTime === 'specificTime' ? <>
-                <Form.Item label="Campaign Frequency" name={['step4', 'tabOne', 'campaignFrequency']}>
+                <Form.Item label={<strong>Campaign Frequency</strong>} name={['step4', 'tabOne', 'campaignFrequency']}>
                     <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
                             placeholder="Select Frequency"
                             optionFilterProp="children"
@@ -359,10 +359,10 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                         <Option value="yearly">Yearly</Option>
                     </Select>
                 </Form.Item>
-                <Form.Item label="Time Range" name={['step4', 'tabOne', 'rangePicker']}>
+                <Form.Item label={<strong>Time Range</strong>} name={['step4', 'tabOne', 'rangePicker']}>
                     <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
                 </Form.Item>
-                <Form.Item label="Time Zone" name={['step4', 'tabOne', 'timeZone']}>
+                <Form.Item label={<strong>Time Zone</strong>} name={['step4', 'tabOne', 'timeZone']}>
                     <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
                             placeholder="Select Time Zone"
                             optionFilterProp="children"
@@ -373,7 +373,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                     </Select>
                 </Form.Item>
             </> :
-            <Form.Item label="Custom Event" name={['step4', 'tabOne', 'campaignEventTrigger']}>
+            <Form.Item label={<strong>Campaign Event</strong>} name={['step4', 'tabOne', 'campaignEventTrigger']}>
                 <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
                         placeholder="Select Event"
                         optionFilterProp="children"
@@ -385,14 +385,14 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
     </>;
 
     const step4TabTwo = <>
-        <Form.Item label="Campaign Time" name={['step4', 'tabTwo', 'campaignTime']}
+        <Form.Item label={<strong>Campaign Time</strong>} name={['step4', 'tabTwo', 'campaignTime']}
                    tooltip="When to send the campaign">
             <Radio.Group disabled={!pageEditRights}>
                 <Radio value='specificTime'>At a specific time</Radio>
                 <Radio value='eventTrigger'>At event trigger</Radio>
             </Radio.Group>
         </Form.Item>
-        <Form.Item label="Campaign Frequency" name={['step4', 'tabTwo', 'campaignFrequency']}>
+        <Form.Item label={<strong>Campaign Frequency</strong>} name={['step4', 'tabTwo', 'campaignFrequency']}>
             <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
                     placeholder="Select Frequency"
                     optionFilterProp="children"
@@ -402,10 +402,10 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 <Option value="yearly">Yearly</Option>
             </Select>
         </Form.Item>
-        <Form.Item label="Time Range" name={['step4', 'tabTwo', 'rangePicker']}>
+        <Form.Item label={<strong>Time Range</strong>} name={['step4', 'tabTwo', 'rangePicker']}>
             <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
         </Form.Item>
-        <Form.Item label="Time Zone" name={['step4', 'tabTwo', 'timeZone']}>
+        <Form.Item label={<strong>Time Zone</strong>} name={['step4', 'tabTwo', 'timeZone']}>
             <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
                     placeholder="Select Time Zone"
                     optionFilterProp="children"
@@ -417,14 +417,14 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
         </Form.Item>
     </>
     const step4TabThree = <>
-        <Form.Item label="Campaign Time" name={['step4', 'tabThree', 'campaignTime']}
+        <Form.Item label={<strong>Campaign Time</strong>} name={['step4', 'tabThree', 'campaignTime']}
                    tooltip="When to send the campaign">
             <Radio.Group disabled={!pageEditRights}>
                 <Radio value='specificTime'>At a specific time</Radio>
                 <Radio value='eventTrigger'>At event trigger</Radio>
             </Radio.Group>
         </Form.Item>
-        <Form.Item label="Campaign Frequency" name={['step4', 'tabThree', 'campaignFrequency']}>
+        <Form.Item label={<strong>Campaign Frequency</strong>} name={['step4', 'tabThree', 'campaignFrequency']}>
             <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
                     placeholder="Select Frequency"
                     optionFilterProp="children"
@@ -434,10 +434,10 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 <Option value="yearly">Yearly</Option>
             </Select>
         </Form.Item>
-        <Form.Item label="Time Range" name={['step4', 'tabThree', 'rangePicker']}>
+        <Form.Item label={<strong>Time Range</strong>} name={['step4', 'tabThree', 'rangePicker']}>
             <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
         </Form.Item>
-        <Form.Item label="Time Zone" name={['step4', 'tabThree', 'timeZone']}>
+        <Form.Item label={<strong>Time Zone</strong>} name={['step4', 'tabThree', 'timeZone']}>
             <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
                     placeholder="Select Time Zone"
                     optionFilterProp="children"
@@ -454,11 +454,11 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
         switch (current) {
             case 0: {
                 return <>
-                    <Form.Item label="Campaign Name" name={['step1', 'name']}
+                    <Form.Item label={<strong>Campaign Name</strong>} name={['step1', 'name']}
                                tooltip="This is a required field">
                         <Input style={{width: '50%'}} disabled={!pageEditRights} placeholder="Eg: Sales Campaign"/>
                     </Form.Item>
-                    <Form.Item label="Campaign Type" name={['step1', 'campaignType']}>
+                    <Form.Item label={<strong>Campaign Type</strong>} name={['step1', 'campaignType']}>
                         <Radio.Group disabled={!pageEditRights} onChange={(e) => setCampaignType(e.target.value)}>
                             <Radio style={radioStyle} value='emailCampaign'>Email
                                 Campaign</Radio>
@@ -466,7 +466,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                                 Campaign</Radio>
                         </Radio.Group>
                     </Form.Item>
-                    <Form.Item label="Select Sender" name={['step1', 'sender']}>
+                    <Form.Item label={<strong>Select Sender</strong>} name={['step1', 'sender']}>
                         <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch placeholder="Select Sender"
                                 optionFilterProp="children"
                                 filterOption={(input, option) => filterCountryOption(input, option)}>
@@ -479,14 +479,14 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             }
             case 1: {
                 return <>
-                    <Form.Item label="Segment" name={['step2', 'segment']}>
+                    <Form.Item label={<strong>Segment</strong>} name={['step2', 'segment']}>
                         <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
                             <Radio value='existingSegment'>Use Existing segment</Radio>
                             <Radio.Button value='newSegment'>Create New Segment</Radio.Button>
                         </Radio.Group>
                     </Form.Item>
                     {step2ShowSegment ?
-                        <Form.Item label="Select Segment" name={['step2', 'segmentType']}>
+                        <Form.Item label={<strong>Select Segment</strong>} name={['step2', 'segmentType']}>
                             <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
                                     placeholder="Select Segment"
                                     optionFilterProp="children"
@@ -497,7 +497,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                             </Select>
                         </Form.Item> : null
                     }
-                    <Form.Item label="Segment hold-out (Optional)" name={['step2', 'segmentHoldOut']}
+                    <Form.Item label={<strong>Segment hold-out (Optional)</strong>} name={['step2', 'segmentHoldOut']}
                                tooltip="Percentage of customers in the segment that won't receive emails">
                         <Input disabled={!pageEditRights} type={'number'} style={{width: '50%'}}
                                placeholder="Percentage"/>
@@ -543,7 +543,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             case 4: {
                 return <>
                     <Space key={'step5-1'} size={24} style={{display: 'flex', marginBottom: 8}} align="baseline">
-                        <Form.Item label="Max. Messages per End-Point" name={['step5', 'msgPerEP']}>
+                        <Form.Item label={<strong>Max. Messages per End-Point</strong>} name={['step5', 'msgPerEP']}>
                             <Select disabled={!pageEditRights} style={{width: '24vw'}}
                                     placeholder="Select Max Messages">
                                 <Option value="1000">1000</Option>
@@ -551,14 +551,13 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                                 <Option value="5000">5000</Option>
                             </Select>
                         </Form.Item>
-                        <Form.Item label="Over-ride global Settings">
-                            <Switch disabled={!pageEditRights}
-                                    defaultChecked={currentFormValues.current.step5.overrideMsgPerEPSet}
+                        <Form.Item label={<strong>Over-ride global Settings</strong>}>
+                            <Switch disabled={!pageEditRights} defaultChecked={currentFormValues.current.step5.overrideMsgPerEPSet}
                                     onChange={(checked) => step5RadioValueChanges(checked, 'overrideMsgPerEPSet')}/>
                         </Form.Item>
                     </Space>
                     <Space key={'step5-2'} size={24} style={{display: 'flex', marginBottom: 8}} align="baseline">
-                        <Form.Item label="Max. Messages per Day per End-Point" name={['step5', 'msgPerDayPerEP']}>
+                        <Form.Item label={<strong>Max. Messages per Day per End-Point</strong>} name={['step5', 'msgPerDayPerEP']}>
                             <Select disabled={!pageEditRights} style={{width: '24vw'}}
                                     placeholder="Select Max Messages">
                                 <Option value="1000">1000</Option>
@@ -566,14 +565,14 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                                 <Option value="5000">5000</Option>
                             </Select>
                         </Form.Item>
-                        <Form.Item label="Over-ride global Settings">
+                        <Form.Item label={<strong>Over-ride global Settings</strong>}>
                             <Switch disabled={!pageEditRights}
                                     defaultChecked={currentFormValues.current.step5.overrideMsgPerDayPerEPSet}
                                     onChange={(checked) => step5RadioValueChanges(checked, 'overrideMsgPerDayPerEPSet')}/>
                         </Form.Item>
                     </Space>
                     <Space key={'step5-3'} size={24} style={{display: 'flex', marginBottom: 8}} align="baseline">
-                        <Form.Item label="Max. Campaign Run time (minutes)" name={['step5', 'campRunTime']}>
+                        <Form.Item label={<strong>Max. Campaign Run time (minutes)</strong>} name={['step5', 'campRunTime']}>
                             <Select disabled={!pageEditRights} style={{width: '24vw'}}
                                     placeholder="Select Max Messages">
                                 <Option value="1000">1000</Option>
@@ -581,7 +580,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                                 <Option value="5000">5000</Option>
                             </Select>
                         </Form.Item>
-                        <Form.Item label="Over-ride global Settings">
+                        <Form.Item label={<strong>Over-ride global Settings</strong>}>
                             <Switch disabled={!pageEditRights}
                                     defaultChecked={currentFormValues.current.step5.overrideCampRunTimeSet}
                                     onChange={(checked) => step5RadioValueChanges(checked, 'overrideCampRunTimeSet')}/>

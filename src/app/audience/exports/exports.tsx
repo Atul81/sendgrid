@@ -31,12 +31,14 @@ export const ExportPage: any = () => {
         {
             title: 'File Name',
             dataIndex: 'fileName',
-            key: 'fileName'
+            key: 'fileName',
+            sorter: (a: any, b: any) => a.fileName.length - b.fileName.length
         },
         {
             title: 'Export Date & Time',
             dataIndex: 'exportTimestamp',
             key: 'exportTimestamp',
+            sorter: (a: any, b: any) => a.exportTimestamp - b.exportTimestamp
         },
         {
             dataIndex: '',

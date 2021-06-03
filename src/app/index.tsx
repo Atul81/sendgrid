@@ -71,7 +71,7 @@ export function App() {
     };
 
     const toggleUserRole = () => {
-        if(rootState.userRole.roleType === 'Admin') {
+        if (rootState.userRole.roleType === 'Admin') {
             dispatch(updateUserRole({roleType: 'Standard', grantPermission: 'oauth'}));
             setUserName('John Doe Standard');
         } else {
@@ -80,7 +80,7 @@ export function App() {
     }
     return (
         <Layout style={{minHeight: "100vh"}}>
-            <Sider collapsible collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)}>
+            <Sider className={collapsed ? 'siderCollapse': 'siderUncollapse'} collapsible collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)}>
                 <div className="logo">
                     <img style={collapsed ? {marginTop: -8} : {}}
                          src={!collapsed ? `/assets/images/logo.svg` : `/assets/images/logoCollapsed.svg`}
@@ -126,7 +126,7 @@ export function App() {
                                         <a href={breadCrumb ? breadCrumb.toLowerCase() : breadCrumb}> {translation.breadcrumb[breadCrumb.toLowerCase()]}</a>
                                     </Breadcrumb.Item>;
                                 } else {
-                                    return <Breadcrumb.Item>{translation.breadcrumb[breadCrumb.toLowerCase()]}</Breadcrumb.Item>
+                                    return <Breadcrumb.Item>{translation.breadcrumb[breadCrumb.toLowerCase()] ? translation.breadcrumb[breadCrumb.toLowerCase()] : breadCrumb}</Breadcrumb.Item>
                                 }
                             } else {
                                 return null;

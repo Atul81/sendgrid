@@ -1,0 +1,20 @@
+[
+  {
+    "key": 1,
+    "email": "-",
+    "firstName": "John",
+    "lastName": "Dow",
+    "city": "Subscribed",
+    "postalCode": "-",
+    "failureReason": "Email validation failed and postal code is not valid"
+  },
+  {
+    "key": 2,
+    "email": "john.doe@solulever.com",
+    "firstName": "-",
+    "lastName": "Doe",
+    "city": "-",
+    "postalCode": "Zoho Campaign",
+    "failureReason": "First Name was null and city does not exist"
+  }
+]

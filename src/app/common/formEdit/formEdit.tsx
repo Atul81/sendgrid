@@ -14,6 +14,7 @@ export const FormEditPage: any = (props: any) => {
         props.saveFormValues(values);
     };
     const [allTags, setAllTags] = useState<DropDown[]>([]);
+    const [allSegments, setAllSegments] = useState<DropDown[]>([]);
 
     useEffect(() => {
         if (props.type !== 'senders') {
@@ -27,6 +28,16 @@ export const FormEditPage: any = (props: any) => {
                 }
                 setAllTags(data);
             });
+            getAllServerCall('segments').then(async response => {
+                let resBody = await response.json();
+                let data: DropDown[] = [];
+                if (resBody && Array.isArray(resBody)) {
+                    resBody.forEach((itr: any) => {
+                        data.push({value: itr.id, label: itr.name, children: null});
+                    });
+                }
+                setAllSegments(data);
+            });
         }
     }, [props.type])
     return (
@@ -36,7 +47,7 @@ export const FormEditPage: any = (props: any) => {
                     you send as per anti-spam laws such as CAN-SPAM and CASL</Paragraph>
             </div> : null}
             <Form form={props.generalForm} layout={'vertical'} onFinish={modifyContactService}>
-                <Form.Item label={props.type !== 'senders' ? "Email" : 'From Email'} required>
+                <Form.Item label={props.type !== 'senders' ? <strong>Email</strong> : <strong>From Email</strong>} required>
                     <Form.Item name={['formObj', 'email']} noStyle
                                rules={[{required: true, message: 'Email required'}]}>
                         <Input disabled={(props.type === 'senders' && props.emailEditable)}
@@ -48,13 +59,13 @@ export const FormEditPage: any = (props: any) => {
                     gridTemplateColumns: "49% auto",
                     gridColumnGap: '24px',
                 }}>
-                    <Form.Item label={props.type !== 'senders' ? "First Name" : 'From First Name'}>
+                    <Form.Item label={props.type !== 'senders' ? <strong>First Name</strong> : <strong>From First Name</strong>}>
                         <Form.Item name={['formObj', 'firstName']}
                                    noStyle rules={[{required: true, message: 'First Name required'}]}>
                             <Input placeholder="Enter first name"/>
                         </Form.Item>
                     </Form.Item>
-                    <Form.Item label={props.type !== 'senders' ? "Last Name" : 'From Last Name'}>
+                    <Form.Item label={props.type !== 'senders' ? <strong>Last Name</strong> : <strong>From Last Name</strong>}>
                         <Form.Item name={['formObj', 'lastName']}
                                    noStyle rules={[{required: true, message: 'Last Name required'}]}>
                             <Input placeholder="Enter Last Name"/>
@@ -62,11 +73,11 @@ export const FormEditPage: any = (props: any) => {
                     </Form.Item>
                     {props.type !== 'senders' ?
                         <>
-                            <Form.Item label="City" name={['formObj', 'city']}>
+                        <Form.Item label={<strong>City</strong>} name={['formObj', 'city']}>
                                 <Input placeholder="input placeholder"/>
                             </Form.Item>
 
-                            <Form.Item label="Tags" name={['formObj', 'tags']}
+                        <Form.Item label={<strong>Tags</strong>} name={['formObj', 'tags']}
                                        rules={[{required: true, message: 'Atleast one tag required'}]}>
                                 <Select mode={'multiple'} showSearch placeholder="Tags" optionFilterProp="children"
                                         allowClear={true}
@@ -76,19 +87,29 @@ export const FormEditPage: any = (props: any) => {
                                     })}
                                 </Select>
                             </Form.Item>
+                        <Form.Item label={<strong>Segments</strong>} name={['formObj', 'segments']}
+                                       rules={[{required: true, message: 'Atleast one segment required'}]}>
+                                <Select mode={'multiple'} showSearch placeholder="Segments" optionFilterProp="children"
+                                        allowClear={true}
+                                        filterOption={(input, option) => filterCountryOption(input, option)}>
+                                    {allSegments.map(value => {
+                                        return <Option value={value.label} key={value.value}>{value.label}</Option>
+                                    })}
+                                </Select>
+                            </Form.Item>
                         </> :
-                        <Form.Item label="Reply To" name={['formObj', 'replyTo']}>
+                        <Form.Item label={<strong>Reply To</strong>} name={['formObj', 'replyTo']}>
                             <Input placeholder="input placeholder"/>
                         </Form.Item>
                     }
-                    <Form.Item label={props.type !== 'senders' ? "Address" : 'From Address'}
+                    <Form.Item label={props.type !== 'senders' ? <strong>Address</strong> : <strong>From Address</strong>}
                                name={['formObj', 'address']}>
                         <Input placeholder="input placeholder"/>
                     </Form.Item>
-                    <Form.Item label="Postal" name={['formObj', 'postalCode']}>
+                    <Form.Item label={<strong>Postal</strong>} name={['formObj', 'postalCode']}>
                         <Input type={'number'} placeholder="input placeholder"/>
                     </Form.Item>
-                    <Form.Item label="Country" name={['formObj', 'country']}>
+                    <Form.Item label={<strong>Country</strong>} name={['formObj', 'country']}>
                         <Select showSearch placeholder="Country" optionFilterProp="children"
                                 filterOption={(input, option) => filterCountryOption(input, option)}>
                             <Option value="ind">India</Option>

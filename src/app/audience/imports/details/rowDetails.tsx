@@ -1,30 +1,29 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Table, Typography} from "antd";
 import {ImportsDetailsInterface} from "../../audienceInterface";
-import Title from "antd/lib/typography/Title";
 import {DownOutlined, StepBackwardOutlined} from "@ant-design/icons";
 import {exportCSVFile} from "../../../../utils/common";
+import {getAllServerCall} from "../../../../service/serverCalls/mockServerRest";
+import {useDispatch} from "react-redux";
+import {updateBreadcrumb} from "../../../../store/actions/root";
 
 export const RowDetailsPage: any = (props: any) => {
     const {Title} = Typography;
-    const [uploadDetailsDS, setUploadDetailsDS] = useState<ImportsDetailsInterface[]>([
-        {
-            key: '1',
-            email: '-',
-            firstName: 'John',
-            lastName: 'Dow',
-            city: 'Subscribed',
-            postalCode: '-'
-        },
-        {
-            key: '2',
-            email: 'john.doe@solulever.com',
-            firstName: '-',
-            lastName: 'Doe',
-            city: '-',
-            postalCode: 'Zoho Campaign'
-        }
-    ]);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        getAllServerCall('importsRow').then(async getFailedRowsAsync => {
+            let failedRowsRes = await getFailedRowsAsync.json();
+            if (failedRowsRes) {
+                let tempObj: ImportsDetailsInterface[] = [];
+                failedRowsRes.forEach((itr: any) => {
+                    tempObj.push({...itr})
+                });
+                setUploadDetailsDS(tempObj);
+                dispatch(updateBreadcrumb(['Audience', 'Imports', props.rowObj.fileName]))
+            }
+        })
+    }, [])
+    const [uploadDetailsDS, setUploadDetailsDS] = useState<ImportsDetailsInterface[]>([]);
     const columns = [
         {
             title: 'Email',
@@ -49,7 +48,7 @@ export const RowDetailsPage: any = (props: any) => {
         {
             title: 'Postal Code',
             dataIndex: 'postalCode',
-            key: 'postalCode',
+            key: 'postalCode'
         },
     ];
 
@@ -77,7 +76,9 @@ export const RowDetailsPage: any = (props: any) => {
                 </div>
             </div>
             <div className="thirdNav" style={{height: 'calc(100vh - 228px)'}}>
-                <Table columns={columns} dataSource={uploadDetailsDS} bordered/>
+                <Table columns={columns} dataSource={uploadDetailsDS} expandable={{
+                    expandedRowRender: record => <p style={{margin: 0}}>{record.failureReason}</p>
+                }} bordered/>
             </div>
         </div>
     )

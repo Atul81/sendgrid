@@ -1,14 +1,19 @@
-import React, {useEffect} from "react";
-import {Button, Form, Input, message, Radio, TimePicker} from "antd";
+import React, {useEffect, useState} from "react";
+import {Button, Form, Input, message, Radio, Select, TimePicker} from "antd";
 import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import './preference.scss';
-import {editObjectById, getObjectById} from "../../../service/serverCalls/mockServerRest";
+import {editObjectById, getAllServerCall, getObjectById} from "../../../service/serverCalls/mockServerRest";
+import Paragraph from "antd/lib/typography/Paragraph";
+import {DropDown} from "../../../utils/Interfaces";
 import moment from "moment";
 
 export const PreferencePage: any = () => {
 
     const [preferenceForm] = Form.useForm();
+    const [allDomains, setAllDomains] = useState<DropDown[]>([]);
+    const [allSubDomains, setAllSubDomains] = useState<DropDown[]>([]);
+    const {Option} = Select;
 
     useEffect(() => {
         getObjectById("1", 'preferences').then(async getPreferenceByIdAsync => {
@@ -17,14 +22,35 @@ export const PreferencePage: any = () => {
                 preferenceForm.setFieldsValue({
                     formObj: {
                         ...getPreferenceByIdRes,
-                        trackingDomainType: getPreferenceByIdRes.trackingDomainType ? [moment(getPreferenceByIdRes.trackingDomainType[0]), moment(getPreferenceByIdRes.trackingDomainType[1])] : undefined,
                         quietTimeHours: getPreferenceByIdRes.quietTimeHours ? [moment(getPreferenceByIdRes.quietTimeHours[0]), moment(getPreferenceByIdRes.quietTimeHours[1])] : undefined,
-                        trackingSubDomain: getPreferenceByIdRes.trackingSubDomain ? [moment(getPreferenceByIdRes.trackingSubDomain[0]), moment(getPreferenceByIdRes.trackingSubDomain[1])] : []
                     }
                 });
+                setDomainType(getPreferenceByIdRes.campaignsRelated);
             }
-        })
-    }, [preferenceForm]);
+        });
+        getAllServerCall("domain").then(async getAllDomainsAsync => {
+            let allDomainRes = await getAllDomainsAsync.json();
+            if (allDomainRes) {
+                let tempAllDomains: DropDown[] = [];
+                let tempAllSubDomains: DropDown[] = [];
+                allDomainRes.forEach((itr: any) => {
+                    tempAllDomains.push({
+                        value: itr.id,
+                        label: itr.domain,
+                        children: null
+                    });
+                    tempAllSubDomains.push({
+                        value: itr.id,
+                        label: `dkms.ser ${itr.domain}`,
+                        children: null
+                    });
+                });
+                console.log(tempAllSubDomains)
+                setAllDomains(tempAllDomains);
+                setAllSubDomains(tempAllSubDomains);
+            }
+        });
+    }, []);
 
     const preferenceFormService = (values: any) => {
         editObjectById({...values.formObj, id: 1}, 'preferences').then(async preferenceFormAsync => {
@@ -39,6 +65,10 @@ export const PreferencePage: any = () => {
         preferenceForm.resetFields();
     };
 
+    const [domainType, setDomainType] = useState('default');
+    const filterCountryOption = (input: string, option: any) => {
+        return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    };
     return (
         <Form form={preferenceForm} layout={'vertical'} onFinish={preferenceFormService}>
             <div className='reverseFlex' style={{marginBottom: 16}}>
@@ -61,28 +91,30 @@ export const PreferencePage: any = () => {
                         <Title level={5}>Campaign Default Settings</Title>
                     </div>
                     <div className="secondNav" style={{height: 'calc(100vh - 604px)'}}>
-                        <Form.Item label="Quiet Time Hours">
+                        <Form.Item label={<strong>Quiet Time Hours</strong>}>
                             <Form.Item name={['formObj', 'quietTimeHours']} noStyle>
                                 <TimePicker.RangePicker/>
                             </Form.Item>
                         </Form.Item>
                         <Form.Item
-                            label="Maximum number of messages an endpoint can receive from project during a 24-hour period">
+                            label={<strong>Maximum number of messages an endpoint can receive from project during a
+                                24-hour period</strong>}>
                             <Form.Item name={['formObj', 'maxMsg24Hr']} noStyle>
                                 <Input placeholder="100" type={"number"}/>
                             </Form.Item>
                         </Form.Item>
-                        <Form.Item label="Maximum number of messages an endpoint can receive from each campaign">
+                        <Form.Item label={<strong>Maximum number of messages an endpoint can receive from each
+                            campaign</strong>}>
                             <Form.Item name={['formObj', 'maxMsgCampRec']} noStyle>
                                 <Input placeholder="100" type={"number"}/>
                             </Form.Item>
                         </Form.Item>
-                        <Form.Item label="Maximum number of messages campaign can send per second">
+                        <Form.Item label={<strong>Maximum number of messages campaign can send per second</strong>}>
                             <Form.Item name={['formObj', 'maxMsgCampSend']} noStyle>
                                 <Input placeholder="50" type={"number"}/>
                             </Form.Item>
                         </Form.Item>
-                        <Form.Item label="Maximum number of seconds per each campaign run">
+                        <Form.Item label={<strong>Maximum number of seconds per each campaign run</strong>}>
                             <Form.Item name={['formObj', 'maxSecEachCamp']} noStyle>
                                 <Input placeholder="100" type={"number"}/>
                             </Form.Item>
@@ -95,23 +127,41 @@ export const PreferencePage: any = () => {
                         <Title level={5}>Open and Click Tracking Settings</Title>
                     </div>
                     <div className="secondNav" style={{height: 'calc(100vh - 866px)'}}>
-                        <Form.Item label="Settings to generate reports related to your campaigns">
+                        <Form.Item label={<strong>Settings to generate reports related to your campaigns</strong>}>
                             <Form.Item name={['formObj', 'campaignsRelated']} noStyle>
-                                <Radio.Group>
+                                <Radio.Group onChange={(e) => setDomainType(e.target.value)}>
                                     <Radio value={'default'}>Default</Radio>
                                     <Radio value={'customDNS'}>Custom DNS</Radio>
                                 </Radio.Group>
                             </Form.Item>
                         </Form.Item>
                         <div className={'trackingContainer'}>
-                            <Form.Item label="Tracking Domain Type">
+                            <Form.Item label={<strong>Tracking Domain Type</strong>}>
                                 <Form.Item name={['formObj', 'trackingDomainType']} noStyle>
-                                    <TimePicker.RangePicker/>
+                                    {domainType === 'default' ? <Paragraph>Default Domain Name</Paragraph> :
+                                        <Select showSearch placeholder="Tracking Domain" optionFilterProp="children"
+                                                allowClear={true}
+                                                filterOption={(input, option) => filterCountryOption(input, option)}>
+                                            {allDomains.map(value => {
+                                                return <Option value={value.label}
+                                                               key={value.value}>{value.label}</Option>
+                                            })}
+                                        </Select>
+                                    }
                                 </Form.Item>
                             </Form.Item>
-                            <Form.Item label="Tacking Sub-Domain">
+                            <Form.Item label={<strong>Tacking Sub-Domain</strong>}>
                                 <Form.Item name={['formObj', 'trackingSubDomain']} noStyle>
-                                    <TimePicker.RangePicker/>
+                                    {domainType === 'default' ? <Paragraph>Default sub-domain Name</Paragraph> :
+                                        <Select showSearch placeholder="Tracking Subdomain"
+                                                optionFilterProp="children" allowClear={true}
+                                                filterOption={(input, option) => filterCountryOption(input, option)}>
+                                            {allSubDomains.map(value => {
+                                                return <Option value={value.label}
+                                                               key={value.value}>{value.label}</Option>
+                                            })}
+                                        </Select>
+                                    }
                                 </Form.Item>
                             </Form.Item>
                         </div>

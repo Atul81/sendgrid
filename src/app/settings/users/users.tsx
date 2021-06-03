@@ -60,6 +60,12 @@ export const UsersPage: any = () => {
         }
     };
 
+    const definedRoles = {
+        standard: ["manageContacts"],
+        admin: ["manageContacts", "manageCampaigns", "manageTemplates", "manageUnsubscription", "manageUsers"],
+        auditor: ["manageContacts", "manageCampaigns", "manageTemplates",]
+
+    }
     const closeUserAmendModal = () => {
         setUserAmendModal(false);
         userModalForm.resetFields();
@@ -133,7 +139,8 @@ export const UsersPage: any = () => {
             title: 'Email',
             dataIndex: 'email',
             key: 'email',
-            width: '70%'
+            width: '70%',
+            sorter: (a: any, b: any) => a.email.length - b.email.length
         },
         {
             title: 'Type',
@@ -144,6 +151,7 @@ export const UsersPage: any = () => {
                     <Tag key={record.key} color={getColor(record)}>{text}</Tag>
                 );
             }),
+            sorter: (a: any, b: any) => a.type.length - b.type.length
         },
         {
             dataIndex: '',
@@ -258,8 +266,54 @@ export const UsersPage: any = () => {
         }
     };
 
-    const onPermissionsChange = () => {
-        console.log(userModalForm.getFieldsValue());
+    const arrayEquals = (a: string[], b: string[]) => {
+        return Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every(e => b.includes(e));
+    }
+
+
+    const onPermissionsChange = (selectedPermissions: any) => {
+        if (selectedPermissions.length === 5) {
+            userModalForm.setFieldsValue({
+                formObj: {
+                    userRole: 'Admin'
+                }
+            });
+            setCurrentUserRole('Admin');
+        } else if (currentUserRole === 'Standard') {
+            if (!arrayEquals(selectedPermissions, definedRoles.standard)) {
+                userModalForm.setFieldsValue({
+                    formObj: {
+                        userRole: 'Custom'
+                    }
+                });
+            }
+            setCurrentUserRole('Custom');
+        } else if (currentUserRole === 'Auditor') {
+            if (!arrayEquals(selectedPermissions, definedRoles.auditor)) {
+                userModalForm.setFieldsValue({
+                    formObj: {
+                        userRole: 'Custom'
+                    }
+                });
+            }
+            setCurrentUserRole('Custom');
+        } else {
+            if (arrayEquals(selectedPermissions, definedRoles.standard)) {
+                userModalForm.setFieldsValue({
+                    formObj: {
+                        userRole: 'Standard'
+                    }
+                });
+                setCurrentUserRole('Standard');
+            } else if (arrayEquals(selectedPermissions, definedRoles.auditor)){
+                userModalForm.setFieldsValue({
+                    formObj: {
+                        userRole: 'Auditor'
+                    }
+                });
+                setCurrentUserRole('Auditor');
+            }
+        }
     }
     return (
         <div className="domain pageLayout">
@@ -308,16 +362,8 @@ export const UsersPage: any = () => {
                         <Form.Item label="Permissions">
                             <Form.Item name={['formObj', 'userPermission']} noStyle
                                        rules={[{required: true, message: 'Permission required'}]}>
-                                {currentUserRole === 'Admin' ?
-                                    <Checkbox.Group disabled options={userPermissionOptions}/> :
-                                    <Checkbox.Group onChange={onPermissionsChange}>
-                                        <Checkbox value={'manageContacts'}>Manage Contacts</Checkbox>
-                                        <Checkbox value={'manageCampaigns'}>Manage Campaigns</Checkbox>
-                                        <Checkbox value={'manageUsers'}>Manage Users</Checkbox>
-                                        <Checkbox value={'manageTemplates'}>Manage Templates</Checkbox>
-                                        <Checkbox value={'manageUnsubscription'}>Manage Unsubscription</Checkbox>
-                                    </Checkbox.Group>
-                                }
+                                <Checkbox.Group disabled={currentUserRole === 'Admin'} onChange={onPermissionsChange}
+                                                options={userPermissionOptions}/>
                             </Form.Item>
                         </Form.Item> : <Paragraph style={{color: "red"}}>No permission access
                             with <strong>Viewer</strong> role</Paragraph>}

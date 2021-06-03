@@ -31,18 +31,26 @@ export const EditContactPage: any = (props: any) => {
         });
     }, [dispatch, contactForm, props.contactObj]);
 
+    const getCommaSeparatedValue = (listValue: any, commSeparated: string) => {
+        if (listValue && Array.isArray(listValue) && listValue.length > 0) {
+            listValue.forEach((info: any) => {
+                commSeparated = commSeparated.concat(info).concat(', ');
+            });
+            commSeparated = commSeparated.substr(0, commSeparated.length - 2);
+        }
+        return commSeparated;
+    }
+
     const modifyContactService = (values: any) => {
         let tagsInfo = '';
-        if (values.formObj.tags && Array.isArray(values.formObj.tags) && values.formObj.tags.length > 0) {
-            values.formObj.tags.forEach((info: any) => {
-                tagsInfo = tagsInfo.concat(info).concat(', ');
-            });
-            tagsInfo = tagsInfo.substr(0, tagsInfo.length - 2);
-        }
+        let segmentsInfo = ''
+        tagsInfo = getCommaSeparatedValue(values.formObj.tags, tagsInfo);
+        segmentsInfo = getCommaSeparatedValue(values.formObj.segments, segmentsInfo);
         if (props.contactObj.firstName) {
             editObjectById({
                 ...values.formObj,
                 tags: tagsInfo,
+                segments: segmentsInfo,
                 oldObj: props.contactObj
             }, 'contacts').then(async response => {
                 let resBody = await response.json();
@@ -57,6 +65,7 @@ export const EditContactPage: any = (props: any) => {
             addNewObject({
                 ...values.formObj,
                 tags: tagsInfo,
+                segments: segmentsInfo,
                 id: props.contactObj.id + 1
             }, 'contacts').then(async response => {
                 let resBody = await response.json();

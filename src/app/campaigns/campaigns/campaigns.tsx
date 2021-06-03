@@ -32,11 +32,13 @@ export const CampaignPage: any = () => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
+            sorter: (a: any, b: any) => a.name.length - b.name.length
         },
         {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
+            sorter: (a: any, b: any) => a.status.length - b.status.length
         },
         {
             dataIndex: '',

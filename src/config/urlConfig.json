@@ -3,6 +3,7 @@
   "segments": "http://localhost:3002/segments",
   "customFields": "http://localhost:3002/customFields",
   "imports": "http://localhost:3002/imports",
+  "importsRow": "http://localhost:3002/importsRow",
   "exportsData": "http://localhost:3002/exportsData",
   "automation": "http://localhost:3002/automation",
   "workFlow": "http://localhost:3002/workFlow",

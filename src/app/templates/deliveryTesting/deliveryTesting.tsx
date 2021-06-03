@@ -1,19 +1,33 @@
 import React, {useEffect, useState} from "react";
-import {Button, Space, Table, Tag, Typography} from "antd";
+import {Button, Form, Input, message, Modal, Select, Space, Table, Tag, Typography} from "antd";
 import {useDispatch} from "react-redux";
-import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
+import {addNewObject, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import {getTimeFromUnix} from "../../../utils/common";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import Search from "antd/es/input/Search";
 import {DeliveryTestingInterface} from "../templatesInterface";
 import {BeeTemplatePage} from "./beePlugin/beeTemplatePage";
-import {EyeOutlined, StepBackwardOutlined} from "@ant-design/icons";
+import {CheckOutlined, CloseOutlined, EyeOutlined, PlusOutlined, StepBackwardOutlined} from "@ant-design/icons";
+import {DropDown} from "../../../utils/Interfaces";
 
 export const DeliveryTestingPage = () => {
     const {Title} = Typography;
     const dispatch = useDispatch();
-
+    const [newTestForm] = Form.useForm();
+    const [deliveryId, setDeliveryId] = useState(3);
     useEffect(() => {
+        populateTableData();
+        getAllServerCall('templates').then(async response => {
+            let tempObj: DropDown[] = [];
+            let res = await response.json();
+            res.forEach((itr: any) => {
+                tempObj.push({value: itr.id, label: itr.title, children: null});
+            });
+            setAllTemplates(tempObj);
+        });
+    }, []);
+
+    const populateTableData = () => {
         getAllServerCall('deliveryTesting').then(async response => {
             let tempObj: DeliveryTestingInterface[] = [];
             let res = await response.json();
@@ -23,9 +37,9 @@ export const DeliveryTestingPage = () => {
             setDeliveryTesting(tempObj);
             setDeliveryTestingOps(tempObj);
         });
-    }, []);
-
-
+    }
+    const [newTestModal, setNewTestModal] = useState(false);
+    const [allTemplates, setAllTemplates] = useState<DropDown[]>([]);
     const [deliveryTesting, setDeliveryTesting] = useState<DeliveryTestingInterface[]>([]);
     const [deliveryTestingOps, setDeliveryTestingOps] = useState<DeliveryTestingInterface[]>([]);
     const columns = [
@@ -39,11 +53,13 @@ export const DeliveryTestingPage = () => {
                           onClick={() => openBeePlugin(record)}>{text}</span> :
                     <span>{text}</span>
             },
+            sorter: (a: any, b: any) => a.testName.length - b.testName.length
         },
         {
             title: 'Date & Time',
             dataIndex: 'dateTime',
             key: 'dateTime',
+            sorter: (a: any, b: any) => a.dateTime.length - b.dateTime.length
         },
         {
             title: 'Status',
@@ -54,6 +70,7 @@ export const DeliveryTestingPage = () => {
                     <Tag key={record.key} color={text === 'Done' ? 'green' : 'geekblue'}>{text}</Tag>
                 );
             }),
+            sorter: (a: any, b: any) => a.status.length - b.status.length
         },
         {
             dataIndex: '',
@@ -88,6 +105,38 @@ export const DeliveryTestingPage = () => {
             return value.testName.includes(searchParam);
         }));
     };
+
+    const addNewTest = () => {
+        setNewTestModal(true);
+    };
+
+    const closeNewTestModal = () => {
+        setNewTestModal(false);
+        newTestForm.resetFields();
+    }
+
+    const createNewTest = (values: any) => {
+        addNewObject({
+            ...values.formObj,
+            id: deliveryId,
+            dateTime: new Date().getTime(),
+            status: 'Initiated'
+        }, 'deliveryTesting').then(async addNewDeliveryAsync => {
+            let addNewDeliveryRes = await addNewDeliveryAsync.json();
+            if (addNewDeliveryRes) {
+                message.success("New Delivery Test has been added");
+                setDeliveryId(deliveryId + 1);
+                populateTableData();
+                closeNewTestModal();
+            }
+        });
+    };
+
+    const filterCountryOption = (input: string, option: any) => {
+        return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    };
+    const {Option} = Select;
+
     return !openIeFrame ? (
             <div className="pageLayout">
                 <div className="secondNav">
@@ -99,10 +148,51 @@ export const DeliveryTestingPage = () => {
                             <Search placeholder="input search text" onSearch={onSearchImports} enterButton/>
                         </div>
                     </div>
+                    <div className="rightPlacement">
+                        <Button key="addTags" onClick={addNewTest}
+                                icon={<PlusOutlined/>}>Add Test</Button>
+                    </div>
                 </div>
                 <div className="thirdNav">
                     <Table columns={columns} dataSource={deliveryTesting} bordered/>
                 </div>
+                <Modal title='Add New test' centered={true} visible={newTestModal} onCancel={closeNewTestModal}
+                       destroyOnClose={true}
+                       footer={null}>
+                    <Form form={newTestForm} layout={'horizontal'} onFinish={createNewTest}>
+                        <Form.Item label={<strong>Test Name</strong>}>
+                            <Form.Item name={['formObj', 'testName']} noStyle>
+                                <Input placeholder="Enter Test name" type={"text"}/>
+                            </Form.Item>
+                        </Form.Item>
+                        <Form.Item label={<strong>Template</strong>}>
+                            <Form.Item name={['formObj', 'templateType']} noStyle>
+                                <Select showSearch placeholder="Select Template"
+                                        optionFilterProp="children" allowClear={true}
+                                        filterOption={(input, option) => filterCountryOption(input, option)}>
+                                    {allTemplates.map(value => {
+                                        return <Option value={value.label}
+                                                       key={value.value}>{value.label}</Option>
+                                    })}
+                                </Select>
+                            </Form.Item>
+                        </Form.Item>
+                        <div className={'reverseFlex'}>
+                            <Form.Item>
+                                <Button key="cancel" htmlType={'reset'} onClick={closeNewTestModal}
+                                        icon={<CloseOutlined/>}>
+                                    Cancel
+                                </Button>
+                            </Form.Item>
+                            <Form.Item>
+                                <Button style={{marginRight: 8}} key="quickAdd" htmlType={'submit'} type="primary"
+                                        icon={<CheckOutlined/>}>
+                                    Save
+                                </Button>
+                            </Form.Item>
+                        </div>
+                    </Form>
+                </Modal>
             </div>
         ) :
         <div className="pageLayout">

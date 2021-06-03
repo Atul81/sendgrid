@@ -44,12 +44,14 @@ export const DedicatedIpsPage: any = () => {
             title: 'IP Address',
             dataIndex: 'ipAddress',
             key: 'ipAddress',
-            width: '65%'
+            width: '65%',
+            sorter: (a: any, b: any) => a.ipAddress.length - b.ipAddress.length
         },
         {
             title: 'Purchase Date',
             dataIndex: 'purchaseDate',
-            key: 'purchaseDate'
+            key: 'purchaseDate',
+            sorter: (a: any, b: any) => a.purchaseDate.length - b.purchaseDate.length
         },
         {
             title: 'Status',
@@ -60,7 +62,8 @@ export const DedicatedIpsPage: any = () => {
                     <Tag key={record.key} color={text === 'Active' ? 'green' : 'red'}>{text}</Tag>
                 );
             }),
-            width: '10%'
+            width: '10%',
+            sorter: (a: any, b: any) => a.status.length - b.status.length
         },
         {
             dataIndex: '',

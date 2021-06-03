@@ -9,14 +9,8 @@
     "maxMsgCampRec": "7",
     "maxMsgCampSend": "9",
     "maxSecEachCamp": "8",
-    "campaignsRelated": "default",
-    "trackingDomainType": [
-      "2021-05-10T18:35:05.439Z",
-      "2021-05-10T23:30:06.199Z"
-    ],
-    "trackingSubDomain": [
-      "2021-05-10T23:30:07.519Z",
-      "2021-05-11T06:30:06.967Z"
-    ]
+    "campaignsRelated": "customDNS",
+    "trackingDomainType": "anotherdomain.com",
+    "trackingSubDomain": "dkms.ser.anotherdomain.com"
   }
 ]

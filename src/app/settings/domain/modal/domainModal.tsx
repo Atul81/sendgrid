@@ -29,7 +29,7 @@ export const DomainModalPage = (props: any) => {
                     setDkimRecordsDS(tempObj);
                 }
             }
-        })
+        });
     }, [])
     const columns = [
         {

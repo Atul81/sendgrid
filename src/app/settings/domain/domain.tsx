@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Checkbox, Form, Input, message} from "antd";
+import {Button, Checkbox, Form, Input} from "antd";
 import {CheckOutlined, StepBackwardOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import './domain.scss';
@@ -87,6 +87,7 @@ export const DomainSettingsPage: any = () => {
                 </div>
             </div>
         </Form>
-        {openDomainModal ? <DomainModalPage visibility={openDomainModal} domainObj={domainObj} openType={'create'} closeDomainPage={() => setDomainModal(false)}/> : null}
+        {openDomainModal ? <DomainModalPage visibility={openDomainModal} domainObj={domainObj} openType={'create'}
+                                            closeDomainPage={() => setDomainModal(false)}/> : null}
     </div>) : <DnsRecordsPage exitToLandingPage={exitToDataView}/>
 }

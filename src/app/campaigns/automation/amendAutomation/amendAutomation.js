@@ -1,4 +1,4 @@
-import {Button, Card, Input, message, Modal, Radio, Select, Typography} from "antd";
+import {Button, Card, Input, message, Modal, Select, Typography} from "antd";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import ReactFlow, {
     addEdge,
@@ -16,6 +16,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {NodeSideBar} from "./nodeSideBar";
 import customNode from "./customNode";
 import customNodeTwo from "./customNodeTwo";
+import Radio from "antd/es/radio/radio";
+import Paragraph from "antd/es/typography/Paragraph";
 
 export const AmendAutomationPage = (props) => {
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -65,6 +67,7 @@ export const AmendAutomationPage = (props) => {
     const [id, setId] = useState('0');
     const [nodeDrawer, setNodeDrawer] = useState(false);
     const [nodeTitle, setNodeTitle] = useState("");
+    const [editNodeTitle, setEditNodeTitle] = useState("");
     const [edgeTitle, setEdgeTitle] = useState("");
     const [elementSelected, setElementSelected] = useState({});
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -168,6 +171,18 @@ export const AmendAutomationPage = (props) => {
     };
 
     const handleOk = () => {
+        let itemElements = [...elements].map(elementItr => {
+            if (elementItr.id === elementSelected.id) {
+                elementItr.data = {
+                    label: <Card size={"small"} title={editNodeTitle} bordered={false}>
+                        Card content
+                    </Card>
+                };
+            }
+            return elementItr;
+        })
+        setElements(itemElements);
+        saveJson();
         setIsModalVisible(false);
     };
 
@@ -182,7 +197,7 @@ export const AmendAutomationPage = (props) => {
     const updateEdgeName = () => {
         let itemElements = [...elements].map(elementItr => {
             if (elementItr.id === elementSelected.id) {
-                elementItr = {...elementItr, label: edgeTitle};
+                elementItr = {...elementItr, label: edgeTitle, animated: true};
             }
             return elementItr;
         })
@@ -344,15 +359,18 @@ export const AmendAutomationPage = (props) => {
                     </Button>
                 </>}>
                 <div className='flexCol'>
-                    <div>Choose how to start the journey<br/>
-                        <Radio.Group onChange={() => radioValueChange}>
-                            <Radio style={radioStyle} value={1}>Add participants when they perform an activity</Radio>
-                            <Radio style={radioStyle} value={2}>Add participants from a segment</Radio>
-                            <br/>
-                        </Radio.Group>
+                    <div className={'flexEqualSpacing'} style={{justifyContent: "start"}}>
+                        <Paragraph type={"warning"}>Edit Node name: </Paragraph>
+                        <div style={{marginLeft: 16}}>
+                            <Input defaultValue={nodeTitle}
+                                   onChange={(inpEvent) => setEditNodeTitle(inpEvent.target.value)}/>
+                        </div>
                     </div>
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
+                    <Radio.Group onChange={() => radioValueChange}>
+                        <Radio style={radioStyle} value={1}>Add participants when they perform an activity</Radio>
+                        <Radio style={radioStyle} value={2}>Add participants from a segment</Radio>
+                        <br/>
+                    </Radio.Group>
                 </div>
             </Modal>
             <Modal title="Enter Node Title" centered visible={newDraggedNode}

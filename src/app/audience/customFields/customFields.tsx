@@ -34,11 +34,13 @@ export const CustomFieldsPage: any = () => {
             title: 'Field Name',
             dataIndex: 'fieldName',
             key: 'fieldName',
+            sorter: (a: any, b: any) => a.fieldName.length - b.fieldName.length
         },
         {
             title: 'Field Type',
             dataIndex: 'fieldType',
             key: 'fieldType',
+            sorter: (a: any, b: any) => a.fieldType.length - b.fieldType.length
         },
         {
             dataIndex: '',

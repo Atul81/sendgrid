@@ -26,16 +26,19 @@ export const SendersPage: any = () => {
             title: 'Email Address',
             dataIndex: 'email',
             key: 'email',
+            sorter: (a: any, b: any) => a.email.length - b.email.length
         },
         {
             title: 'First Name',
             dataIndex: 'firstName',
             key: 'firstName',
+            sorter: (a: any, b: any) => a.firstName.length - b.firstName.length
         },
         {
             title: 'Last Name',
             dataIndex: 'lastName',
             key: 'lastName',
+            sorter: (a: any, b: any) => a.lastName.length - b.lastName.length
         },
         {
             dataIndex: '',

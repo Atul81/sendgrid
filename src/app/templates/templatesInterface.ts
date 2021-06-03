@@ -13,5 +13,6 @@ export interface DeliveryTestingInterface {
     "id": number,
     "testName": string,
     "dateTime": string,
-    "status": string
+    "status": string,
+    "templateType": string
 }

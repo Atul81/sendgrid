@@ -4,7 +4,8 @@ export interface ContactsInterface {
     firstName: string,
     lastName: string,
     emailMarketing: string,
-    tags: string
+    tags: string,
+    segments: string
 }
 
 export interface AddSegment {
@@ -39,7 +40,8 @@ export interface ImportsDetailsInterface {
     firstName: string,
     lastName: string,
     city: string,
-    postalCode: string
+    postalCode: string,
+    failureReason: string
 }
 
 export interface QuickAddContactInterface {

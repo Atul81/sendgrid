@@ -126,16 +126,19 @@ export const ContactsPage: any = () => {
             title: 'Email Address',
             dataIndex: 'email',
             key: 'email',
+            sorter: (a: any, b: any) => a.email.length - b.email.length
         },
         {
             title: 'First Name',
             dataIndex: 'firstName',
             key: 'firstName',
+            sorter: (a: any, b: any) => a.firstName.length - b.firstName.length
         },
         {
             title: 'Last Name',
             dataIndex: 'lastName',
             key: 'lastName',
+            sorter: (a: any, b: any) => a.lastName.length - b.lastName.length
         },
         {
             title: 'Email Marketing',
@@ -147,14 +150,16 @@ export const ContactsPage: any = () => {
                         color={record.emailMarketing ? (record.emailMarketing.toLowerCase() === 'Subscribed'.toLowerCase() ? 'green' : 'purple') : ''}
                         key={record.key}>{text}</Tag>
                 );
-            })
+            }),
+            sorter: (a: any, b: any) => a.emailMarketing.length - b.emailMarketing.length
         },
         {
             title: 'Tags',
             dataIndex: 'tags',
             key: 'tags',
             width: '15%',
-            ellipsis: true
+            ellipsis: true,
+            sorter: (a: any, b: any) => a.tags.length - b.tags.length
         },
         {
             dataIndex: '',
@@ -450,9 +455,9 @@ export const ContactsPage: any = () => {
                             <Button key="addTags" style={{marginRight: 8}}
                                     onClick={() => openAdditionInfoModal('addTags')}
                                     icon={<PlusOutlined/>}>Add Tags</Button>
-                            {/*<Button key="addSegments" style={{marginRight: 8}}*/}
-                            {/*        onClick={() => openAdditionInfoModal('addSegments')}*/}
-                            {/*        icon={<PlusOutlined/>}>Add Segments</Button>*/}
+                            <Button key="addSegments" style={{marginRight: 8}}
+                                    onClick={() => openAdditionInfoModal('addSegments')}
+                                    icon={<PlusOutlined/>}>Add Segments</Button>
                             <Popconfirm overlayClassName="ant-popover-audience" placement="left"
                                         title={<p><Title level={5}>Are you sure you want to delete?</Title>
                                             This will permanently delete these records and all associated data
@@ -541,7 +546,7 @@ export const ContactsPage: any = () => {
                        onCancel={cancelQuickAdd}>
                     <div className='columnFlex'>
                         <Form form={addContact} layout={'vertical'} onFinish={quickAddContactFormFinish}>
-                            <Form.Item label="Email Address">
+                            <Form.Item label={<strong>Email Address</strong>}>
                                 <Form.Item name={['formObj', 'email']}
                                            noStyle rules={[{
                                     required: true,
@@ -568,7 +573,7 @@ export const ContactsPage: any = () => {
                                 </Form.Item>
                             </Form.Item>
                             <div className='flexEqualSpacing flexFormItems'>
-                                <Form.Item label="First Name">
+                                <Form.Item label={<strong>First Name</strong>}>
                                     <Form.Item name={['formObj', 'firstName']} noStyle rules={[{
                                         required: true,
                                         message: 'First Name required'
@@ -576,7 +581,7 @@ export const ContactsPage: any = () => {
                                         <Input placeholder="Text Only" type={'text'}/>
                                     </Form.Item>
                                 </Form.Item>
-                                <Form.Item label="Last Name">
+                                <Form.Item label={<strong>Last Name</strong>}>
                                     <Form.Item name={['formObj', 'lastName']} noStyle rules={[{
                                         required: true,
                                         message: 'Last Name required'
