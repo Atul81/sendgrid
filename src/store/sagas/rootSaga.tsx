@@ -39,12 +39,19 @@ export function* updateUserRole({type: string, payload}) {
     yield put({type: types.USER_ROLE_SUCCESS, userRole: payload});
 }
 
+// @ts-ignore
+export function* updateSidebarCollapse({type: string, payload}) {
+    yield put({type: types.COLLAPSE_SIDEBAR_SUCCESS, collapsed: payload});
+}
+
+
 export function* watchRootSaga() {
     yield all([
         takeLatest((types.ACTIVE_CONTENT), updateActiveContent),
         takeLatest((types.ACTIVE_MENU_CONTENT), updateActiveMenuContent),
         takeLatest((types.ALL_SEGMENTS), updateAllSegments),
         takeLatest((types.NODE_TYPE), updateNodeType),
-        takeLatest((types.USER_ROLE), updateUserRole)
+        takeLatest((types.USER_ROLE), updateUserRole),
+        takeLatest((types.COLLAPSE_SIDEBAR), updateSidebarCollapse)
     ]);
 }

@@ -12,7 +12,13 @@ import {ContactsPage} from "./audience/contacts/ContactsLoadable";
 import {CustomFieldsPage} from "./audience/customFields/CustomFieldsLoadable";
 import {SegmentsPage} from "./audience/segments/SegmentsLoadable";
 import {useDispatch, useSelector} from "react-redux";
-import {updateActiveContent, updateActiveMenuContent, updateBreadcrumb, updateUserRole} from "../store/actions/root";
+import {
+    updateActiveContent,
+    updateActiveMenuContent,
+    updateBreadcrumb,
+    updateSidebarCollapse,
+    updateUserRole
+} from "../store/actions/root";
 
 import {CampaignPage} from "./campaigns/campaigns/CampaignLoadable";
 import {AutomationPage} from "./campaigns/automation/AutomationLoadable";
@@ -33,9 +39,9 @@ import {CustomizeFormPage} from "./unsubcription/customizeForm/CustomizeFormLoad
 import {DeliveryTestingPage} from "./templates/deliveryTesting/DeliveryTestingLoadable";
 
 export function App() {
-    const [collapsed, setCollapsed] = useState(false);
-    const dispatch = useDispatch();
     const rootState = useSelector((state: any) => state.root);
+    const [collapsed, setCollapsed] = useState(rootState.collapsed);
+    const dispatch = useDispatch();
     const urlPath = useLocation();
     const [userName, setUserName] = useState('John Doe Admin');
 
@@ -54,6 +60,10 @@ export function App() {
         dispatch(updateUserRole({roleType: 'Admin', grantPermission: 'password'}));
     }, [dispatch, urlPath.pathname]);
 
+    const updateCollapsible = () => {
+        dispatch(updateSidebarCollapse(!collapsed));
+        setCollapsed(!collapsed);
+    }
     const onMenuTitleClick = (activeMenuContent: string, activeContent: string) => {
         dispatch(updateActiveContent(activeContent));
         dispatch(updateActiveMenuContent(activeMenuContent));
@@ -80,7 +90,8 @@ export function App() {
     }
     return (
         <Layout style={{minHeight: "100vh"}}>
-            <Sider className={collapsed ? 'siderCollapse': 'siderUncollapse'} collapsible collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)}>
+            <Sider className={collapsed ? 'siderCollapse' : 'siderUncollapse'} collapsible collapsed={collapsed}
+                   onCollapse={updateCollapsible}>
                 <div className="logo">
                     <img style={collapsed ? {marginTop: -8} : {}}
                          src={!collapsed ? `/assets/images/logo.svg` : `/assets/images/logoCollapsed.svg`}

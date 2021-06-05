@@ -6,6 +6,7 @@ export default {
         activeMenuContent: 'dashboard',
         allSegments: [],
         nodeType: 'default',
-        userRole: {}
+        userRole: {},
+        collapsed: false
     }
 };

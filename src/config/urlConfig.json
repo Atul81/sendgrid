@@ -12,6 +12,7 @@
   "senders": "http://localhost:3002/senders",
   "templates": "http://localhost:3002/templates",
   "groups": "http://localhost:3002/groups",
+  "customizeForm": "http://localhost:3002/customizeForm",
   "domain": "http://localhost:3002/domain",
   "dedicatedIps": "http://localhost:3002/dedicatedIps",
   "customEvents": "http://localhost:3002/customEvents",

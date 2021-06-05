@@ -17,6 +17,8 @@ export default function (state = initialState.root, action: any) {
             return {...state, ...{nodeType: action.payload}}
         case types.USER_ROLE:
             return {...state, ...{userRole: action.payload}}
+        case types.COLLAPSE_SIDEBAR:
+            return {...state, ...{collapsed: action.payload}}
         default:
             return state;
     }

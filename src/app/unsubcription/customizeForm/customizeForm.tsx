@@ -4,7 +4,7 @@ import {Button, Collapse, message, Upload} from "antd";
 import {CheckCircleOutlined, UndoOutlined, UploadOutlined} from '@ant-design/icons';
 import Title from "antd/lib/typography/Title";
 import {AccordionHeaderInterface} from "../unsubcriptionInterface";
-import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
+import {editObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import {SketchPicker} from 'react-color'
 import {UploadFile} from "antd/lib/upload/interface";
 
@@ -42,10 +42,11 @@ export const CustomizeFormPage = () => {
         } else if (info.file.status === 'error') {
             message.error(`${info.file.name} file upload failed.`).then(() => {
             });
+        } else {
+            setImageUrl('');
         }
         let fileList = [...info.fileList];
         setFileList(fileList);
-        console.log(fileList);
     }
 
     const cancelAllChanges = () => {
@@ -55,7 +56,22 @@ export const CustomizeFormPage = () => {
     };
 
     const saveAllChangesService = () => {
-
+        if (imageUrl.length === 0) {
+            message.warn("No Image Content provide, using default one", 0.7).then(() => {
+            });
+        }
+        editObjectById({
+            id: 1,
+            url: imageUrl.length > 0 ? imageUrl : 'https://is2-ssl.mzstatic.com/image/thumb/Purple123/v4/be/a1/be/bea1bef3-c6da-b823-0f9e-fb6ac60f461b/source/200x200bb.jpg',
+            backGroundColor: pickColor
+        }, 'customizeForm').then(async setUnsubscriptionAsync => {
+            let unSubscriptionRes = await setUnsubscriptionAsync.json();
+            if (unSubscriptionRes) {
+                message.success("Your preference has been recorded, redirecting to unsubscription page", 1).then(() => {
+                    window.open("http://localhost:4200/1")
+                });
+            }
+        });
     };
 
     const {Panel} = Collapse;
@@ -63,7 +79,7 @@ export const CustomizeFormPage = () => {
     const [color, setColor] = useState('');
     const [pickColor, setPickColor] = useState('#fff')
 
-    const accordion1ColorChange = (color: any, event: any) => {
+    const accordion1ColorChange = (color: any, _: any) => {
         setColor(color);
         setPickColor(color.hex);
     }

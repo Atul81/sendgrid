@@ -44,6 +44,7 @@ const senders = require('./campaigns/senders.json');
 const templates = require('./templates/templates.json');
 const deliveryTesting = require('./templates/deliveryTesting.json');
 const groups = require('./unsubscriptions/groups.json');
+const customizeForm = require('./unsubscriptions/customizeForm.json');
 const domain = require('./settings/domain.json');
 const dedicatedIps = require('./settings/dedicatedIps.json');
 const customEvents = require('./settings/customEvents.json');
@@ -66,6 +67,7 @@ module.exports = () => ({
     templates,
     deliveryTesting,
     groups,
+    customizeForm,
     domain,
     dedicatedIps,
     customEvents,

@@ -100,7 +100,7 @@ export const TemplatesPage: any = () => {
                 </div>
             </div>
         </div>
-    ) : <Modal className={'fullScreenModal'} title={'Delivery Report'} visible={true} width={'100%'} footer={null}
+    ) : <Modal className={'fullScreenModal'} title={'Add/Edit Template'} visible={true} width={'100%'} footer={null}
                onCancel={exitTemplate}>
         <div style={{width: '100%', height: 'calc(100vh - 72px)', marginTop: 24}}>
             <BeeTemplatePage existingTemplate={templateObj} requestType={beeOpenType}/>

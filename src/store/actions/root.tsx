@@ -27,5 +27,10 @@ export const updateNodeType = (payload: any) => ({
 export const updateUserRole = (payload: any) => ({
     type: types.USER_ROLE,
     payload
-})
+});
+
+export const updateSidebarCollapse = (payload: any) => ({
+    type: types.COLLAPSE_SIDEBAR,
+    payload
+});
 
