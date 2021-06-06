@@ -31,14 +31,21 @@ export const ImportsPage: any = () => {
     const showDownloadIcon = (rowCounts: string) => {
         let rowCountsSplit = rowCounts.split("/");
         return ((Number(rowCountsSplit[1]) - Number(rowCountsSplit[0])) <= 1000);
-    }
+    };
+
+    const downloadResults = (record: any) => {
+        console.log(record);
+    };
     const columns = [
         {
             title: 'File Name',
             dataIndex: 'fileName',
             key: 'fileName',
             sorter: (a: any, b: any) => a.fileName.length - b.fileName.length,
-            render: (text: string, record: any) => <span style={showDownloadIcon(record.rowsFraction) ? {cursor: "pointer", color: "#1890FF"}: {cursor: "not-allowed", fontWeight: 500}}
+            render: (text: string, record: any) => <span style={showDownloadIcon(record.rowsFraction) ? {
+                cursor: "pointer",
+                color: "#1890FF"
+            } : {cursor: "not-allowed", fontWeight: 500}}
                                                          onClick={showDownloadIcon(record.rowsFraction) ? () => openRowDetails(record) : undefined}>{text}</span>
         },
         {
@@ -64,9 +71,9 @@ export const ImportsPage: any = () => {
             key: 'action',
             width: '75px',
             render: ((text: string, record: any) => {
-                return (!showDownloadIcon(record.rowsFraction) ? <Space size="small">
+                return (<Space size="small">
                     <p className={"actionColumn noMarginIcon"}>
-                        <DownloadOutlined/></p></Space> : null)
+                        <DownloadOutlined onClick={() => downloadResults(record)}/></p></Space>)
 
             }),
         }

@@ -29,12 +29,28 @@ export const CustomFieldsPage: any = () => {
     const [customFormId, setCustomFormId] = useState<number>(5);
     const userRole = useSelector((state: any) => state.root.userRole);
 
-    const columns = [
+    const columnsStd = [
         {
             title: 'Field Name',
             dataIndex: 'fieldName',
             key: 'fieldName',
-            sorter: (a: any, b: any) => a.fieldName.length - b.fieldName.length
+            sorter: (a: any, b: any) => a.fieldName.length - b.fieldName.length,
+            width: '70%'
+        },
+        {
+            title: 'Field Type',
+            dataIndex: 'fieldType',
+            key: 'fieldType',
+            sorter: (a: any, b: any) => a.fieldType.length - b.fieldType.length
+        }
+    ];
+    const columnsAdmin = [
+        {
+            title: 'Field Name',
+            dataIndex: 'fieldName',
+            key: 'fieldName',
+            sorter: (a: any, b: any) => a.fieldName.length - b.fieldName.length,
+            width: '70%'
         },
         {
             title: 'Field Type',
@@ -47,7 +63,7 @@ export const CustomFieldsPage: any = () => {
             key: 'action',
             width: '75px',
             render: ((text: string, record: any) => {
-                return userRole.roleType === 'Admin' ? <Space size="small">
+                return <Space size="small">
                     <p className={"actionColumn"}
                        onClick={() => openContactEdit(record)}><EditOutlined/></p>
                     <Popconfirm overlayClassName="ant-popover-audience" placement="left"
@@ -61,7 +77,7 @@ export const CustomFieldsPage: any = () => {
                             <DeleteOutlined/>
                         </p>
                     </Popconfirm>
-                </Space> : null
+                </Space>
             }),
         }
     ];
@@ -245,7 +261,8 @@ export const CustomFieldsPage: any = () => {
 
                             </Form>
                         </Modal>
-                        <Table rowSelection={{...customFieldRowSelection}} dataSource={customFieldsDS} columns={columns}
+                        <Table rowSelection={{...customFieldRowSelection}} dataSource={customFieldsDS}
+                               columns={userRole.roleType === 'Admin' ? columnsAdmin : columnsStd}
                                bordered/>
                     </div>
                 </div>

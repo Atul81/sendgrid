@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Checkbox, Form, Input} from "antd";
+import {Button, Form, Input} from "antd";
 import {CheckOutlined, StepBackwardOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import './domain.scss';
@@ -75,13 +75,6 @@ export const DomainSettingsPage: any = () => {
                                    noStyle
                                    rules={[{required: true, message: 'Domain Name required'}, urlRegexValidation]}>
                             <Input className={'maxWidth'} placeholder="Form Domain" type={'text'}/>
-                        </Form.Item>
-                    </Form.Item>
-                    <Form.Item>
-                        <Form.Item name={['formObj', 'dkimSettings']} noStyle>
-                            <Checkbox value={dkimSelect}
-                                      onChange={(e => setDkimSelect(e.target.value))}><span>Generate DKIM Settings <span
-                                style={{color: "gray"}}>(optional)</span></span></Checkbox>
                         </Form.Item>
                     </Form.Item>
                 </div>
