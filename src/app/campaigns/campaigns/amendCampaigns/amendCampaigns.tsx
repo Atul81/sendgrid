@@ -506,38 +506,34 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             }
             case 2: {
                 return <>
-                    <Tabs key={'step2'} defaultActiveKey="1">
-                        <TabPane tab="Variant 1 Options" key="s2TabOne">
-                            {step3TabOne}
-                        </TabPane>
-                        {campaignType === 'testingCampaign' ?
-                            <>
-                                <TabPane tab="Variant 2 Options" key="s2TabTwo">
-                                    {step3TabTwo}
-                                </TabPane>
-                                <TabPane tab="Variant 3 Options" key="s2TabThree">
-                                    {step3TabThree}
-                                </TabPane>
-                            </> : null}
-                    </Tabs>
+                    {campaignType === 'testingCampaign' ?
+                        <Tabs key={'step2'} defaultActiveKey="1">
+                            <TabPane tab="Variant 1 Options" key="s2TabOne">
+                                {step3TabOne}
+                            </TabPane>
+                            <TabPane tab="Variant 2 Options" key="s2TabTwo">
+                                {step3TabTwo}
+                            </TabPane>
+                            <TabPane tab="Variant 3 Options" key="s2TabThree">
+                                {step3TabThree}
+                            </TabPane>
+                        </Tabs> : step3TabOne}
                 </>
             }
             case 3: {
                 return <>
-                    <Tabs key={'step3'} defaultActiveKey="1">
-                        <TabPane tab="Variant 1 Options" key="s3TabOne">
-                            {step4TabOne}
-                        </TabPane>
-                        {campaignType === 'testingCampaign' ?
-                            <>
-                                <TabPane tab="Variant 2 Options" key="s3TabTwo">
-                                    {step4TabTwo}
-                                </TabPane>
-                                <TabPane tab="Variant 3 Options" key="s3TabThree">
-                                    {step4TabThree}
-                                </TabPane>
-                            </> : null}
-                    </Tabs>
+                    {campaignType === 'testingCampaign' ?
+                        <Tabs key={'step3'} defaultActiveKey="1">
+                            <TabPane tab="Variant 1 Options" key="s3TabOne">
+                                {step4TabOne}
+                            </TabPane>
+                            <TabPane tab="Variant 2 Options" key="s3TabTwo">
+                                {step4TabTwo}
+                            </TabPane>
+                            <TabPane tab="Variant 3 Options" key="s3TabThree">
+                                {step4TabThree}
+                            </TabPane>
+                        </Tabs> : step4TabOne}
                 </>
             }
             case 4: {
@@ -552,12 +548,14 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                             </Select>
                         </Form.Item>
                         <Form.Item label={<strong>Over-ride global Settings</strong>}>
-                            <Switch disabled={!pageEditRights} defaultChecked={currentFormValues.current.step5.overrideMsgPerEPSet}
+                            <Switch disabled={!pageEditRights}
+                                    defaultChecked={currentFormValues.current.step5.overrideMsgPerEPSet}
                                     onChange={(checked) => step5RadioValueChanges(checked, 'overrideMsgPerEPSet')}/>
                         </Form.Item>
                     </Space>
                     <Space key={'step5-2'} size={24} style={{display: 'flex', marginBottom: 8}} align="baseline">
-                        <Form.Item label={<strong>Max. Messages per Day per End-Point</strong>} name={['step5', 'msgPerDayPerEP']}>
+                        <Form.Item label={<strong>Max. Messages per Day per End-Point</strong>}
+                                   name={['step5', 'msgPerDayPerEP']}>
                             <Select disabled={!pageEditRights} style={{width: '24vw'}}
                                     placeholder="Select Max Messages">
                                 <Option value="1000">1000</Option>
@@ -572,7 +570,8 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                         </Form.Item>
                     </Space>
                     <Space key={'step5-3'} size={24} style={{display: 'flex', marginBottom: 8}} align="baseline">
-                        <Form.Item label={<strong>Max. Campaign Run time (minutes)</strong>} name={['step5', 'campRunTime']}>
+                        <Form.Item label={<strong>Max. Campaign Run time (minutes)</strong>}
+                                   name={['step5', 'campRunTime']}>
                             <Select disabled={!pageEditRights} style={{width: '24vw'}}
                                     placeholder="Select Max Messages">
                                 <Option value="1000">1000</Option>
@@ -629,7 +628,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             </div>
             <div className='screenBifurcation'>
                 <div className="antSteps">
-                    <Steps current={current} direction={"vertical"} onChange={onStepChange} >
+                    <Steps current={current} direction={"vertical"} onChange={onStepChange}>
                         {steps.map(item => (
                             <Step icon={item.icon} key={item.key} title={item.title}
                                   description={item.content}/>

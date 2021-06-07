@@ -52,7 +52,6 @@ export const DomainSettingsPage: any = () => {
         dispatch(updateBreadcrumb(['Settings', 'domain']));
     };
 
-    const [dkimSelect, setDkimSelect] = useState(false);
     const [openDomainModal, setDomainModal] = useState(false);
 
     return newDomainSettings ? (<div className={'domain'}>
