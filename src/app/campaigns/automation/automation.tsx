@@ -108,7 +108,7 @@ export const AutomationPage: any = () => {
                 id: automationId
             }
             addNewObject(editObject, 'automation').then(async newAutRes => {
-                let autRes = newAutRes.json();
+                let autRes = await newAutRes.json();
                 if (autRes) {
                     openAutomationRow({id: automationId}, 'create')
                     setAutomationId(automationId + 1);

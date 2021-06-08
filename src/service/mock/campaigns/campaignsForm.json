@@ -10,15 +10,17 @@
         "campRunTime": "1000"
       },
       "step4": {
-        "campaignTime": "specificTime",
-        "campaignFrequency": "monthly",
-        "rangePicker": [
-          "2021-05-20T09:34:14.138Z",
-          "2021-06-26T09:34:14.138Z"
-        ],
-        "timeZone": "ist",
-        "startTime": 1621503254138,
-        "endTime": 1624700054138
+        "tabOne": {
+          "campaignTime": "specificTime",
+          "campaignFrequency": "monthly",
+          "rangePicker": [
+            "2021-05-20T09:34:14.138Z",
+            "2021-06-26T09:34:14.138Z"
+          ],
+          "timeZone": "ist",
+          "startTime": 1621503254138,
+          "endTime": 1624700054138
+        }
       },
       "step3": {
         "tabOne": {

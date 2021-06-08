@@ -17,6 +17,7 @@ import {useHistory} from "react-router-dom";
 import {editObjectById, getAllServerCall, getObjectById} from "../../../../service/serverCalls/mockServerRest";
 import {DropDown} from "../../../../utils/Interfaces";
 import moment from "moment";
+import {debug} from "@amcharts/amcharts4/.internal/core/utils/Debug";
 
 export const AmendCampaignsPage: any = (propsObj: any) => {
     const [campaignForm] = Form.useForm();
@@ -38,7 +39,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 if (campaignFormData && campaignFormData.campaignData) {
                     let currentCampaignData = campaignFormData.campaignData;
                     if (currentCampaignData.step4) {
-                        if (currentCampaignData.step4.tabOne) {
+                            if (currentCampaignData.step4.tabOne) {
                             let rangeData = getRangeAsMoment(currentCampaignData.step4.tabOne.rangePicker);
                             if (rangeData) {
                                 campaignFormData.campaignData.step4.tabOne.rangePicker = rangeData;
@@ -591,12 +592,11 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
     };
 
     const submitCampaignData = () => {
-        console.log(currentFormValues.current);
         editObjectById({
             campaignData: currentFormValues.current,
             id: propsObj.amendObj.key
         }, 'campaignsForm').then(async editCampaignAsync => {
-            let editCampaignRes = editCampaignAsync.json();
+            let editCampaignRes = await editCampaignAsync.json();
             if (editCampaignRes) {
                 message.success("Campaign Data successfully saved", 0.6);
             }

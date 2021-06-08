@@ -74,7 +74,7 @@ export const CampaignPage: any = () => {
 
     const deleteCustomFields = (record: any) => {
         deleteObjectById(record.key, 'campaigns').then(async deleteRes => {
-            let deleteData = deleteRes.json();
+            let deleteData = await deleteRes.json();
             if (deleteData) {
                 message.success(`Campaign of name ${record.name} has been successfully deleted`, 0.7);
                 populateAllCampaigns();
@@ -137,7 +137,7 @@ export const CampaignPage: any = () => {
                 status: (copied && null !== existingCampaign) ? existingCampaign.status : 'Un-scheduled',
                 id: campaignId
             }, 'campaigns').then(async newAutRes => {
-                let autRes = newAutRes.json();
+                let autRes = await newAutRes.json();
                 if (autRes) {
                     openAutomationRow(campaignObj, 'create')
                     setCampaignId(campaignId + 1);
