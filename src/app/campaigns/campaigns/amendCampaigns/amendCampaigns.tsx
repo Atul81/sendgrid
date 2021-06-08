@@ -478,33 +478,36 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 </>
             }
             case 1: {
-                return <>
-                    <Form.Item label={<strong>Segment</strong>} name={['step2', 'segment']}>
-                        <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
-                            <Radio value='existingSegment'>Use Existing segment</Radio>
-                            <Radio.Button value='newSegment'>Create New Segment</Radio.Button>
-                        </Radio.Group>
-                    </Form.Item>
-                    {step2ShowSegment ?
-                        <Form.Item label={<strong>Select Segment</strong>} name={['step2', 'segmentType']}>
-                            <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
-                                    placeholder="Select Segment"
-                                    optionFilterProp="children"
-                                    filterOption={(input, option) => filterCountryOption(input, option)}>
-                                {allSegments.map(itr => {
-                                    return <Option value={itr.value}>{itr.label}</Option>
-                                })}
-                            </Select>
-                        </Form.Item> : null
-                    }
-                    <Form.Item label={<strong>Segment hold-out (Optional)</strong>} name={['step2', 'segmentHoldOut']}
-                               tooltip="Percentage of customers in the segment that won't receive emails">
-                        <Input disabled={!pageEditRights} type={'number'} style={{width: '50%'}}
-                               placeholder="Percentage"/>
-                    </Form.Item>
+                return <div className={campaignType === 'testingCampaign' ? 'segmentBifurcation' : undefined}>
+                    <div className='segmentSection'>
+                        <Form.Item label={<strong>Segment</strong>} name={['step2', 'segment']}>
+                            <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
+                                <Radio value='existingSegment'>Use Existing segment</Radio>
+                                <Radio.Button value='newSegment'>Create New Segment</Radio.Button>
+                            </Radio.Group>
+                        </Form.Item>
+                        {step2ShowSegment ?
+                            <Form.Item label={<strong>Select Segment</strong>} name={['step2', 'segmentType']}>
+                                <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                                        placeholder="Select Segment"
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) => filterCountryOption(input, option)}>
+                                    {allSegments.map(itr => {
+                                        return <Option value={itr.value}>{itr.label}</Option>
+                                    })}
+                                </Select>
+                            </Form.Item> : null
+                        }
+                        <Form.Item label={<strong>Segment hold-out (Optional)</strong>}
+                                   name={['step2', 'segmentHoldOut']}
+                                   tooltip="Percentage of customers in the segment that won't receive emails">
+                            <Input disabled={!pageEditRights} type={'number'} style={{width: '50%'}}
+                                   placeholder="Percentage"/>
+                        </Form.Item>
+                    </div>
                     {campaignType === 'testingCampaign' ?
-                        <div className='showSpecification'>Specification Clause</div> : null}
-                </>
+                        <div className='treatmentSection'>Specification Clause</div> : null}
+                </div>
             }
             case 2: {
                 return <>
@@ -641,11 +644,16 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                           form={campaignForm}
                           layout="vertical"
                           requiredMark={true}>
-                        <div className="firstNav">
-                            <div className="leftPlacement">
-                                <Title level={4}>{steps[current].content}</Title>
+                        <div className={campaignType === 'testingCampaign' ? 'abFirstNav firstNav' : 'firstNav'}>
+                            <div className='gridEqualDisplay'>
+                                {campaignType === 'testingCampaign' && current === 1 ? <>
+                                        <div><Title level={4}>Specifications</Title></div>
+                                        <div style={{justifyContent: 'center'}}><Title
+                                            level={4}>{steps[current].content}</Title></div>
+                                    </>
+                                    : <Title level={4}>{steps[current].content}</Title>}
                             </div>
-                            <div className="rightPlacement">
+                            <div className="rightPlacement" style={{justifyContent: 'flex-end'}}>
                                 {current > 0 && (
                                     <Button className={'prevBtn'} icon={<LeftOutlined/>} style={{margin: '0 8px'}}
                                             onClick={() => prevState()}>

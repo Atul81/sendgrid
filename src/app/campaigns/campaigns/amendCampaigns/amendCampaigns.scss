@@ -50,10 +50,26 @@
         @extend .flexColumn;
         padding-top: 16px;
       }
+
+      .abFirstNav{
+        display: grid;
+        grid-template-columns: 80% auto;
+
+        .gridEqualDisplay{
+          display: grid;
+          grid-template-columns: 50% auto;
+        }
+      }
     }
   }
 
   .ant-steps-vertical {
     height: calc(100vh - 250px);
+  }
+
+  .segmentBifurcation {
+    display: grid;
+    grid-template-columns: calc((0.5 * 80%) - 16px) auto;
+    grid-column-gap: 16px;
   }
 }
