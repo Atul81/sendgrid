@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Alert, Button, DatePicker, Form, Input, message, Radio, Select, Space, Steps, Switch, Tabs} from 'antd';
+import {Alert, Button, DatePicker, Form, Input, message, Radio, Select, Space, Steps, Switch, Tabs, Tag} from 'antd';
 import './amendCampaigns.scss';
 import {
     CheckOutlined,
@@ -17,6 +17,7 @@ import {useHistory} from "react-router-dom";
 import {editObjectById, getAllServerCall, getObjectById} from "../../../../service/serverCalls/mockServerRest";
 import {DropDown} from "../../../../utils/Interfaces";
 import moment from "moment";
+import Paragraph from "antd/es/typography/Paragraph";
 
 export const AmendCampaignsPage: any = (propsObj: any) => {
     const [campaignForm] = Form.useForm();
@@ -289,7 +290,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 </Radio.Group>
             </Form.Item>
             <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabOne', 'templateType']}>
-                <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
                         placeholder="Welcome Email Template"
                         optionFilterProp="children"
                         filterOption={(input, option) => filterCountryOption(input, option)}>
@@ -309,7 +310,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 </Radio.Group>
             </Form.Item>
             <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabTwo', 'templateType']}>
-                <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
                         placeholder="Welcome Email Template"
                         optionFilterProp="children"
                         filterOption={(input, option) => filterCountryOption(input, option)}>
@@ -329,7 +330,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 </Radio.Group>
             </Form.Item>
             <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabThree', 'templateType']}>
-                <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
                         placeholder="Welcome Email Template"
                         optionFilterProp="children"
                         filterOption={(input, option) => filterCountryOption(input, option)}>
@@ -350,7 +351,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
         </Form.Item>
         {campaignTime === 'specificTime' ? <>
                 <Form.Item label={<strong>Campaign Frequency</strong>} name={['step4', 'tabOne', 'campaignFrequency']}>
-                    <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                    <Select disabled={!pageEditRights} className='formItemWidth' showSearch
                             placeholder="Select Frequency"
                             optionFilterProp="children"
                             filterOption={(input, option) => filterCountryOption(input, option)}>
@@ -363,7 +364,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                     <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
                 </Form.Item>
                 <Form.Item label={<strong>Time Zone</strong>} name={['step4', 'tabOne', 'timeZone']}>
-                    <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                    <Select disabled={!pageEditRights} className='formItemWidth' showSearch
                             placeholder="Select Time Zone"
                             optionFilterProp="children"
                             filterOption={(input, option) => filterCountryOption(input, option)}>
@@ -374,7 +375,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 </Form.Item>
             </> :
             <Form.Item label={<strong>Campaign Event</strong>} name={['step4', 'tabOne', 'campaignEventTrigger']}>
-                <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
                         placeholder="Select Event"
                         optionFilterProp="children"
                         filterOption={(input, option) => filterCountryOption(input, option)}>
@@ -393,7 +394,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             </Radio.Group>
         </Form.Item>
         <Form.Item label={<strong>Campaign Frequency</strong>} name={['step4', 'tabTwo', 'campaignFrequency']}>
-            <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
                     placeholder="Select Frequency"
                     optionFilterProp="children"
                     filterOption={(input, option) => filterCountryOption(input, option)}>
@@ -406,7 +407,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
         </Form.Item>
         <Form.Item label={<strong>Time Zone</strong>} name={['step4', 'tabTwo', 'timeZone']}>
-            <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
                     placeholder="Select Time Zone"
                     optionFilterProp="children"
                     filterOption={(input, option) => filterCountryOption(input, option)}>
@@ -425,7 +426,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             </Radio.Group>
         </Form.Item>
         <Form.Item label={<strong>Campaign Frequency</strong>} name={['step4', 'tabThree', 'campaignFrequency']}>
-            <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
                     placeholder="Select Frequency"
                     optionFilterProp="children"
                     filterOption={(input, option) => filterCountryOption(input, option)}>
@@ -438,7 +439,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
         </Form.Item>
         <Form.Item label={<strong>Time Zone</strong>} name={['step4', 'tabThree', 'timeZone']}>
-            <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
                     placeholder="Select Time Zone"
                     optionFilterProp="children"
                     filterOption={(input, option) => filterCountryOption(input, option)}>
@@ -456,7 +457,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 return <>
                     <Form.Item label={<strong>Campaign Name</strong>} name={['step1', 'name']}
                                tooltip="This is a required field">
-                        <Input style={{width: '50%'}} disabled={!pageEditRights} placeholder="Eg: Sales Campaign"/>
+                        <Input className='formItemWidth' disabled={!pageEditRights} placeholder="Eg: Sales Campaign"/>
                     </Form.Item>
                     <Form.Item label={<strong>Campaign Type</strong>} name={['step1', 'campaignType']}>
                         <Radio.Group disabled={!pageEditRights} onChange={(e) => setCampaignType(e.target.value)}>
@@ -467,7 +468,8 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                         </Radio.Group>
                     </Form.Item>
                     <Form.Item label={<strong>Select Sender</strong>} name={['step1', 'sender']}>
-                        <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch placeholder="Select Sender"
+                        <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                                placeholder="Select Sender"
                                 optionFilterProp="children"
                                 filterOption={(input, option) => filterCountryOption(input, option)}>
                             <Option value="ind">India</Option>
@@ -488,7 +490,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                         </Form.Item>
                         {step2ShowSegment ?
                             <Form.Item label={<strong>Select Segment</strong>} name={['step2', 'segmentType']}>
-                                <Select disabled={!pageEditRights} style={{width: '50%'}} showSearch
+                                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
                                         placeholder="Select Segment"
                                         optionFilterProp="children"
                                         filterOption={(input, option) => filterCountryOption(input, option)}>
@@ -501,12 +503,34 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                         <Form.Item label={<strong>Segment hold-out (Optional)</strong>}
                                    name={['step2', 'segmentHoldOut']}
                                    tooltip="Percentage of customers in the segment that won't receive emails">
-                            <Input disabled={!pageEditRights} type={'number'} style={{width: '50%'}}
+                            <Input disabled={!pageEditRights} type={'number'} className='formItemWidth'
                                    placeholder="Percentage"/>
                         </Form.Item>
                     </div>
                     {campaignType === 'testingCampaign' ?
-                        <div className='treatmentSection'>Specification Clause</div> : null}
+                        <div className='treatmentSection'>
+                            <div><strong>Specifications</strong></div>
+                            <br/>
+                            <Paragraph strong={true}>A/B test treatments</Paragraph>
+                            <Paragraph>Add up to five treatments for this message, and then specify the percentage of
+                                endpoint to add to each treatment</Paragraph>
+                            <Form.Item label={undefined}
+                                       name={['step2', 'treatmentOne']}
+                                       tooltip="Percentage of customers in the segment that won't receive emails">
+                                <div className='treatmentInp'>
+                                    <div className='content'>
+                                        <Tag color="orange"><Title level={5}>Treatment 1</Title> </Tag>
+                                        <Input type={'number'} placeholder="Treatment One"/>
+                                        <div className='desc'> <Paragraph>Unable to compute endpoints</Paragraph></div>
+                                    </div>
+                                    <div className='content'>
+                                        <Tag color="blue"><Title level={5}>Treatment 1</Title> </Tag>
+                                        <Input type={'number'} placeholder="Treatment One"/>
+                                        <div className='desc'> <Paragraph>Unable to compute endpoints</Paragraph></div>
+                                    </div>
+                                </div>
+                            </Form.Item>
+                        </div> : null}
                 </div>
             }
             case 2: {

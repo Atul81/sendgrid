@@ -4,6 +4,15 @@
     flex-direction: column;
   }
 
+  .formItemWidth {
+    width: 50%;
+    min-width: 238.78px;
+
+    .treatmentMargin {
+      margin-left: 4px;
+    }
+  }
+
   @extend .flexColumn;
 
   .cancelNav {
@@ -23,7 +32,8 @@
         font-weight: 500;
         font-size: 18px;
       }
-      .ant-steps-item-active{
+
+      .ant-steps-item-active {
         background: #f0f2f5;
       }
     }
@@ -51,11 +61,11 @@
         padding-top: 16px;
       }
 
-      .abFirstNav{
+      .abFirstNav {
         display: grid;
         grid-template-columns: 80% auto;
 
-        .gridEqualDisplay{
+        .gridEqualDisplay {
           display: grid;
           grid-template-columns: 50% auto;
         }
@@ -71,5 +81,29 @@
     display: grid;
     grid-template-columns: calc((0.5 * 80%) - 16px) auto;
     grid-column-gap: 16px;
+  }
+
+  .treatmentSection {
+    .treatmentInp {
+      border-left: 4px solid;
+
+      .content {
+        margin-left: 4px;
+        display: grid;
+        grid-template-columns: 24% 13% auto;
+        grid-column-gap: 8px;
+        margin-bottom: 16px;
+        .ant-tag {
+          padding-top: 6px;
+        }
+
+        .desc {
+          .ant-typography {
+            margin: 0;
+            padding-top: 8px;
+          }
+        }
+      }
+    }
   }
 }

@@ -68,7 +68,7 @@ export const CampaignPage: any = () => {
 
     const openAutomationRow = (record: any, openType: string) => {
         setOpenAutomationAmend(true);
-        dispatch(updateBreadcrumb(['Campaign', 'Campaigns', 'amend-campaign']));
+        dispatch(updateBreadcrumb(['Campaign', 'Campaigns', `Edit: ${record.name}`]));
         setCampaignObj({...record, openType: openType});
     };
 
