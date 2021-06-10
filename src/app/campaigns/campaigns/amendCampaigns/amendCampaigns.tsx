@@ -4,16 +4,17 @@ import './amendCampaigns.scss';
 import {
     CheckOutlined,
     CompassOutlined,
+    DeleteFilled,
     HighlightOutlined,
     HistoryOutlined,
     LeftOutlined,
     MailOutlined,
+    PlusCircleFilled,
     RightOutlined,
     StepBackwardOutlined,
     TeamOutlined
 } from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
-import {useHistory} from "react-router-dom";
 import {editObjectById, getAllServerCall, getObjectById} from "../../../../service/serverCalls/mockServerRest";
 import {DropDown} from "../../../../utils/Interfaces";
 import moment from "moment";
@@ -21,7 +22,13 @@ import Paragraph from "antd/es/typography/Paragraph";
 
 export const AmendCampaignsPage: any = (propsObj: any) => {
     const [campaignForm] = Form.useForm();
+
+    const {Step} = Steps;
+
+    const {RangePicker} = DatePicker;
+
     const [pageEditRights, setPageEditRights] = useState(propsObj.amendObj.openType === 'edit');
+
     const [showAlertIcon, setShowAlertIcon] = useState(false);
 
     const getRangeAsMoment = (rangePickerData: any) => {
@@ -59,16 +66,18 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                             }
                         }
                     }
+                    if(currentCampaignData.step1.campaignType === 'testingCampaign' && currentCampaignData.step2.treatments) {
+                        Object.keys(currentCampaignData.step2.treatments).forEach((value, index) => {
+                            console.log(value, index);
+                        });
+                        setTreatmentCount(Object.keys(currentCampaignData.step2.treatments).length);
+                    }
                     currentFormValues.current = currentCampaignData;
                     campaignForm.setFieldsValue(currentCampaignData);
-                    if (currentCampaignData.step2.segment === 'existingSegment') {
-                        setStep2Segments(true);
-                    }
                     setCampaignType(currentCampaignData.step1.campaignType);
                 }
             }).catch(reason => {
-                message.error(reason).then(() => {
-                });
+                console.log(reason);
             });
         }
         if (propsObj.amendObj && propsObj.amendObj.openType === 'create') {
@@ -106,9 +115,6 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
         });
     }, [campaignForm, propsObj]);
 
-    const {Step} = Steps;
-    const {RangePicker} = DatePicker;
-    const history = useHistory();
     const steps = [
         {
             key: 0,
@@ -141,9 +147,11 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             icon: <CompassOutlined/>
         }
     ];
+
     const [current, setCurrent] = useState(0);
+
     const [allSegments, setAllSegments] = useState<DropDown[]>([]);
-    const [step2ShowSegment, setStep2Segments] = useState(false);
+
     const currentFormValues = useRef({
         step1: {
             name: (propsObj.amendObj && propsObj.amendObj.name) ? propsObj.amendObj.name : undefined,
@@ -153,7 +161,8 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
         step2: {
             segment: undefined,
             segmentType: undefined,
-            segmentHoldOut: undefined
+            segmentHoldOut: undefined,
+            treatments: undefined
         },
         step3: {
             tabOne: {
@@ -244,24 +253,35 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
     const saveCampaignForm = (values: any) => {
         let step4Data = populateNestedStep(values.step4, currentFormValues.current.step4);
         let step3Data = populateNestedStep(values.step3, currentFormValues.current.step3);
+        let step2Data = (values.step2 ? values.step2 : currentFormValues.current.step2)
+        if (values.step2 && campaignType === 'testingCampaign') {
+            let treatmentValueSum: number = 0;
+            let treatmentObj = {};
+            Object.keys(treatmentValues).forEach((value, index) => {
+                if (index < treatmentCount) {
+                    treatmentValueSum += parseInt(treatmentValues[value], 10);
+                    treatmentObj = {...treatmentObj, [value]: treatmentValues[value]}
+                }
+            });
+            if (treatmentValueSum !== 100) {
+                message.error("Total template sum count should not exceed 100").then(() => {
+                });
+            } else {
+                step2Data = {...step2Data, treatments: treatmentObj};
+                setShowAlertIcon(true);
+                nextState();
+            }
+        } else {
+            setShowAlertIcon(true);
+            nextState();
+        }
         currentFormValues.current = {
             step5: values.step5 ? values.step5 : currentFormValues.current.step5,
             step4: step4Data,
             step3: step3Data,
-            step2: values.step2 ? values.step2 : currentFormValues.current.step2,
+            step2: step2Data,
             step1: values.step1 ? values.step1 : currentFormValues.current.step1
         };
-        setShowAlertIcon(true);
-        nextState();
-    };
-
-    const createYourMessageRadio = (radioValue: any) => {
-        setStep2Segments(false);
-        if (radioValue.target && radioValue.target.value === 'newSegment') {
-            history.push("/audience/segments");
-        } else {
-            setStep2Segments(true);
-        }
     };
 
     const step5RadioValueChanges = (checked: boolean, overrideType: string) => {
@@ -281,65 +301,62 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
     const onCampaignTimeChange = (e: any) => {
         setCampaignTime(e.target.value);
     };
-    const step3TabOne =
-        <>
-            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabOne', 'campaignType']}>
-                <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
-                    <Radio value='existingTemplate'>Use Existing template</Radio>
-                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
-                </Radio.Group>
-            </Form.Item>
-            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabOne', 'templateType']}>
-                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                        placeholder="Welcome Email Template"
-                        optionFilterProp="children"
-                        filterOption={(input, option) => filterCountryOption(input, option)}>
-                    <Option value="ind">India</Option>
-                    <Option value="usa">United States</Option>
-                    <Option value="uk">United Kingdom</Option>
-                </Select>
-            </Form.Item>
-        </>;
+    const step3TabOne = <>
+        <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabOne', 'campaignType']}>
+            <Radio.Group disabled={!pageEditRights}>
+                <Radio value='existingTemplate'>Use Existing template</Radio>
+                <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
+            </Radio.Group>
+        </Form.Item>
+        <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabOne', 'templateType']}>
+            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                    placeholder="Welcome Email Template"
+                    optionFilterProp="children"
+                    filterOption={(input, option) => filterCountryOption(input, option)}>
+                <Option value="ind">India</Option>
+                <Option value="usa">United States</Option>
+                <Option value="uk">United Kingdom</Option>
+            </Select>
+        </Form.Item>
+    </>;
 
-    const step3TabTwo =
-        <>
-            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabTwo', 'campaignType']}>
-                <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
-                    <Radio value='existingTemplate'>Use Existing template</Radio>
-                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
-                </Radio.Group>
-            </Form.Item>
-            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabTwo', 'templateType']}>
-                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                        placeholder="Welcome Email Template"
-                        optionFilterProp="children"
-                        filterOption={(input, option) => filterCountryOption(input, option)}>
-                    <Option value="ind">India</Option>
-                    <Option value="usa">United States</Option>
-                    <Option value="uk">United Kingdom</Option>
-                </Select>
-            </Form.Item>
-        </>;
+    const step3TabTwo = <>
+        <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabTwo', 'campaignType']}>
+            <Radio.Group disabled={!pageEditRights}>
+                <Radio value='existingTemplate'>Use Existing template</Radio>
+                <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
+            </Radio.Group>
+        </Form.Item>
+        <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabTwo', 'templateType']}>
+            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                    placeholder="Welcome Email Template"
+                    optionFilterProp="children"
+                    filterOption={(input, option) => filterCountryOption(input, option)}>
+                <Option value="ind">India</Option>
+                <Option value="usa">United States</Option>
+                <Option value="uk">United Kingdom</Option>
+            </Select>
+        </Form.Item>
+    </>;
 
-    const step3TabThree =
-        <>
-            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabThree', 'campaignType']}>
-                <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
-                    <Radio value='existingTemplate'>Use Existing template</Radio>
-                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
-                </Radio.Group>
-            </Form.Item>
-            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabThree', 'templateType']}>
-                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                        placeholder="Welcome Email Template"
-                        optionFilterProp="children"
-                        filterOption={(input, option) => filterCountryOption(input, option)}>
-                    <Option value="ind">India</Option>
-                    <Option value="usa">United States</Option>
-                    <Option value="uk">United Kingdom</Option>
-                </Select>
-            </Form.Item>
-        </>;
+    const step3TabThree = <>
+        <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabThree', 'campaignType']}>
+            <Radio.Group disabled={!pageEditRights}>
+                <Radio value='existingTemplate'>Use Existing template</Radio>
+                <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
+            </Radio.Group>
+        </Form.Item>
+        <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabThree', 'templateType']}>
+            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                    placeholder="Welcome Email Template"
+                    optionFilterProp="children"
+                    filterOption={(input, option) => filterCountryOption(input, option)}>
+                <Option value="ind">India</Option>
+                <Option value="usa">United States</Option>
+                <Option value="uk">United Kingdom</Option>
+            </Select>
+        </Form.Item>
+    </>;
 
     const step4TabOne = <>
         <Form.Item label={<strong>Campaign Time</strong>} name={['step4', 'tabOne', 'campaignTime']}
@@ -416,7 +433,8 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 <Option value="sgt">Singapore-SGT</Option>
             </Select>
         </Form.Item>
-    </>
+    </>;
+
     const step4TabThree = <>
         <Form.Item label={<strong>Campaign Time</strong>} name={['step4', 'tabThree', 'campaignTime']}
                    tooltip="When to send the campaign">
@@ -448,9 +466,91 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 <Option value="sgt">Singapore-SGT</Option>
             </Select>
         </Form.Item>
-    </>
+    </>;
 
+    const [treatmentCount, setTreatmentCount] = useState(1);
 
+    const [treatmentValues, setTreatmentValues] = useState({
+        treatmentA: '100',
+        treatmentB: '0',
+        treatmentC: '0',
+        treatmentD: '0',
+        treatmentE: '0'
+    });
+
+    useEffect(() => {
+        switch (treatmentCount) {
+            case 1: {
+                setTreatmentValues({
+                    treatmentA: '100',
+                    treatmentB: '0',
+                    treatmentC: '0',
+                    treatmentD: '0',
+                    treatmentE: '0'
+                });
+                break;
+            }
+            case 2: {
+                setTreatmentValues({
+                    treatmentA: '50',
+                    treatmentB: '50',
+                    treatmentC: '0',
+                    treatmentD: '0',
+                    treatmentE: '0'
+                });
+                break;
+            }
+            case 3: {
+                setTreatmentValues({
+                    treatmentA: '33',
+                    treatmentB: '33',
+                    treatmentC: '34',
+                    treatmentD: '0',
+                    treatmentE: '0'
+                });
+                break;
+            }
+            case 4: {
+                setTreatmentValues({
+                    treatmentA: '25',
+                    treatmentB: '25',
+                    treatmentC: '25',
+                    treatmentD: '25',
+                    treatmentE: '0'
+                });
+                break;
+            }
+            case 5: {
+                setTreatmentValues({
+                    treatmentA: '20',
+                    treatmentB: '20',
+                    treatmentC: '20',
+                    treatmentD: '20',
+                    treatmentE: '20'
+                });
+                break;
+            }
+            default:
+                throw Error("Case not valid");
+        }
+    }, [treatmentCount]);
+    const addTreatment = () => {
+        if (treatmentCount < 5) {
+            setTreatmentCount(treatmentCount + 1);
+        } else {
+            message.warn("Maximum 5 treatments allowed").then(() => {
+            });
+        }
+    };
+
+    const removeTreatment = () => {
+        if (treatmentCount > 0) {
+            setTreatmentCount(treatmentCount - 1);
+        } else {
+            message.warn("Maximum 5 treatments allowed").then(() => {
+            });
+        }
+    };
     const switchForm = () => {
         switch (current) {
             case 0: {
@@ -482,24 +582,16 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             case 1: {
                 return <div className={campaignType === 'testingCampaign' ? 'segmentBifurcation' : undefined}>
                     <div className='segmentSection'>
-                        <Form.Item label={<strong>Segment</strong>} name={['step2', 'segment']}>
-                            <Radio.Group disabled={!pageEditRights} onChange={createYourMessageRadio}>
-                                <Radio value='existingSegment'>Use Existing segment</Radio>
-                                <Radio.Button value='newSegment'>Create New Segment</Radio.Button>
-                            </Radio.Group>
+                        <Form.Item label={<strong>Select Segment</strong>} name={['step2', 'segmentType']}>
+                            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                                    placeholder="Select Segment"
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) => filterCountryOption(input, option)}>
+                                {allSegments.map(itr => {
+                                    return <Option value={itr.value}>{itr.label}</Option>
+                                })}
+                            </Select>
                         </Form.Item>
-                        {step2ShowSegment ?
-                            <Form.Item label={<strong>Select Segment</strong>} name={['step2', 'segmentType']}>
-                                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                                        placeholder="Select Segment"
-                                        optionFilterProp="children"
-                                        filterOption={(input, option) => filterCountryOption(input, option)}>
-                                    {allSegments.map(itr => {
-                                        return <Option value={itr.value}>{itr.label}</Option>
-                                    })}
-                                </Select>
-                            </Form.Item> : null
-                        }
                         <Form.Item label={<strong>Segment hold-out (Optional)</strong>}
                                    name={['step2', 'segmentHoldOut']}
                                    tooltip="Percentage of customers in the segment that won't receive emails">
@@ -509,27 +601,90 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                     </div>
                     {campaignType === 'testingCampaign' ?
                         <div className='treatmentSection'>
-                            <div><strong>Specifications</strong></div>
-                            <br/>
-                            <Paragraph strong={true}>A/B test treatments</Paragraph>
+                            <Title level={5}>A/B Test Treatments</Title>
                             <Paragraph>Add up to five treatments for this message, and then specify the percentage of
                                 endpoint to add to each treatment</Paragraph>
-                            <Form.Item label={undefined}
-                                       name={['step2', 'treatmentOne']}
-                                       tooltip="Percentage of customers in the segment that won't receive emails">
-                                <div className='treatmentInp'>
+                            {treatmentCount > 0 ?
+                                <div className='treatmentInp' style={{borderColor: 'orange'}}>
                                     <div className='content'>
-                                        <Tag color="orange"><Title level={5}>Treatment 1</Title> </Tag>
-                                        <Input type={'number'} placeholder="Treatment One"/>
-                                        <div className='desc'> <Paragraph>Unable to compute endpoints</Paragraph></div>
-                                    </div>
-                                    <div className='content'>
-                                        <Tag color="blue"><Title level={5}>Treatment 1</Title> </Tag>
-                                        <Input type={'number'} placeholder="Treatment One"/>
-                                        <div className='desc'> <Paragraph>Unable to compute endpoints</Paragraph></div>
+                                        <Tag color="orange"><Title level={5}>Treatment A</Title> </Tag>
+                                        <Input type={'number'} placeholder="Treatment A" disabled={!pageEditRights}
+                                               onChange={(e) => setTreatmentValues({
+                                                   ...treatmentValues,
+                                                   treatmentA: e.target.value
+                                               })} value={treatmentValues.treatmentA}/>
+                                        {pageEditRights ? <div className='desc'>
+                                            <span><strong>%</strong></span>
+                                            {treatmentCount > 1 ? <DeleteFilled onClick={removeTreatment}/> : null}
+                                            {treatmentCount < 5 ? <PlusCircleFilled onClick={addTreatment}/> : null}
+                                        </div> : null}
                                     </div>
                                 </div>
-                            </Form.Item>
+                                : null}
+                            {treatmentCount > 1 ?
+                                <div className='treatmentInp' style={{borderColor: 'blue'}}>
+                                    <div className='content'>
+                                        <Tag color="blue"><Title level={5}>Treatment B</Title> </Tag>
+                                        <Input type={'number'} placeholder="Treatment B" disabled={!pageEditRights}
+                                               onChange={(e) => setTreatmentValues({
+                                                   ...treatmentValues,
+                                                   treatmentB: e.target.value
+                                               })} value={treatmentValues.treatmentB}/>
+                                        {pageEditRights ? <div className='desc'>
+                                            <span><strong>%</strong></span>
+                                            {treatmentCount > 1 ? <DeleteFilled onClick={removeTreatment}/> : null}
+                                            {treatmentCount < 5 ? <PlusCircleFilled onClick={addTreatment}/> : null}
+                                        </div> : null}
+                                    </div>
+                                </div> : null}
+                            {treatmentCount > 2 ?
+                                <div className='treatmentInp' style={{borderColor: 'green'}}>
+                                    <div className='content'>
+                                        <Tag color="green"><Title level={5}>Treatment C</Title> </Tag>
+                                        <Input type={'number'} placeholder="Treatment C" disabled={!pageEditRights}
+                                               onChange={(e) => setTreatmentValues({
+                                                   ...treatmentValues,
+                                                   treatmentC: e.target.value
+                                               })} value={treatmentValues.treatmentC}/>
+                                        {pageEditRights ? <div className='desc'>
+                                            <span><strong>%</strong></span>
+                                            {treatmentCount > 1 ? <DeleteFilled onClick={removeTreatment}/> : null}
+                                            {treatmentCount < 5 ? <PlusCircleFilled onClick={addTreatment}/> : null}
+                                        </div> : null}
+                                    </div>
+                                </div> : null}
+                            {treatmentCount > 3 ?
+                                <div className='treatmentInp' style={{borderColor: 'burlywood'}}>
+                                    <div className='content'>
+                                        <Tag color="burlywood"><Title level={5}>Treatment D</Title> </Tag>
+                                        <Input type={'number'} placeholder="Treatment D" disabled={!pageEditRights}
+                                               onChange={(e) => setTreatmentValues({
+                                                   ...treatmentValues,
+                                                   treatmentD: e.target.value
+                                               })} value={treatmentValues.treatmentD}/>
+                                        {pageEditRights ? <div className='desc'>
+                                            <span><strong>%</strong></span>
+                                            {treatmentCount > 1 ? <DeleteFilled onClick={removeTreatment}/> : null}
+                                            {treatmentCount < 5 ? <PlusCircleFilled onClick={addTreatment}/> : null}
+                                        </div> : null}
+                                    </div>
+                                </div> : null}
+                            {treatmentCount > 4 ?
+                                <div className='treatmentInp' style={{borderColor: 'yellow'}}>
+                                    <div className='content'>
+                                        <Tag color="yellow"><Title level={5}>Treatment E</Title> </Tag>
+                                        <Input type={'number'} placeholder="Treatment E" disabled={!pageEditRights}
+                                               onChange={(e) => setTreatmentValues({
+                                                   ...treatmentValues,
+                                                   treatmentE: e.target.value
+                                               })} value={treatmentValues.treatmentE}/>
+                                        {pageEditRights ? <div className='desc'>
+                                            <span><strong>%</strong></span>
+                                            {treatmentCount > 1 ? <DeleteFilled onClick={removeTreatment}/> : null}
+                                            {treatmentCount < 5 ? <PlusCircleFilled onClick={addTreatment}/> : null}
+                                        </div> : null}
+                                    </div>
+                                </div> : null}
                         </div> : null}
                 </div>
             }
@@ -668,16 +823,11 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                           form={campaignForm}
                           layout="vertical"
                           requiredMark={true}>
-                        <div className={campaignType === 'testingCampaign' ? 'abFirstNav firstNav' : 'firstNav'}>
-                            <div className='gridEqualDisplay'>
-                                {campaignType === 'testingCampaign' && current === 1 ? <>
-                                        <div><Title level={4}>Specifications</Title></div>
-                                        <div style={{justifyContent: 'center'}}><Title
-                                            level={4}>{steps[current].content}</Title></div>
-                                    </>
-                                    : <Title level={4}>{steps[current].content}</Title>}
+                        <div className="firstNav">
+                            <div className="leftPlacement">
+                                <Title level={4}>{steps[current].content}</Title>
                             </div>
-                            <div className="rightPlacement" style={{justifyContent: 'flex-end'}}>
+                            <div className="rightPlacement">
                                 {current > 0 && (
                                     <Button className={'prevBtn'} icon={<LeftOutlined/>} style={{margin: '0 8px'}}
                                             onClick={() => prevState()}>

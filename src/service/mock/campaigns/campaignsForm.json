@@ -102,7 +102,14 @@
       "step2": {
         "segment": "existingSegment",
         "segmentType": 2,
-        "segmentHoldOut": "3"
+        "segmentHoldOut": "3",
+        "treatments": {
+          "treatmentA": "20",
+          "treatmentB": "20",
+          "treatmentC": "20",
+          "treatmentD": "20",
+          "treatmentE": "20"
+        }
       },
       "step1": {
         "name": "Exit Extent Flow",

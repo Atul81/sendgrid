@@ -74,14 +74,9 @@
   }
 
   .ant-steps-vertical {
-    height: calc(100vh - 250px);
+    height: calc(100vh - 262px);
   }
 
-  .segmentBifurcation {
-    display: grid;
-    grid-template-columns: calc((0.5 * 80%) - 16px) auto;
-    grid-column-gap: 16px;
-  }
 
   .treatmentSection {
     .treatmentInp {
@@ -91,16 +86,24 @@
         margin-left: 4px;
         display: grid;
         grid-template-columns: 24% 13% auto;
-        grid-column-gap: 8px;
+        grid-column-gap: 4px;
         margin-bottom: 16px;
+
         .ant-tag {
           padding-top: 6px;
         }
 
         .desc {
-          .ant-typography {
-            margin: 0;
-            padding-top: 8px;
+          margin-top: 6px;
+
+          .anticon svg {
+            width: 32px;
+            height: 24px;
+          }
+
+          span {
+            cursor: pointer;
+            margin-right: 8px;
           }
         }
       }
