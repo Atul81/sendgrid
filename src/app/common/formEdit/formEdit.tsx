@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react";
 import {DropDown} from "../../../utils/Interfaces";
 import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import Paragraph from "antd/es/typography/Paragraph";
+import {validateEmail} from "../../../utils/common";
 
 export const FormEditPage: any = (props: any) => {
     const {Option} = Select;
@@ -47,9 +48,21 @@ export const FormEditPage: any = (props: any) => {
                     you send as per anti-spam laws such as CAN-SPAM and CASL</Paragraph>
             </div> : null}
             <Form form={props.generalForm} layout={'vertical'} onFinish={modifyContactService}>
-                <Form.Item label={props.type !== 'senders' ? <strong>Email</strong> : <strong>From Email</strong>} required>
+                <Form.Item label={props.type !== 'senders' ? <strong>Email</strong> : <strong>From Email</strong>}
+                           required>
                     <Form.Item name={['formObj', 'email']} noStyle
-                               rules={[{required: true, message: 'Email required'}]}>
+                               rules={[{required: true, message: 'Email required'},
+                                   () => ({
+                                       validator(_, value) {
+                                           if (value) {
+                                               if (validateEmail(value)) {
+                                                   return Promise.resolve();
+                                               } else {
+                                                   return Promise.reject(new Error('Email Address not valid!'));
+                                               }
+                                           }
+                                       }
+                                   })]}>
                         <Input disabled={(props.type === 'senders' && props.emailEditable)}
                                placeholder="tony@testing.com" type={"email"}/>
                     </Form.Item>
@@ -59,13 +72,15 @@ export const FormEditPage: any = (props: any) => {
                     gridTemplateColumns: "49% auto",
                     gridColumnGap: '24px',
                 }}>
-                    <Form.Item label={props.type !== 'senders' ? <strong>First Name</strong> : <strong>From First Name</strong>}>
+                    <Form.Item label={props.type !== 'senders' ? <strong>First Name</strong> :
+                        <strong>From First Name</strong>}>
                         <Form.Item name={['formObj', 'firstName']}
                                    noStyle rules={[{required: true, message: 'First Name required'}]}>
                             <Input placeholder="Enter first name"/>
                         </Form.Item>
                     </Form.Item>
-                    <Form.Item label={props.type !== 'senders' ? <strong>Last Name</strong> : <strong>From Last Name</strong>}>
+                    <Form.Item
+                        label={props.type !== 'senders' ? <strong>Last Name</strong> : <strong>From Last Name</strong>}>
                         <Form.Item name={['formObj', 'lastName']}
                                    noStyle rules={[{required: true, message: 'Last Name required'}]}>
                             <Input placeholder="Enter Last Name"/>
@@ -73,11 +88,11 @@ export const FormEditPage: any = (props: any) => {
                     </Form.Item>
                     {props.type !== 'senders' ?
                         <>
-                        <Form.Item label={<strong>City</strong>} name={['formObj', 'city']}>
+                            <Form.Item label={<strong>City</strong>} name={['formObj', 'city']}>
                                 <Input placeholder="input placeholder"/>
                             </Form.Item>
 
-                        <Form.Item label={<strong>Tags</strong>} name={['formObj', 'tags']}
+                            <Form.Item label={<strong>Tags</strong>} name={['formObj', 'tags']}
                                        rules={[{required: true, message: 'Atleast one tag required'}]}>
                                 <Select mode={'multiple'} showSearch placeholder="Tags" optionFilterProp="children"
                                         allowClear={true}
@@ -87,7 +102,7 @@ export const FormEditPage: any = (props: any) => {
                                     })}
                                 </Select>
                             </Form.Item>
-                        <Form.Item label={<strong>Segments</strong>} name={['formObj', 'segments']}
+                            <Form.Item label={<strong>Segments</strong>} name={['formObj', 'segments']}
                                        rules={[{required: true, message: 'Atleast one segment required'}]}>
                                 <Select mode={'multiple'} showSearch placeholder="Segments" optionFilterProp="children"
                                         allowClear={true}
@@ -102,8 +117,9 @@ export const FormEditPage: any = (props: any) => {
                             <Input placeholder="input placeholder"/>
                         </Form.Item>
                     }
-                    <Form.Item label={props.type !== 'senders' ? <strong>Address</strong> : <strong>From Address</strong>}
-                               name={['formObj', 'address']}>
+                    <Form.Item
+                        label={props.type !== 'senders' ? <strong>Address</strong> : <strong>From Address</strong>}
+                        name={['formObj', 'address']}>
                         <Input placeholder="input placeholder"/>
                     </Form.Item>
                     <Form.Item label={<strong>Postal</strong>} name={['formObj', 'postalCode']}>

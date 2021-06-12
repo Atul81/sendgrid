@@ -6,6 +6,7 @@ import Title from "antd/lib/typography/Title";
 import {editObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import Search from "antd/es/input/Search";
 import TextArea from "antd/lib/input/TextArea";
+import {validateEmail} from "../../../utils/common";
 
 export const CustomEventsPage: any = () => {
 
@@ -128,7 +129,18 @@ export const CustomEventsPage: any = () => {
                 <Form form={eventForm} layout={'vertical'} onFinish={editCustomEventService}>
                     <Form.Item label={<strong>Event Name</strong>}>
                         <Form.Item name={['formObj', 'name']}
-                                   noStyle rules={[{required: true, message: 'User Email Address required'}]}>
+                                   noStyle rules={[{required: true, message: 'User Email Address required'},
+                            () => ({
+                                validator(_, value) {
+                                    if (value) {
+                                        if (validateEmail(value)) {
+                                            return Promise.resolve();
+                                        } else {
+                                            return Promise.reject(new Error('Email Address not valid!'));
+                                        }
+                                    }
+                                }
+                            })]}>
                             <Input disabled={true} placeholder="Text only" type={"email"}/>
                         </Form.Item>
                     </Form.Item>

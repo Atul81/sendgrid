@@ -34,6 +34,34 @@
   height: calc(100vh - 176px);
   @extend .columnFlex;
   justify-content: space-between;
+
+  .del {
+  }
+
+  .edit {
+  }
+
+  .del:hover {
+    color: red;
+  }
+
+  .edit:hover {
+    color: green;
+  }
+
+  .view {
+  }
+
+  .view:hover {
+    opacity: 1;
+  }
+
+  .copy {
+  }
+
+  .copy:hover {
+    color: #00A3FF;
+  }
 }
 
 .flexEqualSpacing {
@@ -75,12 +103,12 @@
     }
 
     .exportBtn {
-      width: 100px;
+      width: 104px;
       margin-right: 8px;
     }
 
     .addBtn {
-      width: 125px;
+      width: 128px;
     }
   }
 }
@@ -223,4 +251,8 @@
       margin-bottom: 2px;
     }
   }
+}
+
+.ant-btn {
+  border-radius: 40px;
 }

@@ -41,7 +41,7 @@ import {
 import './contacts.scss';
 import {DropDown} from "../../../utils/Interfaces";
 import {ContactEditPage} from "./edit/ContactEditLoadable";
-import {textOnlyValidation} from "../../../utils/common";
+import {GET_SERVER_ERROR, textOnlyValidation, validateEmail} from "../../../utils/common";
 
 export const ContactsPage: any = () => {
 
@@ -118,6 +118,10 @@ export const ContactsPage: any = () => {
             }
             setContactDS(data);
             setContactDSOps(data);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     };
 
@@ -167,7 +171,7 @@ export const ContactsPage: any = () => {
             width: '75px',
             render: ((text: string, record: any) => {
                 return <Space size="small">
-                    <p className={"actionColumn"} onClick={() => openContactEdit(record)}><EditOutlined/></p>
+                    <p className={"actionColumn edit"} onClick={() => openContactEdit(record)}><EditOutlined/></p>
                     <Popconfirm overlayClassName="ant-popover-audience" placement="left"
                                 title={<p><Title level={5}>Are you sure you want to delete?</Title>
                                     This will permanently delete these records and all associated data from your
@@ -176,7 +180,7 @@ export const ContactsPage: any = () => {
                                        rel={'noreferrer'}>Learn More</a></p>}
                                 okText="Delete" cancelText="Cancel"
                                 onConfirm={() => deleteContact(record)}>
-                        <p className={"actionColumn"}><DeleteOutlined/></p>
+                        <p className={"actionColumn del"}><DeleteOutlined/></p>
                     </Popconfirm>
                 </Space>
             })
@@ -208,7 +212,7 @@ export const ContactsPage: any = () => {
             width: '75px',
             render: ((text: string, record: any) => {
                 return <Space size="small">
-                    <p className={"actionColumn noMarginIcon"} onClick={() => deleteQuickContact(record)}>
+                    <p className={"actionColumn noMarginIcon del"} onClick={() => deleteQuickContact(record)}>
                         <DeleteOutlined/></p>
                 </Space>
             }),
@@ -334,17 +338,18 @@ export const ContactsPage: any = () => {
                 addNewObject({...itr, id: itrId}, 'contacts').then(async response => {
                     let resBody = await response.json();
                     if (resBody) {
-                        message.success(`New Contact ${itr.email} successfully created`, 0.6);
+                        message.success(`New Contact ${itr.email} successfully created`, 0.8);
+                        setServiceInProgress(false);
+                        populateAllContacts();
+                        cancelQuickAdd();
                     }
                 }).catch(reason => {
                     console.log(reason);
+                    message.error('Unable to add contact(s), please try after sometime', 0.8);
                 });
             });
             setContactId(itrId++);
         }
-        setServiceInProgress(false);
-        populateAllContacts();
-        cancelQuickAdd();
     };
 
     const openAdditionInfoModal = (infoType: string) => {
@@ -406,7 +411,7 @@ export const ContactsPage: any = () => {
             });
             closeAdditionalInfo();
         } else {
-            message.error("Select at least one option from Dropdown", 0.7).then(() => {
+            message.error('Select at least one option from Dropdown', 0.7).then(() => {
             });
         }
     };
@@ -457,7 +462,7 @@ export const ContactsPage: any = () => {
                                     icon={<PlusOutlined/>}>Add Tags</Button>
                             <Button key="addSegments" style={{marginRight: 8}}
                                     onClick={() => openAdditionInfoModal('addSegments')}
-                                    icon={<PlusOutlined/>}>Add Segments</Button>
+                                    icon={<PlusOutlined/>}>Add To Segments</Button>
                             <Popconfirm overlayClassName="ant-popover-audience" placement="left"
                                         title={<p><Title level={5}>Are you sure you want to delete?</Title>
                                             This will permanently delete these records and all associated data
@@ -539,7 +544,7 @@ export const ContactsPage: any = () => {
                 <Modal title="Add Contact" centered visible={quickAddModal} width={550} className={'contacts'}
                        footer={quickAddContactDS.length > 0 ?
                            <Button disabled={serviceInProgress} key="done" style={{background: 'darkgreen'}}
-                                   type="primary" icon={<CheckOutlined/>}
+                                   type="primary" icon={<CheckOutlined/>} loading={serviceInProgress}
                                    onClick={quickAddContactService}>
                                Done
                            </Button> : null}
@@ -553,19 +558,25 @@ export const ContactsPage: any = () => {
                                     message: 'Email Address required'
                                 }, () => ({
                                     validator(_, value) {
-                                        if (value && quickAddContactDS.length > 0) {
-                                            let tempData = [...quickAddContactDS];
-                                            let sameEmail: boolean = false;
-                                            for (let i = 0; i < quickAddContactDS.length; i++) {
-                                                sameEmail = tempData[i].email === value;
-                                            }
-                                            if (sameEmail) {
-                                                return Promise.reject(new Error('Email Address already in use!'));
+                                        if (value) {
+                                            if (validateEmail(value)) {
+                                                if (quickAddContactDS.length > 0) {
+                                                    let tempData = [...quickAddContactDS];
+                                                    let sameEmail: boolean = false;
+                                                    for (let i = 0; i < quickAddContactDS.length; i++) {
+                                                        sameEmail = tempData[i].email === value;
+                                                    }
+                                                    if (sameEmail) {
+                                                        return Promise.reject(new Error('Email Address already in use!'));
+                                                    } else {
+                                                        return Promise.resolve();
+                                                    }
+                                                } else {
+                                                    return Promise.resolve();
+                                                }
                                             } else {
-                                                return Promise.resolve();
+                                                return Promise.reject(new Error('Email Address not valid!'));
                                             }
-                                        } else {
-                                            return Promise.resolve();
                                         }
                                     }
                                 })]}>

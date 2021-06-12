@@ -12,6 +12,7 @@ import {
 } from "../../../service/serverCalls/mockServerRest";
 import Search from "antd/es/input/Search";
 import Paragraph from "antd/lib/typography/Paragraph";
+import {validateEmail} from "../../../utils/common";
 
 export const UsersPage: any = () => {
 
@@ -305,7 +306,7 @@ export const UsersPage: any = () => {
                     }
                 });
                 setCurrentUserRole('Standard');
-            } else if (arrayEquals(selectedPermissions, definedRoles.auditor)){
+            } else if (arrayEquals(selectedPermissions, definedRoles.auditor)) {
                 userModalForm.setFieldsValue({
                     formObj: {
                         userRole: 'Auditor'
@@ -343,7 +344,18 @@ export const UsersPage: any = () => {
                 <Form form={userModalForm} layout={'vertical'} onFinish={userAmendModalService}>
                     <Form.Item label="User Email">
                         <Form.Item name={['formObj', 'userEmail']}
-                                   noStyle rules={[{required: true, message: 'User Email Address required'}]}>
+                                   noStyle rules={[{required: true, message: 'User Email Address required'}
+                            , () => ({
+                                validator(_, value) {
+                                    if (value) {
+                                        if (validateEmail(value)) {
+                                            return Promise.resolve();
+                                        } else {
+                                            return Promise.reject(new Error('Email Address not valid!'));
+                                        }
+                                    }
+                                }
+                            })]}>
                             <Input disabled={userObj.key > 0} placeholder="Text only" type={"email"}/>
                         </Form.Item>
                     </Form.Item>
