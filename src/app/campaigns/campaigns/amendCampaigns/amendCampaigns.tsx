@@ -9,7 +9,7 @@ import {
     HistoryOutlined,
     LeftOutlined,
     MailOutlined,
-    PlusCircleFilled,
+    PlusCircleFilled, PlusOutlined,
     RightOutlined,
     StepBackwardOutlined,
     TeamOutlined
@@ -19,11 +19,15 @@ import {editObjectById, getAllServerCall, getObjectById} from "../../../../servi
 import {DropDown} from "../../../../utils/Interfaces";
 import moment from "moment";
 import Paragraph from "antd/es/typography/Paragraph";
+import {GET_SERVER_ERROR} from "../../../../utils/common";
+import {useHistory} from "react-router-dom";
 
 export const AmendCampaignsPage: any = (propsObj: any) => {
     const [campaignForm] = Form.useForm();
 
     const {Step} = Steps;
+
+    const history = useHistory();
 
     const {RangePicker} = DatePicker;
 
@@ -36,6 +40,18 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
         if (serverRangePicker) {
             return [moment(serverRangePicker[0]), moment(serverRangePicker[1])];
         }
+    };
+
+    const populateStep4Tabs = (campaignFormData: any) => {
+        let rangeData = getRangeAsMoment(campaignFormData.rangePicker);
+        if (rangeData) {
+            campaignFormData.rangePicker = rangeData;
+        }
+    };
+
+    const populateEmptyObj = (campaignFormData: any, tabCount: string) => {
+        campaignFormData[tabCount] = currentFormValues.current.step4[tabCount];
+        campaignFormData[tabCount].campaignTime = 'specificTime';
     }
 
     useEffect(() => {
@@ -46,31 +62,16 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 if (campaignFormData && campaignFormData.campaignData) {
                     let currentCampaignData = campaignFormData.campaignData;
                     if (currentCampaignData.step4) {
-                        if (currentCampaignData.step4.tabOne) {
-                            let rangeData = getRangeAsMoment(currentCampaignData.step4.tabOne.rangePicker);
-                            if (rangeData) {
-                                campaignFormData.campaignData.step4.tabOne.rangePicker = rangeData;
-                            }
-                            setCampaignTime(currentCampaignData.step4.tabOne.campaignTime)
-                        }
-                        if (currentCampaignData.step4.tabTwo) {
-                            let rangeData = getRangeAsMoment(currentCampaignData.step4.tabTwo.rangePicker);
-                            if (rangeData) {
-                                campaignFormData.campaignData.step4.tabTwo.rangePicker = rangeData;
-                            }
-                        }
-                        if (currentCampaignData.step4.tabThree) {
-                            let rangeData = getRangeAsMoment(currentCampaignData.step4.tabThree.rangePicker);
-                            if (rangeData) {
-                                campaignFormData.campaignData.step4.tabThree.rangePicker = rangeData;
-                            }
-                        }
+                        currentCampaignData.step4.tabOne ? populateStep4Tabs(currentCampaignData.step4.tabOne) : populateEmptyObj(currentCampaignData.step4, 'tabOne');
+                        currentCampaignData.step4.tabTwo ? populateStep4Tabs(currentCampaignData.step4.tabTwo) : populateEmptyObj(currentCampaignData.step4, 'tabTwo');
+                        currentCampaignData.step4.tabThree ? populateStep4Tabs(currentCampaignData.step4.tabThree) : populateEmptyObj(currentCampaignData.step4, 'tabThree');
+                        currentCampaignData.step4.tabFour ? populateStep4Tabs(currentCampaignData.step4.tabFour) : populateEmptyObj(currentCampaignData.step4, 'tabFour');
+                        currentCampaignData.step4.tabFive ? populateStep4Tabs(currentCampaignData.step4.tabFive) : populateEmptyObj(currentCampaignData.step4, 'tabFive');
                     }
-                    if(currentCampaignData.step1.campaignType === 'testingCampaign' && currentCampaignData.step2.treatments) {
-                        Object.keys(currentCampaignData.step2.treatments).forEach((value, index) => {
-                            console.log(value, index);
-                        });
+                    if (currentCampaignData.step1.campaignType === 'testingCampaign' && currentCampaignData.step2.treatments) {
                         setTreatmentCount(Object.keys(currentCampaignData.step2.treatments).length);
+                    } else {
+                        setTreatmentCount(1);
                     }
                     currentFormValues.current = currentCampaignData;
                     campaignForm.setFieldsValue(currentCampaignData);
@@ -78,6 +79,8 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 }
             }).catch(reason => {
                 console.log(reason);
+                message.error(GET_SERVER_ERROR, 0.8).then(() => {
+                });
             });
         }
         if (propsObj.amendObj && propsObj.amendObj.openType === 'create') {
@@ -113,7 +116,22 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             }
             setCustomEvents(tempData);
         });
-    }, [campaignForm, propsObj]);
+
+        getAllServerCall('templates').then(async getAllTemplatesAsync => {
+            let allExistingTemplates = await getAllTemplatesAsync.json();
+            let tempData: DropDown[] = [];
+            if (allExistingTemplates && Array.isArray(allExistingTemplates)) {
+                allExistingTemplates.forEach((itr: any) => {
+                    tempData.push({
+                        value: itr.id,
+                        label: itr.title,
+                        children: null
+                    });
+                });
+            }
+            setExistingTemplates(tempData);
+        });
+    }, []);
 
     const steps = [
         {
@@ -176,6 +194,14 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             tabThree: {
                 segmentType: undefined,
                 emailTemplate: undefined,
+            },
+            tabFour: {
+                segmentType: undefined,
+                emailTemplate: undefined,
+            },
+            tabFive: {
+                segmentType: undefined,
+                emailTemplate: undefined,
             }
         },
         step4: {
@@ -194,6 +220,20 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 campaignEventTrigger: undefined
             },
             tabThree: {
+                campaignTime: undefined,
+                campaignFrequency: undefined,
+                rangePicker: undefined,
+                timeZone: undefined,
+                campaignEventTrigger: undefined
+            },
+            tabFour: {
+                campaignTime: undefined,
+                campaignFrequency: undefined,
+                rangePicker: undefined,
+                timeZone: undefined,
+                campaignEventTrigger: undefined
+            },
+            tabFive: {
                 campaignTime: undefined,
                 campaignFrequency: undefined,
                 rangePicker: undefined,
@@ -239,12 +279,28 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
         if (currentValue) {
             if (currentValue.tabOne) {
                 tempObj.tabOne = currentValue.tabOne;
+            } else {
+                tempObj.tabOne = undefined
             }
             if (currentValue.tabTwo) {
                 tempObj.tabTwo = currentValue.tabTwo;
+            } else if (treatmentCount < 2) {
+                tempObj.tabTwo = undefined
             }
             if (currentValue.tabThree) {
                 tempObj.tabThree = currentValue.tabThree;
+            } else if (treatmentCount < 3) {
+                tempObj.tabThree = undefined
+            }
+            if (currentValue.tabFour) {
+                tempObj.tabFour = currentValue.tabFour;
+            } else if (treatmentCount < 4) {
+                tempObj.tabFour = undefined
+            }
+            if (currentValue.tabFive) {
+                tempObj.tabFive = currentValue.tabFive;
+            } else if (treatmentCount < 5) {
+                tempObj.tabFive = undefined
             }
         }
         return tempObj;
@@ -296,180 +352,339 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
 
     const {TabPane} = Tabs;
     const [campaignType, setCampaignType] = useState('emailCampaign');
-    const [campaignTime, setCampaignTime] = useState('specificTime');
     const [customEvents, setCustomEvents] = useState<DropDown[]>([]);
-    const onCampaignTimeChange = (e: any) => {
-        setCampaignTime(e.target.value);
-    };
-    const step3TabOne = <>
-        <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabOne', 'campaignType']}>
-            <Radio.Group disabled={!pageEditRights}>
-                <Radio value='existingTemplate'>Use Existing template</Radio>
-                <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
-            </Radio.Group>
-        </Form.Item>
-        <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabOne', 'templateType']}>
-            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                    placeholder="Welcome Email Template"
-                    optionFilterProp="children"
-                    filterOption={(input, option) => filterCountryOption(input, option)}>
-                <Option value="ind">India</Option>
-                <Option value="usa">United States</Option>
-                <Option value="uk">United Kingdom</Option>
-            </Select>
-        </Form.Item>
-    </>;
+    const [existingTemplates, setExistingTemplates] = useState<DropDown[]>([]);
 
-    const step3TabTwo = <>
-        <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabTwo', 'campaignType']}>
-            <Radio.Group disabled={!pageEditRights}>
-                <Radio value='existingTemplate'>Use Existing template</Radio>
-                <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
-            </Radio.Group>
-        </Form.Item>
-        <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabTwo', 'templateType']}>
-            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                    placeholder="Welcome Email Template"
-                    optionFilterProp="children"
-                    filterOption={(input, option) => filterCountryOption(input, option)}>
-                <Option value="ind">India</Option>
-                <Option value="usa">United States</Option>
-                <Option value="uk">United Kingdom</Option>
-            </Select>
-        </Form.Item>
-    </>;
-
-    const step3TabThree = <>
-        <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabThree', 'campaignType']}>
-            <Radio.Group disabled={!pageEditRights}>
-                <Radio value='existingTemplate'>Use Existing template</Radio>
-                <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
-            </Radio.Group>
-        </Form.Item>
-        <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabThree', 'templateType']}>
-            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                    placeholder="Welcome Email Template"
-                    optionFilterProp="children"
-                    filterOption={(input, option) => filterCountryOption(input, option)}>
-                <Option value="ind">India</Option>
-                <Option value="usa">United States</Option>
-                <Option value="uk">United Kingdom</Option>
-            </Select>
-        </Form.Item>
-    </>;
-
-    const step4TabOne = <>
-        <Form.Item label={<strong>Campaign Time</strong>} name={['step4', 'tabOne', 'campaignTime']}
-                   tooltip="When to send the campaign">
-            <Radio.Group disabled={!pageEditRights} onChange={onCampaignTimeChange}>
-                <Radio value='specificTime'>At a specific time</Radio>
-                <Radio value='eventTrigger'>At event trigger</Radio>
-            </Radio.Group>
-        </Form.Item>
-        {campaignTime === 'specificTime' ? <>
-                <Form.Item label={<strong>Campaign Frequency</strong>} name={['step4', 'tabOne', 'campaignFrequency']}>
-                    <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                            placeholder="Select Frequency"
-                            optionFilterProp="children"
-                            filterOption={(input, option) => filterCountryOption(input, option)}>
-                        <Option value="weekly">Weekly</Option>
-                        <Option value="monthly">Monthly</Option>
-                        <Option value="yearly">Yearly</Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item label={<strong>Time Range</strong>} name={['step4', 'tabOne', 'rangePicker']}>
-                    <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
-                </Form.Item>
-                <Form.Item label={<strong>Time Zone</strong>} name={['step4', 'tabOne', 'timeZone']}>
-                    <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                            placeholder="Select Time Zone"
-                            optionFilterProp="children"
-                            filterOption={(input, option) => filterCountryOption(input, option)}>
-                        <Option value="ist">India-IST</Option>
-                        <Option value="gmt">Greenwich-GMT</Option>
-                        <Option value="sgt">Singapore-SGT</Option>
-                    </Select>
-                </Form.Item>
-            </> :
-            <Form.Item label={<strong>Campaign Event</strong>} name={['step4', 'tabOne', 'campaignEventTrigger']}>
+    const step3TreatmentMap = {
+        1: <div key={1}>
+            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabOne', 'campaignType']}>
+                <Radio.Group disabled={!pageEditRights}>
+                    <Radio value='existingTemplate'>Use Existing template</Radio>
+                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
+                </Radio.Group>
+            </Form.Item>
+            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabOne', 'templateType']}>
                 <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                        placeholder="Select Event"
+                        placeholder="Welcome Email Template"
                         optionFilterProp="children"
                         filterOption={(input, option) => filterCountryOption(input, option)}>
-                    {customEvents.map((value) => <Option key={value.value} value={value.label}>{value.label}</Option>)}
+                    {existingTemplates.map(itr => {
+                        return <Option key={itr.value} value={itr.label}>{itr.label}</Option>
+                    })}
                 </Select>
-            </Form.Item>}
+            </Form.Item>
+        </div>,
 
-    </>;
+        2: <div key={2}>
+            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabTwo', 'campaignType']}>
+                <Radio.Group disabled={!pageEditRights}>
+                    <Radio value='existingTemplate'>Use Existing template</Radio>
+                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
+                </Radio.Group>
+            </Form.Item>
+            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabTwo', 'templateType']}>
+                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                        placeholder="Welcome Email Template"
+                        optionFilterProp="children"
+                        filterOption={(input, option) => filterCountryOption(input, option)}>
+                    {existingTemplates.map(itr => {
+                        return <Option key={itr.value} value={itr.label}>{itr.label}</Option>
+                    })}
+                </Select>
+            </Form.Item>
+        </div>,
 
-    const step4TabTwo = <>
-        <Form.Item label={<strong>Campaign Time</strong>} name={['step4', 'tabTwo', 'campaignTime']}
-                   tooltip="When to send the campaign">
-            <Radio.Group disabled={!pageEditRights}>
-                <Radio value='specificTime'>At a specific time</Radio>
-                <Radio value='eventTrigger'>At event trigger</Radio>
-            </Radio.Group>
-        </Form.Item>
-        <Form.Item label={<strong>Campaign Frequency</strong>} name={['step4', 'tabTwo', 'campaignFrequency']}>
-            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                    placeholder="Select Frequency"
-                    optionFilterProp="children"
-                    filterOption={(input, option) => filterCountryOption(input, option)}>
-                <Option value="weekly">Weekly</Option>
-                <Option value="monthly">Monthly</Option>
-                <Option value="yearly">Yearly</Option>
-            </Select>
-        </Form.Item>
-        <Form.Item label={<strong>Time Range</strong>} name={['step4', 'tabTwo', 'rangePicker']}>
-            <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
-        </Form.Item>
-        <Form.Item label={<strong>Time Zone</strong>} name={['step4', 'tabTwo', 'timeZone']}>
-            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                    placeholder="Select Time Zone"
-                    optionFilterProp="children"
-                    filterOption={(input, option) => filterCountryOption(input, option)}>
-                <Option value="ist">India-IST</Option>
-                <Option value="gmt">Greenwich-GMT</Option>
-                <Option value="sgt">Singapore-SGT</Option>
-            </Select>
-        </Form.Item>
-    </>;
-
-    const step4TabThree = <>
-        <Form.Item label={<strong>Campaign Time</strong>} name={['step4', 'tabThree', 'campaignTime']}
-                   tooltip="When to send the campaign">
-            <Radio.Group disabled={!pageEditRights}>
-                <Radio value='specificTime'>At a specific time</Radio>
-                <Radio value='eventTrigger'>At event trigger</Radio>
-            </Radio.Group>
-        </Form.Item>
-        <Form.Item label={<strong>Campaign Frequency</strong>} name={['step4', 'tabThree', 'campaignFrequency']}>
-            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                    placeholder="Select Frequency"
-                    optionFilterProp="children"
-                    filterOption={(input, option) => filterCountryOption(input, option)}>
-                <Option value="weekly">Weekly</Option>
-                <Option value="monthly">Monthly</Option>
-                <Option value="yearly">Yearly</Option>
-            </Select>
-        </Form.Item>
-        <Form.Item label={<strong>Time Range</strong>} name={['step4', 'tabThree', 'rangePicker']}>
-            <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
-        </Form.Item>
-        <Form.Item label={<strong>Time Zone</strong>} name={['step4', 'tabThree', 'timeZone']}>
-            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                    placeholder="Select Time Zone"
-                    optionFilterProp="children"
-                    filterOption={(input, option) => filterCountryOption(input, option)}>
-                <Option value="ist">India-IST</Option>
-                <Option value="gmt">Greenwich-GMT</Option>
-                <Option value="sgt">Singapore-SGT</Option>
-            </Select>
-        </Form.Item>
-    </>;
-
+        3: <div key={3}>
+            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabThree', 'campaignType']}>
+                <Radio.Group disabled={!pageEditRights}>
+                    <Radio value='existingTemplate'>Use Existing template</Radio>
+                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
+                </Radio.Group>
+            </Form.Item>
+            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabThree', 'templateType']}>
+                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                        placeholder="Welcome Email Template"
+                        optionFilterProp="children"
+                        filterOption={(input, option) => filterCountryOption(input, option)}>
+                    {existingTemplates.map(itr => {
+                        return <Option key={itr.value} value={itr.label}>{itr.label}</Option>
+                    })}
+                </Select>
+            </Form.Item>
+        </div>,
+        4: <div key={4}>
+            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabFour', 'campaignType']}>
+                <Radio.Group disabled={!pageEditRights}>
+                    <Radio value='existingTemplate'>Use Existing template</Radio>
+                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
+                </Radio.Group>
+            </Form.Item>
+            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabFour', 'templateType']}>
+                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                        placeholder="Welcome Email Template"
+                        optionFilterProp="children"
+                        filterOption={(input, option) => filterCountryOption(input, option)}>
+                    {existingTemplates.map(itr => {
+                        return <Option key={itr.value} value={itr.label}>{itr.label}</Option>
+                    })}
+                </Select>
+            </Form.Item>
+        </div>,
+        5: <div key={5}>
+            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabFive', 'campaignType']}>
+                <Radio.Group disabled={!pageEditRights}>
+                    <Radio value='existingTemplate'>Use Existing template</Radio>
+                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
+                </Radio.Group>
+            </Form.Item>
+            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabFive', 'templateType']}>
+                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                        placeholder="Welcome Email Template"
+                        optionFilterProp="children"
+                        filterOption={(input, option) => filterCountryOption(input, option)}>
+                    {existingTemplates.map(itr => {
+                        return <Option key={itr.value} value={itr.label}>{itr.label}</Option>
+                    })}
+                </Select>
+            </Form.Item>
+        </div>
+    }
     const [treatmentCount, setTreatmentCount] = useState(1);
 
+    const [campaignTime, setCampaignTime] = useState(undefined);
+    const [step4Tab, setStep4Tab] = useState(1)
+    const changeCampaign = (e: any, tabCall: string) => {
+        setCampaignTime(e.target.value);
+        currentFormValues.current.step4[tabCall].campaignTime = e.target.value;
+    };
+
+    useEffect(() => {
+        setCampaignTime(undefined);
+    }, [campaignTime, currentFormValues.current.step4, step4Tab]);
+
+    const changeStep4Tab = (param: any) => {
+        setStep4Tab(param);
+    };
+
+    const step4TreatmentMap = {
+        1: <div key={1}>
+            <Form.Item label={<strong>Campaign Time</strong>} name={['step4', 'tabOne', 'campaignTime']}
+                       tooltip="When to send the campaign">
+                <Radio.Group disabled={!pageEditRights} onChange={(e) => changeCampaign(e, 'tabOne')}>
+                    <Radio value='specificTime'>At a specific time</Radio>
+                    <Radio value='eventTrigger'>At event trigger</Radio>
+                </Radio.Group>
+            </Form.Item>
+            {currentFormValues.current.step4.tabOne.campaignTime === 'specificTime' ? <>
+                    <Form.Item label={<strong>Campaign Frequency</strong>} name={['step4', 'tabOne', 'campaignFrequency']}>
+                        <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                                placeholder="Select Frequency"
+                                optionFilterProp="children"
+                                filterOption={(input, option) => filterCountryOption(input, option)}>
+                            <Option value="weekly">Weekly</Option>
+                            <Option value="monthly">Monthly</Option>
+                            <Option value="yearly">Yearly</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label={<strong>Time Range</strong>} name={['step4', 'tabOne', 'rangePicker']}>
+                        <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
+                    </Form.Item>
+                    <Form.Item label={<strong>Time Zone</strong>} name={['step4', 'tabOne', 'timeZone']}>
+                        <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                                placeholder="Select Time Zone"
+                                optionFilterProp="children"
+                                filterOption={(input, option) => filterCountryOption(input, option)}>
+                            <Option value="ist">India-IST</Option>
+                            <Option value="gmt">Greenwich-GMT</Option>
+                            <Option value="sgt">Singapore-SGT</Option>
+                        </Select>
+                    </Form.Item>
+                </> :
+                <Form.Item label={<strong>Campaign Event</strong>} name={['step4', 'tabOne', 'campaignEventTrigger']}>
+                    <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                            placeholder="Select Event"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => filterCountryOption(input, option)}>
+                        {customEvents.map((value) => <Option key={value.value}
+                                                             value={value.label}>{value.label}</Option>)}
+                    </Select>
+                </Form.Item>}
+        </div>,
+
+        2: treatmentCount >= 2 ? <div key={2}>
+            <Form.Item label={<strong>Campaign Time</strong>} name={['step4', 'tabTwo', 'campaignTime']}
+                       tooltip="When to send the campaign">
+                <Radio.Group disabled={!pageEditRights} onChange={(e) => changeCampaign(e, 'tabTwo')}>
+                    <Radio value='specificTime'>At a specific time</Radio>
+                    <Radio value='eventTrigger'>At event trigger</Radio>
+                </Radio.Group>
+            </Form.Item>
+            {currentFormValues.current.step4.tabTwo.campaignTime === 'specificTime' ? <>
+                    <Form.Item label={<strong>Campaign Frequency</strong>} name={['step4', 'tabTwo', 'campaignFrequency']}>
+                        <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                                placeholder="Select Frequency"
+                                optionFilterProp="children"
+                                filterOption={(input, option) => filterCountryOption(input, option)}>
+                            <Option value="weekly">Weekly</Option>
+                            <Option value="monthly">Monthly</Option>
+                            <Option value="yearly">Yearly</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label={<strong>Time Range</strong>} name={['step4', 'tabTwo', 'rangePicker']}>
+                        <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
+                    </Form.Item>
+                    <Form.Item label={<strong>Time Zone</strong>} name={['step4', 'tabTwo', 'timeZone']}>
+                        <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                                placeholder="Select Time Zone"
+                                optionFilterProp="children"
+                                filterOption={(input, option) => filterCountryOption(input, option)}>
+                            <Option value="ist">India-IST</Option>
+                            <Option value="gmt">Greenwich-GMT</Option>
+                            <Option value="sgt">Singapore-SGT</Option>
+                        </Select>
+                    </Form.Item>
+                </> :
+                <Form.Item label={<strong>Campaign Event</strong>} name={['step4', 'tabTwo', 'campaignEventTrigger']}>
+                    <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                            placeholder="Select Event"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => filterCountryOption(input, option)}>
+                        {customEvents.map((value) => <Option key={value.value}
+                                                             value={value.label}>{value.label}</Option>)}
+                    </Select>
+                </Form.Item>}
+        </div> : null,
+        3: treatmentCount >= 3 ? <div key={3}>
+            <Form.Item label={<strong>Campaign Time</strong>} name={['step4', 'tabThree', 'campaignTime']}
+                       tooltip="When to send the campaign">
+                <Radio.Group disabled={!pageEditRights} onChange={(e) => changeCampaign(e, 'tabThree')}>
+                    <Radio value='specificTime'>At a specific time</Radio>
+                    <Radio value='eventTrigger'>At event trigger</Radio>
+                </Radio.Group>
+            </Form.Item>
+            {currentFormValues.current.step4.tabThree.campaignTime === 'specificTime' ? <>
+                    <Form.Item label={<strong>Campaign Frequency</strong>}
+                               name={['step4', 'tabThree', 'campaignFrequency']}>
+                        <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                                placeholder="Select Frequency"
+                                optionFilterProp="children"
+                                filterOption={(input, option) => filterCountryOption(input, option)}>
+                            <Option value="weekly">Weekly</Option>
+                            <Option value="monthly">Monthly</Option>
+                            <Option value="yearly">Yearly</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label={<strong>Time Range</strong>} name={['step4', 'tabThree', 'rangePicker']}>
+                        <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
+                    </Form.Item>
+                    <Form.Item label={<strong>Time Zone</strong>} name={['step4', 'tabThree', 'timeZone']}>
+                        <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                                placeholder="Select Time Zone"
+                                optionFilterProp="children"
+                                filterOption={(input, option) => filterCountryOption(input, option)}>
+                            <Option value="ist">India-IST</Option>
+                            <Option value="gmt">Greenwich-GMT</Option>
+                            <Option value="sgt">Singapore-SGT</Option>
+                        </Select>
+                    </Form.Item>
+                </> :
+                <Form.Item label={<strong>Campaign Event</strong>} name={['step4', 'tabThree', 'campaignEventTrigger']}>
+                    <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                            placeholder="Select Event"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => filterCountryOption(input, option)}>
+                        {customEvents.map((value) => <Option key={value.value}
+                                                             value={value.label}>{value.label}</Option>)}
+                    </Select>
+                </Form.Item>}
+        </div> : null,
+        4: treatmentCount >= 4 ? <div key={4}>
+            <Form.Item label={<strong>Campaign Time</strong>} name={['step4', 'tabFour', 'campaignTime']}
+                       tooltip="When to send the campaign">
+                <Radio.Group disabled={!pageEditRights} onChange={(e) => changeCampaign(e, 'tabFour')}>
+                    <Radio value='specificTime'>At a specific time</Radio>
+                    <Radio value='eventTrigger'>At event trigger</Radio>
+                </Radio.Group>
+            </Form.Item>
+            {currentFormValues.current.step4.tabFour.campaignTime === 'specificTime' ? <>
+                    <Form.Item label={<strong>Campaign Frequency</strong>} name={['step4', 'tabFour', 'campaignFrequency']}>
+                        <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                                placeholder="Select Frequency"
+                                optionFilterProp="children"
+                                filterOption={(input, option) => filterCountryOption(input, option)}>
+                            <Option value="weekly">Weekly</Option>
+                            <Option value="monthly">Monthly</Option>
+                            <Option value="yearly">Yearly</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label={<strong>Time Range</strong>} name={['step4', 'tabFour', 'rangePicker']}>
+                        <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
+                    </Form.Item>
+                    <Form.Item label={<strong>Time Zone</strong>} name={['step4', 'tabFour', 'timeZone']}>
+                        <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                                placeholder="Select Time Zone"
+                                optionFilterProp="children"
+                                filterOption={(input, option) => filterCountryOption(input, option)}>
+                            <Option value="ist">India-IST</Option>
+                            <Option value="gmt">Greenwich-GMT</Option>
+                            <Option value="sgt">Singapore-SGT</Option>
+                        </Select>
+                    </Form.Item>
+                </> :
+                <Form.Item label={<strong>Campaign Event</strong>} name={['step4', 'tabFour', 'campaignEventTrigger']}>
+                    <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                            placeholder="Select Event"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => filterCountryOption(input, option)}>
+                        {customEvents.map((value) => <Option key={value.value}
+                                                             value={value.label}>{value.label}</Option>)}
+                    </Select>
+                </Form.Item>}
+        </div> : null,
+        5: treatmentCount === 5 ? <div key={5}>
+            <Form.Item label={<strong>Campaign Time</strong>} name={['step4', 'tabFive', 'campaignTime']}
+                       tooltip="When to send the campaign">
+                <Radio.Group disabled={!pageEditRights} onChange={(e) => changeCampaign(e, 'tabFive')}>
+                    <Radio value='specificTime'>At a specific time</Radio>
+                    <Radio value='eventTrigger'>At event trigger</Radio>
+                </Radio.Group>
+            </Form.Item>
+            {currentFormValues.current.step4.tabFive.campaignTime === 'specificTime' ? <>
+                    <Form.Item label={<strong>Campaign Frequency</strong>} name={['step4', 'tabFive', 'campaignFrequency']}>
+                        <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                                placeholder="Select Frequency"
+                                optionFilterProp="children"
+                                filterOption={(input, option) => filterCountryOption(input, option)}>
+                            <Option value="weekly">Weekly</Option>
+                            <Option value="monthly">Monthly</Option>
+                            <Option value="yearly">Yearly</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label={<strong>Time Range</strong>} name={['step4', 'tabFive', 'rangePicker']}>
+                        <RangePicker disabled={!pageEditRights} allowClear bordered format="MMMM Do YYYY, h:mm:ss a"/>
+                    </Form.Item>
+                    <Form.Item label={<strong>Time Zone</strong>} name={['step4', 'tabFive', 'timeZone']}>
+                        <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                                placeholder="Select Time Zone"
+                                optionFilterProp="children"
+                                filterOption={(input, option) => filterCountryOption(input, option)}>
+                            <Option value="ist">India-IST</Option>
+                            <Option value="gmt">Greenwich-GMT</Option>
+                            <Option value="sgt">Singapore-SGT</Option>
+                        </Select>
+                    </Form.Item>
+                </> :
+                <Form.Item label={<strong>Campaign Event</strong>} name={['step4', 'tabFive', 'campaignEventTrigger']}>
+                    <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                            placeholder="Select Event"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => filterCountryOption(input, option)}>
+                        {customEvents.map((value) => <Option key={value.value}
+                                                             value={value.label}>{value.label}</Option>)}
+                    </Select>
+                </Form.Item>}
+        </div> : null
+    }
     const [treatmentValues, setTreatmentValues] = useState({
         treatmentA: '100',
         treatmentB: '0',
@@ -477,6 +692,14 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
         treatmentD: '0',
         treatmentE: '0'
     });
+
+    const treatmentMap = {
+        1: 'Treatment A',
+        2: 'Treatment B',
+        3: 'Treatment C',
+        4: 'Treatment D',
+        5: 'Treatment E'
+    }
 
     useEffect(() => {
         switch (treatmentCount) {
@@ -580,25 +803,34 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 </>
             }
             case 1: {
-                return <div className={campaignType === 'testingCampaign' ? 'segmentBifurcation' : undefined}>
-                    <div className='segmentSection'>
-                        <Form.Item label={<strong>Select Segment</strong>} name={['step2', 'segmentType']}>
-                            <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                                    placeholder="Select Segment"
-                                    optionFilterProp="children"
-                                    filterOption={(input, option) => filterCountryOption(input, option)}>
-                                {allSegments.map(itr => {
-                                    return <Option value={itr.value}>{itr.label}</Option>
-                                })}
-                            </Select>
-                        </Form.Item>
-                        <Form.Item label={<strong>Segment hold-out (Optional)</strong>}
-                                   name={['step2', 'segmentHoldOut']}
-                                   tooltip="Percentage of customers in the segment that won't receive emails">
-                            <Input disabled={!pageEditRights} type={'number'} className='formItemWidth'
-                                   placeholder="Percentage"/>
-                        </Form.Item>
+                return <>
+                    <div className='abFirstNav'>
+                        <div className='existingOptions'>
+                            <Form.Item label={<strong>Select Segment</strong>} name={['step2', 'segmentType']}>
+                                <Select className='formItemWidth' showSearch disabled={!pageEditRights}
+                                        placeholder="Select Segment" optionFilterProp="children"
+                                        filterOption={(input, option) => filterCountryOption(input, option)}>
+                                    {allSegments.map(itr => {
+                                        return <Option value={itr.value}>{itr.label}</Option>
+                                    })}
+                                </Select>
+                            </Form.Item>
+                        </div>
+                        <div className='orContent'>
+                            <Paragraph>(or)</Paragraph>
+                        </div>
+                        <div className='createNew'>
+                            <Button disabled={!pageEditRights} type={'dashed'} icon={<PlusOutlined/>}
+                                    onClick={() => history.push('/audience/segments')} key={'newSeg'}>Create New
+                                Segment</Button>
+                        </div>
                     </div>
+                    <Form.Item label={<strong>Segment hold-out (Optional)</strong>}
+                               name={['step2', 'segmentHoldOut']}
+                               tooltip="Percentage of customers in the segment that won't receive emails">
+                        <Input disabled={!pageEditRights} type={'number'} className='formItemWidth'
+                               placeholder="Percentage"/>
+                    </Form.Item>
                     {campaignType === 'testingCampaign' ?
                         <div className='treatmentSection'>
                             <Title level={5}>A/B Test Treatments</Title>
@@ -616,7 +848,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                                         {pageEditRights ? <div className='desc'>
                                             <span><strong>%</strong></span>
                                             {treatmentCount > 1 ? <DeleteFilled onClick={removeTreatment}/> : null}
-                                            {treatmentCount < 5 ? <PlusCircleFilled onClick={addTreatment}/> : null}
+                                            {treatmentCount === 1 ? <PlusCircleFilled onClick={addTreatment}/> : null}
                                         </div> : null}
                                     </div>
                                 </div>
@@ -633,7 +865,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                                         {pageEditRights ? <div className='desc'>
                                             <span><strong>%</strong></span>
                                             {treatmentCount > 1 ? <DeleteFilled onClick={removeTreatment}/> : null}
-                                            {treatmentCount < 5 ? <PlusCircleFilled onClick={addTreatment}/> : null}
+                                            {treatmentCount === 2 ? <PlusCircleFilled onClick={addTreatment}/> : null}
                                         </div> : null}
                                     </div>
                                 </div> : null}
@@ -649,7 +881,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                                         {pageEditRights ? <div className='desc'>
                                             <span><strong>%</strong></span>
                                             {treatmentCount > 1 ? <DeleteFilled onClick={removeTreatment}/> : null}
-                                            {treatmentCount < 5 ? <PlusCircleFilled onClick={addTreatment}/> : null}
+                                            {treatmentCount === 3 ? <PlusCircleFilled onClick={addTreatment}/> : null}
                                         </div> : null}
                                     </div>
                                 </div> : null}
@@ -665,7 +897,7 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                                         {pageEditRights ? <div className='desc'>
                                             <span><strong>%</strong></span>
                                             {treatmentCount > 1 ? <DeleteFilled onClick={removeTreatment}/> : null}
-                                            {treatmentCount < 5 ? <PlusCircleFilled onClick={addTreatment}/> : null}
+                                            {treatmentCount === 4 ? <PlusCircleFilled onClick={addTreatment}/> : null}
                                         </div> : null}
                                     </div>
                                 </div> : null}
@@ -681,43 +913,35 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                                         {pageEditRights ? <div className='desc'>
                                             <span><strong>%</strong></span>
                                             {treatmentCount > 1 ? <DeleteFilled onClick={removeTreatment}/> : null}
-                                            {treatmentCount < 5 ? <PlusCircleFilled onClick={addTreatment}/> : null}
                                         </div> : null}
                                     </div>
                                 </div> : null}
                         </div> : null}
-                </div>
+                </>
             }
             case 2: {
                 return <>
                     {campaignType === 'testingCampaign' ?
                         <Tabs key={'step2'} defaultActiveKey="1">
-                            <TabPane tab="Variant 1 Options" key="s2TabOne">
-                                {step3TabOne}
-                            </TabPane>
-                            <TabPane tab="Variant 2 Options" key="s2TabTwo">
-                                {step3TabTwo}
-                            </TabPane>
-                            <TabPane tab="Variant 3 Options" key="s2TabThree">
-                                {step3TabThree}
-                            </TabPane>
-                        </Tabs> : step3TabOne}
+                            {Array.from(Array(treatmentCount + 1).fill(0).map((value, index) => {
+                                return <TabPane tab={treatmentMap[index]} key={index}>
+                                    {step3TreatmentMap[index]}
+                                </TabPane>
+                            }))}
+                        </Tabs>
+                        : step3TreatmentMap[1]}
                 </>
             }
             case 3: {
                 return <>
                     {campaignType === 'testingCampaign' ?
-                        <Tabs key={'step3'} defaultActiveKey="1">
-                            <TabPane tab="Variant 1 Options" key="s3TabOne">
-                                {step4TabOne}
-                            </TabPane>
-                            <TabPane tab="Variant 2 Options" key="s3TabTwo">
-                                {step4TabTwo}
-                            </TabPane>
-                            <TabPane tab="Variant 3 Options" key="s3TabThree">
-                                {step4TabThree}
-                            </TabPane>
-                        </Tabs> : step4TabOne}
+                        <Tabs key={'step3'} defaultActiveKey="1" onChange={changeStep4Tab}>
+                            {Array.from(Array(treatmentCount + 1).fill(0).map((value, index) => {
+                                return <TabPane tab={treatmentMap[index]} key={index}>
+                                    {step4TreatmentMap[index]}
+                                </TabPane>
+                            }))}
+                        </Tabs> : step4TreatmentMap["1"]}
                 </>
             }
             case 4: {

@@ -72,31 +72,16 @@
           "timeZone": "gmt",
           "startTime": 1621503254138,
           "endTime": 1624700054138
-        },
-        "tabThree": {
-          "campaignTime": "specificTime",
-          "campaignFrequency": "yearly",
-          "rangePicker": [
-            "2021-05-20T09:34:14.138Z",
-            "2021-06-26T09:34:14.138Z"
-          ],
-          "timeZone": "sgt",
-          "startTime": 1621503254138,
-          "endTime": 1624700054138
         }
       },
       "step3": {
         "tabOne": {
           "campaignType": "existingTemplate",
-          "templateType": "usa"
+          "templateType": "Harry Potter Half-Blood Prince"
         },
         "tabTwo": {
           "campaignType": "newTemplate",
-          "templateType": "ind"
-        },
-        "tabThree": {
-          "campaignType": "existingTemplate",
-          "templateType": "uk"
+          "templateType": null
         }
       },
       "step2": {
@@ -104,11 +89,8 @@
         "segmentType": 2,
         "segmentHoldOut": "3",
         "treatments": {
-          "treatmentA": "20",
-          "treatmentB": "20",
-          "treatmentC": "20",
-          "treatmentD": "20",
-          "treatmentE": "20"
+          "treatmentA": "50",
+          "treatmentB": "50"
         }
       },
       "step1": {

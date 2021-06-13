@@ -63,12 +63,40 @@
 
       .abFirstNav {
         display: grid;
-        grid-template-columns: 80% auto;
+        grid-template-columns: 50% 12px auto;
+        grid-column-gap: 24px;
 
-        .gridEqualDisplay {
-          display: grid;
-          grid-template-columns: 50% auto;
+        .ant-form-item .ant-select, .ant-form-item .ant-cascader-picker {
+          width: 100%
         }
+
+        .createNew {
+          width: 160px;
+          margin-bottom: 24px;
+          display: flex;
+          flex-direction: column-reverse;
+
+          .ant-btn {
+            border-radius: 0;
+            padding: 0;
+          }
+
+          .ant-btn > .anticon + span, .ant-btn > span + .anticon {
+            margin-left: 4px;
+          }
+        }
+
+        .orContent {
+          @extend .createNew;
+
+          .ant-typography {
+            margin-bottom: 0;
+          }
+        }
+      }
+
+      .ant-tabs-tab + .ant-tabs-tab {
+        margin: 0 32px 0 0;
       }
     }
   }
