@@ -6,7 +6,7 @@ import Paragraph from "antd/es/typography/Paragraph";
 import {Link} from "react-router-dom";
 import {AddSegment} from "../../audience/audienceInterface";
 import Title from "antd/lib/typography/Title";
-import {filterSelectOptions} from "../../../utils/common";
+import {filterSelectOptions, GET_SERVER_ERROR} from "../../../utils/common";
 import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 
 export const UploadPage: any = (props: any) => {
@@ -21,6 +21,10 @@ export const UploadPage: any = (props: any) => {
                 });
             }
             setAllSegments(data);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     }, []);
 

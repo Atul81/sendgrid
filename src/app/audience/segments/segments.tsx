@@ -3,6 +3,7 @@ import {Button, Input, message, Popconfirm, Space, Table, Typography} from "antd
 import {SegmentInterface} from "../audienceInterface";
 import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import {deleteObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
+import {GET_SERVER_ERROR} from "../../../utils/common";
 
 export const SegmentsPage: any = () => {
 
@@ -21,6 +22,10 @@ export const SegmentsPage: any = () => {
             }
             setSegmentDS(data);
             setSegmentDSOps(data);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     }
     const {Search} = Input;

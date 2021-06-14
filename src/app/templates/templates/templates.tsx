@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {Button, Card, Modal, Popover, Skeleton} from "antd";
+import {Button, Card, message, Modal, Popover, Skeleton} from "antd";
 import {EllipsisOutlined, PlusOutlined} from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
 import './templates.scss';
@@ -9,6 +9,7 @@ import Title from "antd/es/typography/Title";
 import Search from "antd/es/input/Search";
 import {BeeTemplatePage} from "../deliveryTesting/beePlugin/beeTemplatePage";
 import {TemplatesInterface} from "../templatesInterface";
+import {GET_SERVER_ERROR} from "../../../utils/common";
 
 export const TemplatesPage: any = () => {
 
@@ -50,6 +51,10 @@ export const TemplatesPage: any = () => {
                 setTemplateDS(allTemplatesRes);
                 setTemplateDSOps(allTemplatesRes);
             }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     };
 

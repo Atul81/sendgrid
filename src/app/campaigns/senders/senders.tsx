@@ -7,6 +7,7 @@ import {useDispatch} from "react-redux";
 import {AmendSendersPage} from "./amendSenders/AmendSendersLoadable";
 import {deleteObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import Search from "antd/es/input/Search";
+import {GET_SERVER_ERROR} from "../../../utils/common";
 
 export const SendersPage: any = () => {
     const {Title} = Typography;
@@ -109,7 +110,11 @@ export const SendersPage: any = () => {
             }
             setSegmentDS(tempItrObj);
             setSegmentDSOps(tempItrObj);
-        })
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
     };
 
     const onSearchSenders = (searchParam: string) => {

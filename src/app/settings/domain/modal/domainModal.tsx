@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {Alert, Button, Descriptions, Modal, Table} from "antd";
+import {Alert, Button, Descriptions, message, Modal, Table} from "antd";
 import './domainModal.scss';
 import Title from "antd/es/typography/Title";
 import {DomainModal} from "../../settingsInterface";
 import Paragraph from "antd/es/typography/Paragraph";
 import {getAllServerCall} from "../../../../service/serverCalls/mockServerRest";
 import {DownloadOutlined, DownOutlined} from "@ant-design/icons";
-import {exportCSVFile} from "../../../../utils/common";
+import {exportCSVFile, GET_SERVER_ERROR} from "../../../../utils/common";
 
 export const DomainModalPage = (props: any) => {
     useEffect(() => {
@@ -31,6 +31,10 @@ export const DomainModalPage = (props: any) => {
                     setDkimRecordsDS(tempObj);
                 }
             }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     }, [])
     const columns = [

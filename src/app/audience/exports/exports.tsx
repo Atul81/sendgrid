@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {ExportContactInterface} from "../audienceInterface";
-import {Space, Table} from "antd";
+import {message, Space, Table} from "antd";
 import {DownloadOutlined} from "@ant-design/icons";
 import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
-import {getTimeFromUnix} from "../../../utils/common";
+import {GET_SERVER_ERROR, getTimeFromUnix} from "../../../utils/common";
 import Title from "antd/lib/typography/Title";
 import Search from "antd/es/input/Search";
 
@@ -18,6 +18,10 @@ export const ExportPage: any = () => {
             });
             setExportContactDS(tempObj);
             setExportContactDSOps(tempObj);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     }, []);
     const [exportContactDS, setExportContactDS] = useState<ExportContactInterface[]>([]);

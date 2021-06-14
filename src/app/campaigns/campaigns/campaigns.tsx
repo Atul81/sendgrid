@@ -8,6 +8,7 @@ import {CampaignInterface} from "../campaignInterface";
 import {addNewObject, deleteObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
+import {GET_SERVER_ERROR, POST_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../utils/common";
 
 export const CampaignPage: any = () => {
 
@@ -126,6 +127,10 @@ export const CampaignPage: any = () => {
             }
             setCampaignsDS(tempObj);
             setCampaignsDSOps(tempObj);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     };
 
@@ -144,6 +149,10 @@ export const CampaignPage: any = () => {
                     setNewCampaignModal(false);
                     populateAllCampaigns();
                 }
+            }).catch(reason => {
+                console.log(reason);
+                message.error(POST_SERVER_ERROR, 0.8).then(() => {
+                });
             });
         } else {
             message.error("Automation Name required", 0.5).then(() => {

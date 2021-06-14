@@ -1,9 +1,9 @@
-import {Button, Form, Input, Select} from "antd";
+import {Button, Form, Input, message, Select} from "antd";
 import React, {useEffect, useState} from "react";
 import {DropDown} from "../../../utils/Interfaces";
 import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import Paragraph from "antd/es/typography/Paragraph";
-import {validateEmail} from "../../../utils/common";
+import {GET_SERVER_ERROR, validateEmail} from "../../../utils/common";
 
 export const FormEditPage: any = (props: any) => {
     const {Option} = Select;
@@ -28,7 +28,12 @@ export const FormEditPage: any = (props: any) => {
                     });
                 }
                 setAllTags(data);
+            }).catch(reason => {
+                console.log(reason);
+                message.error('Unable to fetch tags data', 0.8).then(() => {
+                });
             });
+
             getAllServerCall('segments').then(async response => {
                 let resBody = await response.json();
                 let data: DropDown[] = [];
@@ -38,6 +43,10 @@ export const FormEditPage: any = (props: any) => {
                     });
                 }
                 setAllSegments(data);
+            }).catch(reason => {
+                console.log(reason);
+                message.error('Unable to fetch segments data', 0.8).then(() => {
+                });
             });
         }
     }, [props.type])

@@ -12,7 +12,7 @@ import {
 } from "../../../service/serverCalls/mockServerRest";
 import Search from "antd/es/input/Search";
 import Paragraph from "antd/lib/typography/Paragraph";
-import {validateEmail} from "../../../utils/common";
+import {GET_SERVER_ERROR, POST_SERVER_ERROR, PUT_SERVER_ERROR, validateEmail} from "../../../utils/common";
 
 export const UsersPage: any = () => {
 
@@ -86,6 +86,10 @@ export const UsersPage: any = () => {
                 if (editUserRes) {
                     message.success(`User ${userAmendObj.userEmail} has been successfully edited`, 0.7);
                 }
+            }).catch(reason => {
+                console.log(reason);
+                message.error(PUT_SERVER_ERROR, 0.8).then(() => {
+                });
             });
         } else {
             addNewObject({
@@ -99,6 +103,10 @@ export const UsersPage: any = () => {
                     message.success(`User ${formValues.userEmail} has been successfully created`, 0.6);
                     setUserId(userId + 1);
                 }
+            }).catch(reason => {
+                console.log(reason);
+                message.error(POST_SERVER_ERROR, 0.8).then(() => {
+                });
             });
         }
         populateAllUsers();
@@ -191,6 +199,10 @@ export const UsersPage: any = () => {
                 });
             }
             setUserRoles(data);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     }, []);
 
@@ -205,6 +217,10 @@ export const UsersPage: any = () => {
             }
             setUsersDS(data);
             setUsersDSOps(data);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     };
 

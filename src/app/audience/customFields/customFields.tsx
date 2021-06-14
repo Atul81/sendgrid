@@ -13,6 +13,7 @@ import {
     getAllServerCall
 } from "../../../service/serverCalls/mockServerRest";
 import {useSelector} from "react-redux";
+import {GET_SERVER_ERROR, POST_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../utils/common";
 
 export const CustomFieldsPage: any = () => {
 
@@ -93,6 +94,10 @@ export const CustomFieldsPage: any = () => {
             }
             setCustomFieldsDS(data);
             setCustomFieldsDSOps(data);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     };
 
@@ -158,6 +163,8 @@ export const CustomFieldsPage: any = () => {
                 }
             }).catch(reason => {
                 console.log(reason);
+                message.error(PUT_SERVER_ERROR, 0.8).then(() => {
+                });
             });
         } else {
             addNewObject({
@@ -171,6 +178,8 @@ export const CustomFieldsPage: any = () => {
                 }
             }).catch(reason => {
                 console.log(reason);
+                message.error(POST_SERVER_ERROR, 0.8).then(() => {
+                });
             });
             setCustomFormId(customFormId + 1);
         }

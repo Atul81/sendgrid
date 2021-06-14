@@ -14,6 +14,7 @@ import {
 import {updateActiveContent, updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 import Search from "antd/es/input/Search";
+import {GET_SERVER_ERROR, POST_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../utils/common";
 
 export const GroupsPage: any = () => {
     const dispatch = useDispatch();
@@ -114,6 +115,10 @@ export const GroupsPage: any = () => {
                 if (editGroupRes) {
                     message.success(`Group ${values.formObj.groupName} has been successfully updated`);
                 }
+            }).catch(reason => {
+                console.log(reason);
+                message.error(PUT_SERVER_ERROR, 0.8).then(() => {
+                });
             });
         } else {
             let newGrpId = groupId + 1;
@@ -124,7 +129,11 @@ export const GroupsPage: any = () => {
                     message.success(`New Group ${amendGrpObj.groupName} has been successfully created`, 0.6);
                     setGroupId(newGrpId);
                 }
-            })
+            }).catch(reason => {
+                console.log(reason);
+                message.error(POST_SERVER_ERROR, 0.8).then(() => {
+                });
+            });
         }
         setAmendGroupModal(false);
         populateAllGroups();
@@ -142,6 +151,10 @@ export const GroupsPage: any = () => {
             }
             setGroupNameDS(tempItrObj);
             setGroupNameDSOps(tempItrObj);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     };
 

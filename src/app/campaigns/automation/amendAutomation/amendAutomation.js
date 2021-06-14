@@ -18,6 +18,7 @@ import customNode from "./customNode";
 import customNodeTwo from "./customNodeTwo";
 import Radio from "antd/es/radio/radio";
 import Paragraph from "antd/es/typography/Paragraph";
+import {GET_SERVER_ERROR, POST_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../../utils/common";
 
 export const AmendAutomationPage = (props) => {
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -50,6 +51,10 @@ export const AmendAutomationPage = (props) => {
                     });
                     setElements(tempObj);
                 }
+            }).catch(reason => {
+                console.log(reason);
+                message.error(GET_SERVER_ERROR, 0.8).then(() => {
+                });
             });
         } else {
             addNewObject({data: elements, id: props.amendObj.id}, 'workFlow').then(async newWorkflowAsync => {
@@ -57,7 +62,11 @@ export const AmendAutomationPage = (props) => {
                 if (newWorkflowRes) {
                     message.success(`Workflow data for automation ${props.amendObj.name} has been successfully created`, 0.7);
                 }
-            })
+            }).catch(reason => {
+                console.log(reason);
+                message.error(POST_SERVER_ERROR, 0.8).then(() => {
+                });
+            });
         }
     }, []);
 
@@ -218,6 +227,10 @@ export const AmendAutomationPage = (props) => {
             if (elementsJson && elementsJson.id) {
                 message.success(`Workflow data for automation ${props.amendObj.name} has been successfully updated`, 0.7);
             }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(PUT_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     };
 

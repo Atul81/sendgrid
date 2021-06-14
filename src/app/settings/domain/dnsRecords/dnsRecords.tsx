@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Popconfirm, Space, Table} from "antd";
+import {Button, message, Popconfirm, Space, Table} from "antd";
 import Title from "antd/lib/typography/Title";
 import {DeleteOutlined, EyeOutlined, PlusOutlined} from "@ant-design/icons";
 import {DnsRecordsInterface} from "../../settingsInterface";
@@ -8,6 +8,7 @@ import {getAllServerCall} from "../../../../service/serverCalls/mockServerRest";
 import Search from "antd/es/input/Search";
 import Tag from "antd/es/tag";
 import {DomainModalPage} from "../modal/domainModal";
+import {GET_SERVER_ERROR} from "../../../../utils/common";
 
 export const DnsRecordsPage: any = (props: any) => {
     const columns = [
@@ -79,6 +80,10 @@ export const DnsRecordsPage: any = (props: any) => {
             }
             setDnsRecordsDS(data);
             setDnsRecordsDSOps(data);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     }, []);
 

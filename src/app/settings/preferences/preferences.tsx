@@ -7,6 +7,7 @@ import {editObjectById, getAllServerCall, getObjectById} from "../../../service/
 import Paragraph from "antd/lib/typography/Paragraph";
 import {DropDown} from "../../../utils/Interfaces";
 import moment from "moment";
+import {GET_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../utils/common";
 
 export const PreferencePage: any = () => {
 
@@ -27,6 +28,10 @@ export const PreferencePage: any = () => {
                 });
                 setDomainType(getPreferenceByIdRes.campaignsRelated);
             }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
         getAllServerCall("domain").then(async getAllDomainsAsync => {
             let allDomainRes = await getAllDomainsAsync.json();
@@ -49,6 +54,10 @@ export const PreferencePage: any = () => {
                 setAllDomains(tempAllDomains);
                 setAllSubDomains(tempAllSubDomains);
             }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     }, []);
 
@@ -58,6 +67,10 @@ export const PreferencePage: any = () => {
             if (preferenceFormRes) {
                 message.success("Preferences has been successfully saved", 0.6);
             }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(PUT_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     };
 

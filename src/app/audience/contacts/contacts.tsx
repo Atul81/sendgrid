@@ -41,7 +41,13 @@ import {
 import './contacts.scss';
 import {DropDown} from "../../../utils/Interfaces";
 import {ContactEditPage} from "./edit/ContactEditLoadable";
-import {GET_SERVER_ERROR, textOnlyValidation, validateEmail} from "../../../utils/common";
+import {
+    GET_SERVER_ERROR,
+    POST_SERVER_ERROR,
+    PUT_SERVER_ERROR,
+    textOnlyValidation,
+    validateEmail
+} from "../../../utils/common";
 
 export const ContactsPage: any = () => {
 
@@ -68,6 +74,10 @@ export const ContactsPage: any = () => {
                 });
             }
             setAllSegments(data);
+        }).catch(reason => {
+            console.log(reason);
+            message.error('Unable to fetch segments data', 0.8).then(() => {
+            });
         });
         getAllServerCall('utils').then(async response => {
             let resBody = await response.json();
@@ -78,6 +88,10 @@ export const ContactsPage: any = () => {
                 });
             }
             setAllTags(data);
+        }).catch(reason => {
+            console.log(reason);
+            message.error('Unable to fetch tags data', 0.8).then(() => {
+            });
         });
     }, [dispatch]);
 
@@ -252,6 +266,10 @@ export const ContactsPage: any = () => {
                 setContactObj({...resBody});
                 setEditPage(true);
             }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     };
 
@@ -345,7 +363,9 @@ export const ContactsPage: any = () => {
                     }
                 }).catch(reason => {
                     console.log(reason);
-                    message.error('Unable to add contact(s), please try after sometime', 0.8);
+                    setServiceInProgress(false);
+                    message.error(POST_SERVER_ERROR, 0.8).then(() => {
+                    });
                 });
             });
             setContactId(itrId++);
@@ -405,8 +425,16 @@ export const ContactsPage: any = () => {
                                 message.success(`${editType} has been added for ${contactByIdRes.email}`);
                                 populateAllContacts();
                             }
+                        }).catch(reason => {
+                            console.log(reason);
+                            message.error(PUT_SERVER_ERROR, 0.8).then(() => {
+                            });
                         });
                     }
+                }).catch(reason => {
+                    console.log(reason);
+                    message.error(GET_SERVER_ERROR, 0.8).then(() => {
+                    });
                 });
             });
             closeAdditionalInfo();
@@ -457,10 +485,10 @@ export const ContactsPage: any = () => {
                 <div className="rightPlacement">
                     {showBtnOnSelection ?
                         <>
-                            <Button key="addTags" style={{marginRight: 8}}
+                            <Button key="addTags" style={{marginRight: 8, width: 88}} type={'dashed'}
                                     onClick={() => openAdditionInfoModal('addTags')}
                                     icon={<PlusOutlined/>}>Add Tags</Button>
-                            <Button key="addSegments" style={{marginRight: 8}}
+                            <Button key="addSegments" style={{marginRight: 8, width: 136}} type={'dashed'}
                                     onClick={() => openAdditionInfoModal('addSegments')}
                                     icon={<PlusOutlined/>}>Add To Segments</Button>
                             <Popconfirm overlayClassName="ant-popover-audience" placement="left"
@@ -478,7 +506,7 @@ export const ContactsPage: any = () => {
                         </> : null}
                     <Button className="exportBtn" onClick={exportCsv} icon={<ExportOutlined/>}>Export CSV</Button>
                     <Dropdown overlay={addContactMenu}>
-                        <Button type={'primary'}>Add Contact<DownOutlined/>
+                        <Button type={'primary'} style={{width: 104}}>Add Contact<DownOutlined/>
                         </Button>
                     </Dropdown>
                 </div>

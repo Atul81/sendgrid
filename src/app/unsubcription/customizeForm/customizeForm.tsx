@@ -7,6 +7,7 @@ import {AccordionHeaderInterface} from "../unsubcriptionInterface";
 import {editObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import {SketchPicker} from 'react-color'
 import {UploadFile} from "antd/lib/upload/interface";
+import {GET_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../utils/common";
 
 export const CustomizeFormPage = () => {
 
@@ -71,6 +72,10 @@ export const CustomizeFormPage = () => {
                     window.open("http://localhost:4200/1")
                 });
             }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(PUT_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     };
 
@@ -137,6 +142,10 @@ export const CustomizeFormPage = () => {
                 });
                 setAccordionHeader(tempItrObj);
             }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     }, [])
 

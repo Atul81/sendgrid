@@ -5,6 +5,7 @@ import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import {deleteObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import Search from "antd/es/input/Search";
+import {GET_SERVER_ERROR} from "../../../utils/common";
 
 export const DedicatedIpsPage: any = () => {
 
@@ -26,6 +27,10 @@ export const DedicatedIpsPage: any = () => {
             }
             setDedicatedIpsDS(data);
             setDedicatedIpsDSOps(data);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     };
 

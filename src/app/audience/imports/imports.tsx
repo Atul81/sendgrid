@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Space, Table, Typography} from "antd";
+import {message, Space, Table, Typography} from "antd";
 import {ImportsInterface} from "../audienceInterface";
 import {RowDetailsPage} from "./details/RowDetailsLoadable";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
-import {getTimeFromUnix} from "../../../utils/common";
+import {GET_SERVER_ERROR, getTimeFromUnix} from "../../../utils/common";
 import Search from "antd/es/input/Search";
 import {DownloadOutlined} from "@ant-design/icons";
 
@@ -22,6 +22,10 @@ export const ImportsPage: any = () => {
             });
             setImportContactDS(tempObj);
             setImportContactOps(tempObj);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     }, []);
 

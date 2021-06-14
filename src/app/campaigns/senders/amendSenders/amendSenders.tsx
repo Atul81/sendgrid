@@ -4,7 +4,7 @@ import {StepBackwardOutlined} from "@ant-design/icons";
 import {FormEditPage} from "../../../common/formEdit/formEdit";
 import {updateBreadcrumb} from "../../../../store/actions/root";
 import {useDispatch} from "react-redux";
-import {populateFormObj} from "../../../../utils/common";
+import {GET_SERVER_ERROR, populateFormObj, POST_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../../utils/common";
 import Title from "antd/es/typography/Title";
 import {addNewObject, editObjectById, getObjectById} from "../../../../service/serverCalls/mockServerRest";
 
@@ -20,6 +20,10 @@ export const AmendSendersPage: any = (props: any) => {
                 if (editRes) {
                     message.success(`Sender ${props.sendersObj.email} has been successfully updated`, 0.6);
                 }
+            }).catch(reason => {
+                console.log(reason);
+                message.error(PUT_SERVER_ERROR, 0.8).then(() => {
+                });
             });
         } else {
             addNewObject({...values.formObj, id: props.generatedId}, 'senders').then(async newSenderResAsync => {
@@ -27,6 +31,10 @@ export const AmendSendersPage: any = (props: any) => {
                 if (newSenderRes) {
                     message.success(`Sender ${values.formObj.firstName.concat(' ').concat(values.formObj.lastName)} has been successfully created`, 0.7)
                 }
+            }).catch(reason => {
+                console.log(reason);
+                message.error(POST_SERVER_ERROR, 0.8).then(() => {
+                });
             });
         }
     };
@@ -39,6 +47,10 @@ export const AmendSendersPage: any = (props: any) => {
                 if (sendersObj) {
                     populateFormObj(sendersObj, sendersForm);
                 }
+            }).catch(reason => {
+                console.log(reason);
+                message.error(GET_SERVER_ERROR, 0.8).then(() => {
+                });
             });
         }
     }, [dispatch, sendersForm, props.sendersObj]);

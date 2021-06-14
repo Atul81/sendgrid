@@ -8,6 +8,7 @@ import {addNewObject, deleteObjectById, getAllServerCall} from "../../../service
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 import {AmendAutomationPage} from "./amendAutomation/amendAutomation";
+import {GET_SERVER_ERROR, POST_SERVER_ERROR} from "../../../utils/common";
 
 export const AutomationPage: any = () => {
     const dispatch = useDispatch();
@@ -72,6 +73,10 @@ export const AutomationPage: any = () => {
             }
             setAutomationDS(tempObj);
             setAutomationDSOps(tempObj);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     };
 
@@ -115,6 +120,10 @@ export const AutomationPage: any = () => {
                     setNewAutomationModal(false);
                     populateAllAutomations();
                 }
+            }).catch(reason => {
+                console.log(reason);
+                message.error(POST_SERVER_ERROR, 0.8).then(() => {
+                });
             });
         } else {
             message.error("Automation Name required", 0.5).then(() => {

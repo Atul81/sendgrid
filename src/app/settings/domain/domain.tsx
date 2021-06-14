@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Form, Input} from "antd";
+import {Button, Form, Input, message} from "antd";
 import {CheckOutlined, StepBackwardOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import './domain.scss';
@@ -7,7 +7,7 @@ import {DnsRecordsPage} from "./dnsRecords/DnsRecordsLoadable";
 import {addNewObject} from "../../../service/serverCalls/mockServerRest";
 import {useDispatch} from "react-redux";
 import {updateActiveContent, updateBreadcrumb} from "../../../store/actions/root";
-import {urlRegexValidation} from "../../../utils/common";
+import {POST_SERVER_ERROR, urlRegexValidation} from "../../../utils/common";
 import {DomainModalPage} from "./modal/domainModal";
 
 export const DomainSettingsPage: any = () => {
@@ -38,6 +38,10 @@ export const DomainSettingsPage: any = () => {
                 setDomainModal(true);
                 setDomainObj(newDnsRecordRes);
             }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(POST_SERVER_ERROR, 0.8).then(() => {
+            });
         });
         domainForm.resetFields();
     };

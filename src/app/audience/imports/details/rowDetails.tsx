@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {Button, Table, Typography} from "antd";
+import {Button, message, Table, Typography} from "antd";
 import {ImportsDetailsInterface} from "../../audienceInterface";
 import {DownOutlined, StepBackwardOutlined} from "@ant-design/icons";
-import {exportCSVFile} from "../../../../utils/common";
+import {exportCSVFile, GET_SERVER_ERROR} from "../../../../utils/common";
 import {getAllServerCall} from "../../../../service/serverCalls/mockServerRest";
 import {useDispatch} from "react-redux";
 import {updateBreadcrumb} from "../../../../store/actions/root";
@@ -21,7 +21,11 @@ export const RowDetailsPage: any = (props: any) => {
                 setUploadDetailsDS(tempObj);
                 dispatch(updateBreadcrumb(['Audience', 'Imports', props.rowObj.fileName]))
             }
-        })
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
     }, [])
     const [uploadDetailsDS, setUploadDetailsDS] = useState<ImportsDetailsInterface[]>([]);
     const columns = [

@@ -77,10 +77,11 @@ export const validateDomainRegex = (inp: string) => {
 }
 
 export const validateEmail = (email: string) => {
-    debugger
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email.toLowerCase());
 }
 
 export const GET_SERVER_ERROR = 'Unable to fetch data, we are working on it, please try after sometime';
-export const POST_SERVER_ERROR = 'Unable to save/update request, we are working on it, please try after sometime';
+export const POST_SERVER_ERROR = 'Unable to save request, we are working on it, please try after sometime';
+export const PUT_SERVER_ERROR = 'Unable to update request, we are working on it, please try after sometime';
+export const DELETE_SERVER_ERROR = 'Unable to delete request, we are working on it, please try after sometime';

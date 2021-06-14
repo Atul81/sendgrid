@@ -6,7 +6,7 @@ import {Button, Form, Input, message, Tabs} from "antd";
 import Title from "antd/lib/typography/Title";
 import {StepBackwardOutlined} from '@ant-design/icons';
 import {FormEditPage} from "../../../common/formEdit/formEdit";
-import {populateFormObj} from "../../../../utils/common";
+import {GET_SERVER_ERROR, populateFormObj, PUT_SERVER_ERROR} from "../../../../utils/common";
 import {CustomFields} from "../../audienceInterface";
 import {addNewObject, editObjectById, getAllServerCall} from "../../../../service/serverCalls/mockServerRest";
 
@@ -28,6 +28,10 @@ export const EditContactPage: any = (props: any) => {
                 });
             }
             setCustomFieldsDS(data);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     }, [dispatch, contactForm, props.contactObj]);
 
@@ -60,6 +64,8 @@ export const EditContactPage: any = (props: any) => {
                 }
             }).catch(reason => {
                 console.log(reason);
+                message.error(PUT_SERVER_ERROR, 0.8).then(() => {
+                });
             });
         } else {
             addNewObject({

@@ -9,7 +9,8 @@ import {
     HistoryOutlined,
     LeftOutlined,
     MailOutlined,
-    PlusCircleFilled, PlusOutlined,
+    PlusCircleFilled,
+    PlusOutlined,
     RightOutlined,
     StepBackwardOutlined,
     TeamOutlined
@@ -19,7 +20,7 @@ import {editObjectById, getAllServerCall, getObjectById} from "../../../../servi
 import {DropDown} from "../../../../utils/Interfaces";
 import moment from "moment";
 import Paragraph from "antd/es/typography/Paragraph";
-import {GET_SERVER_ERROR} from "../../../../utils/common";
+import {GET_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../../utils/common";
 import {useHistory} from "react-router-dom";
 
 export const AmendCampaignsPage: any = (propsObj: any) => {
@@ -100,6 +101,10 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 });
             }
             setAllSegments(tempData);
+        }).catch(reason => {
+            console.log(reason);
+            message.error('Unable to fetch segments data', 0.8).then(() => {
+            });
         });
 
         getAllServerCall('customEvents').then(async getAllSegmentsAsync => {
@@ -115,6 +120,10 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 });
             }
             setCustomEvents(tempData);
+        }).catch(reason => {
+            console.log(reason);
+            message.error('Unable to fetch events data', 0.8).then(() => {
+            });
         });
 
         getAllServerCall('templates').then(async getAllTemplatesAsync => {
@@ -130,6 +139,10 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 });
             }
             setExistingTemplates(tempData);
+        }).catch(reason => {
+            console.log(reason);
+            message.error('Unable to fetch templates data', 0.8).then(() => {
+            });
         });
     }, []);
 
@@ -356,97 +369,116 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
     const [existingTemplates, setExistingTemplates] = useState<DropDown[]>([]);
 
     const step3TreatmentMap = {
-        1: <div key={1}>
-            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabOne', 'campaignType']}>
-                <Radio.Group disabled={!pageEditRights}>
-                    <Radio value='existingTemplate'>Use Existing template</Radio>
-                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
-                </Radio.Group>
-            </Form.Item>
-            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabOne', 'templateType']}>
-                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                        placeholder="Welcome Email Template"
-                        optionFilterProp="children"
-                        filterOption={(input, option) => filterCountryOption(input, option)}>
-                    {existingTemplates.map(itr => {
-                        return <Option key={itr.value} value={itr.label}>{itr.label}</Option>
-                    })}
-                </Select>
-            </Form.Item>
+        1: <div key={1} className='abFirstNav'>
+            <div className='existingOptions'>
+                <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabOne', 'templateType']}>
+                    <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                            placeholder="Welcome Email Template"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => filterCountryOption(input, option)}>
+                        {existingTemplates.map(itr => {
+                            return <Option key={itr.value} value={itr.label}>{itr.label}</Option>
+                        })}
+                    </Select>
+                </Form.Item>
+            </div>
+            <div className='orContent'>
+                <Paragraph>(or)</Paragraph>
+            </div>
+            <div className='createNew'>
+                <Button disabled={!pageEditRights} type={'dashed'} icon={<PlusOutlined/>}
+                        onClick={() => history.push('/templates/templates')} key={'newSeg'}>Create New
+                    Template</Button>
+            </div>
         </div>,
 
-        2: <div key={2}>
-            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabTwo', 'campaignType']}>
-                <Radio.Group disabled={!pageEditRights}>
-                    <Radio value='existingTemplate'>Use Existing template</Radio>
-                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
-                </Radio.Group>
-            </Form.Item>
-            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabTwo', 'templateType']}>
-                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                        placeholder="Welcome Email Template"
-                        optionFilterProp="children"
-                        filterOption={(input, option) => filterCountryOption(input, option)}>
-                    {existingTemplates.map(itr => {
-                        return <Option key={itr.value} value={itr.label}>{itr.label}</Option>
-                    })}
-                </Select>
-            </Form.Item>
+        2: <div key={2} className='abFirstNav'>
+            <div className='existingOptions'>
+                <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabTwo', 'templateType']}>
+                    <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                            placeholder="Welcome Email Template"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => filterCountryOption(input, option)}>
+                        {existingTemplates.map(itr => {
+                            return <Option key={itr.value} value={itr.label}>{itr.label}</Option>
+                        })}
+                    </Select>
+                </Form.Item>
+            </div>
+            <div className='orContent'>
+                <Paragraph>(or)</Paragraph>
+            </div>
+            <div className='createNew'>
+                <Button disabled={!pageEditRights} type={'dashed'} icon={<PlusOutlined/>}
+                        onClick={() => history.push('/templates/templates')} key={'newSeg'}>Create New
+                    Template</Button>
+            </div>
         </div>,
-
-        3: <div key={3}>
-            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabThree', 'campaignType']}>
-                <Radio.Group disabled={!pageEditRights}>
-                    <Radio value='existingTemplate'>Use Existing template</Radio>
-                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
-                </Radio.Group>
-            </Form.Item>
-            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabThree', 'templateType']}>
-                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                        placeholder="Welcome Email Template"
-                        optionFilterProp="children"
-                        filterOption={(input, option) => filterCountryOption(input, option)}>
-                    {existingTemplates.map(itr => {
-                        return <Option key={itr.value} value={itr.label}>{itr.label}</Option>
-                    })}
-                </Select>
-            </Form.Item>
+        3: <div key={3} className='abFirstNav'>
+            <div className='existingOptions'>
+                <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabThree', 'templateType']}>
+                    <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                            placeholder="Welcome Email Template"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => filterCountryOption(input, option)}>
+                        {existingTemplates.map(itr => {
+                            return <Option key={itr.value} value={itr.label}>{itr.label}</Option>
+                        })}
+                    </Select>
+                </Form.Item>
+            </div>
+            <div className='orContent'>
+                <Paragraph>(or)</Paragraph>
+            </div>
+            <div className='createNew'>
+                <Button disabled={!pageEditRights} type={'dashed'} icon={<PlusOutlined/>}
+                        onClick={() => history.push('/templates/templates')} key={'newSeg'}>Create New
+                    Template</Button>
+            </div>
         </div>,
-        4: <div key={4}>
-            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabFour', 'campaignType']}>
-                <Radio.Group disabled={!pageEditRights}>
-                    <Radio value='existingTemplate'>Use Existing template</Radio>
-                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
-                </Radio.Group>
-            </Form.Item>
-            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabFour', 'templateType']}>
-                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                        placeholder="Welcome Email Template"
-                        optionFilterProp="children"
-                        filterOption={(input, option) => filterCountryOption(input, option)}>
-                    {existingTemplates.map(itr => {
-                        return <Option key={itr.value} value={itr.label}>{itr.label}</Option>
-                    })}
-                </Select>
-            </Form.Item>
+        4: <div key={4} className='abFirstNav'>
+            <div className='existingOptions'>
+                <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabFour', 'templateType']}>
+                    <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                            placeholder="Welcome Email Template"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => filterCountryOption(input, option)}>
+                        {existingTemplates.map(itr => {
+                            return <Option key={itr.value} value={itr.label}>{itr.label}</Option>
+                        })}
+                    </Select>
+                </Form.Item>
+            </div>
+            <div className='orContent'>
+                <Paragraph>(or)</Paragraph>
+            </div>
+            <div className='createNew'>
+                <Button disabled={!pageEditRights} type={'dashed'} icon={<PlusOutlined/>}
+                        onClick={() => history.push('/templates/templates')} key={'newSeg'}>Create New
+                    Template</Button>
+            </div>
         </div>,
-        5: <div key={5}>
-            <Form.Item label={<strong>Campaign Type</strong>} name={['step3', 'tabFive', 'campaignType']}>
-                <Radio.Group disabled={!pageEditRights}>
-                    <Radio value='existingTemplate'>Use Existing template</Radio>
-                    <Radio.Button value='newTemplate'>Create New Template</Radio.Button>
-                </Radio.Group>
-            </Form.Item>
-            <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabFive', 'templateType']}>
-                <Select disabled={!pageEditRights} className='formItemWidth' showSearch
-                        placeholder="Welcome Email Template"
-                        optionFilterProp="children"
-                        filterOption={(input, option) => filterCountryOption(input, option)}>
-                    {existingTemplates.map(itr => {
-                        return <Option key={itr.value} value={itr.label}>{itr.label}</Option>
-                    })}
-                </Select>
-            </Form.Item>
+        5: <div key={5} className='abFirstNav'>
+            <div className='existingOptions'>
+                <Form.Item label={<strong>Select Templates</strong>} name={['step3', 'tabFive', 'templateType']}>
+                    <Select disabled={!pageEditRights} className='formItemWidth' showSearch
+                            placeholder="Welcome Email Template"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => filterCountryOption(input, option)}>
+                        {existingTemplates.map(itr => {
+                            return <Option key={itr.value} value={itr.label}>{itr.label}</Option>
+                        })}
+                    </Select>
+                </Form.Item>
+            </div>
+            <div className='orContent'>
+                <Paragraph>(or)</Paragraph>
+            </div>
+            <div className='createNew'>
+                <Button disabled={!pageEditRights} type={'dashed'} icon={<PlusOutlined/>}
+                        onClick={() => history.push('/templates/templates')} key={'newSeg'}>Create New
+                    Template</Button>
+            </div>
         </div>
     }
     const [treatmentCount, setTreatmentCount] = useState(1);
@@ -1007,6 +1039,10 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
             if (editCampaignRes) {
                 message.success("Campaign Data successfully saved", 0.6);
             }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(PUT_SERVER_ERROR, 0.8).then(() => {
+            });
         });
         if (currentFormValues.current.step1 && currentFormValues.current.step1.name !== propsObj.amendObj.name) {
             editObjectById({
@@ -1018,6 +1054,10 @@ export const AmendCampaignsPage: any = (propsObj: any) => {
                 if (editCampaignRes) {
                     console.log('Campaign name has been updated');
                 }
+            }).catch(reason => {
+                console.log(reason);
+                message.error(PUT_SERVER_ERROR, 0.8).then(() => {
+                });
             });
         }
     };

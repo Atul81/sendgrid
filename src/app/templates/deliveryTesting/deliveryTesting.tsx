@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Button, Form, Input, message, Modal, Select, Space, Table, Tag, Typography} from "antd";
 import {useDispatch} from "react-redux";
 import {addNewObject, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
-import {getTimeFromUnix} from "../../../utils/common";
+import {GET_SERVER_ERROR, getTimeFromUnix, POST_SERVER_ERROR} from "../../../utils/common";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import Search from "antd/es/input/Search";
 import {DeliveryTestingInterface} from "../templatesInterface";
@@ -24,6 +24,10 @@ export const DeliveryTestingPage = () => {
                 tempObj.push({value: itr.id, label: itr.title, children: null});
             });
             setAllTemplates(tempObj);
+        }).catch(reason => {
+            console.log(reason);
+            message.error('Unable to fetch templates data', 0.8).then(() => {
+            });
         });
     }, []);
 
@@ -36,6 +40,10 @@ export const DeliveryTestingPage = () => {
             });
             setDeliveryTesting(tempObj);
             setDeliveryTestingOps(tempObj);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     }
     const [newTestModal, setNewTestModal] = useState(false);
@@ -129,6 +137,10 @@ export const DeliveryTestingPage = () => {
                 populateTableData();
                 closeNewTestModal();
             }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(POST_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     };
 

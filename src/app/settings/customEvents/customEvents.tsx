@@ -6,7 +6,7 @@ import Title from "antd/lib/typography/Title";
 import {editObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import Search from "antd/es/input/Search";
 import TextArea from "antd/lib/input/TextArea";
-import {validateEmail} from "../../../utils/common";
+import {GET_SERVER_ERROR, PUT_SERVER_ERROR, validateEmail} from "../../../utils/common";
 
 export const CustomEventsPage: any = () => {
 
@@ -41,6 +41,10 @@ export const CustomEventsPage: any = () => {
             }
             populateTableData();
             openEditEventModal(false);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(PUT_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     }
 
@@ -102,6 +106,10 @@ export const CustomEventsPage: any = () => {
             }
             setCustomEventsDS(data);
             setCustomEventsDSOps(data);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
         });
     };
 
