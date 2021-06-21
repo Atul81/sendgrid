@@ -84,16 +84,16 @@
     border-radius: 0;
     border-color: #000c17;
 
+    .ant-typography {
+      font-size: 10px;
+    }
+
     .ant-card-small > .ant-card-body {
       padding: 0;
 
       .ant-card-meta-detail > div:not(:last-child) {
         margin-top: 4px;
         margin-bottom: 0;
-
-        .ant-typography {
-          font-size: 10px;
-        }
       }
 
       .ant-divider-horizontal {

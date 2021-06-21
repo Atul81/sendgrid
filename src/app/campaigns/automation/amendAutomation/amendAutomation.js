@@ -44,11 +44,11 @@ export const AmendAutomationPage = (props) => {
                                             <Meta avatar={<Avatar
                                                 src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
                                                   title={itr.data.label.props.children.props.title}
-                                                  description={<Typography className={'columnFlex'}>
+                                                  description={<div className={'columnFlex'}>
                                                       <strong style={{fontSize: 10}}>Evaluate every: 3 hours</strong>
                                                       <Divider/>
                                                       <Paragraph>Segment: all</Paragraph>
-                                                  </Typography>}/>
+                                                  </div>}/>
                                         </Card>
                                 }
                             });
