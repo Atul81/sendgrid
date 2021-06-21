@@ -1,4 +1,4 @@
-import {Button, Card, Input, message, Modal, Select, Typography} from "antd";
+import {Avatar, Button, Card, Divider, Input, message, Modal, Select, Typography} from "antd";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import ReactFlow, {
     addEdge,
@@ -9,16 +9,16 @@ import ReactFlow, {
     removeElements
 } from 'react-flow-renderer';
 import './amendAutomation.scss';
-import {StepBackwardOutlined} from "@ant-design/icons";
+import {CheckOutlined, StepBackwardOutlined} from "@ant-design/icons";
 import {addNewObject, editObjectById, getObjectById} from "../../../../service/serverCalls/mockServerRest";
 import {updateBreadcrumb} from "../../../../store/actions/root";
 import {useDispatch, useSelector} from "react-redux";
 import {NodeSideBar} from "./nodeSideBar";
 import customNode from "./customNode";
 import customNodeTwo from "./customNodeTwo";
-import Radio from "antd/es/radio/radio";
 import Paragraph from "antd/es/typography/Paragraph";
 import {GET_SERVER_ERROR, POST_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../../utils/common";
+import {JourneyEntryModal} from "./journeyEntry";
 
 export const AmendAutomationPage = (props) => {
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -26,8 +26,9 @@ export const AmendAutomationPage = (props) => {
     const dispatch = useDispatch();
     const nodeTypeRedux = useSelector((state) => state.root.nodeType);
     const openType = (props.amendObj && (props.amendObj.viewType === 'edit' || props.amendObj.viewType === 'create'));
+
     useEffect(() => {
-        dispatch(updateBreadcrumb(['Campaigns', 'Automation', 'amend-automation']));
+        dispatch(updateBreadcrumb(['Campaigns', 'Automation', `Modify Automation: ${props.amendObj.name}`]));
         if (props.amendObj.viewType !== 'create' && props.amendObj.key) {
             getObjectById(props.amendObj.key, 'workFlow').then(async response => {
                 let elementsJson = await response.json();
@@ -39,8 +40,15 @@ export const AmendAutomationPage = (props) => {
                             tempObj.push({
                                 ...itr, data: {
                                     label:
-                                        <Card size={"small"} title={itr.data.label.props.title} bordered={false}>
-                                            Card content
+                                        <Card size={"small"} bordered={false}>
+                                            <Meta avatar={<Avatar
+                                                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
+                                                  title={itr.data.label.props.children.props.title}
+                                                  description={<Typography className={'columnFlex'}>
+                                                      <strong style={{fontSize: 10}}>Evaluate every: 3 hours</strong>
+                                                      <Divider/>
+                                                      <Paragraph>Segment: all</Paragraph>
+                                                  </Typography>}/>
                                         </Card>
                                 }
                             });
@@ -96,7 +104,6 @@ export const AmendAutomationPage = (props) => {
         if (n.type === 'default') {
             return '#1a192b';
         }
-
         return '#eee';
     };
 
@@ -133,6 +140,8 @@ export const AmendAutomationPage = (props) => {
         return Math.floor(Math.random() * (400 - 40) + 40)
     }
 
+    const {Meta} = Card;
+
     const createNewNode = (event) => {
         if (nodeTitle.length <= 0) {
             message.error("Node Title Required", 0.5).then(() => {
@@ -149,8 +158,11 @@ export const AmendAutomationPage = (props) => {
                 type: nodeType,
                 data: {
                     label:
-                        <Card size={"small"} title={nodeTitle} bordered={false}>
-                            Card content
+                        <Card style={{width: 300, marginTop: 16}} title={nodeTitle} bordered={false}>
+                            <Meta avatar={<Avatar
+                                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
+                                  title={nodeTitle}
+                            />
                         </Card>
                 }
             };
@@ -234,11 +246,6 @@ export const AmendAutomationPage = (props) => {
         });
     };
 
-    const radioStyle = {
-        display: 'block',
-        height: '30px',
-        lineHeight: '30px',
-    };
 
     const onNodeDragStop = (event, node) => {
         let oldElements = [...elements];
@@ -288,10 +295,16 @@ export const AmendAutomationPage = (props) => {
                 type: nodeTypeRedux,
                 data: {
                     label:
-                        <Card size={"small"} title={nodeTitle} bordered={false}>
-                            Card content
-                        </Card>,
-                    title: nodeTitle
+                        <Card size={"small"} bordered={false}>
+                            <Meta avatar={<Avatar
+                                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
+                                  title={nodeTitle}
+                                  description={<Typography className={'columnFlex'}>
+                                      <strong style={{fontSize: 10}}>Evaluate every: 3 hours</strong>
+                                      <Divider/>
+                                      <Paragraph>Segment: all</Paragraph>
+                                  </Typography>}/>
+                        </Card>
                 }
             };
             setNewDraggedNode(false);
@@ -315,76 +328,20 @@ export const AmendAutomationPage = (props) => {
     };
     return (
         <div className='amendAutomation pageLayout'>
-            {openType ? (
-                    <div style={{paddingBottom: 16}} className='firstNav'>
-                        {!nodeDrawer ?
-                            <div className='leftPlacement' style={{width: '39%'}}>
-                                <div>
-                                    <Button type={"primary"} onClick={() => setNodeDrawer(true)}>Add Node</Button>
-                                </div>
-                                <div>
-                                    <Button className='leftMargin' icon={<StepBackwardOutlined/>}
-                                            onClick={props.routeToOverview}>Cancel</Button>
-                                    <Button className='greenLeftMargin' type={"primary"}
-                                            onClick={saveJson}>Save</Button>
-                                </div>
-                            </div> :
-                            <div className='flexWrap'>
-                                <div className='flexSpaceBw'>
-                                    <Input placeholder="New Node Name"
-                                           onChange={(inpEvent) => setNodeTitle(inpEvent.target.value)}/>
-                                    <Select defaultValue="default" style={{width: 120, paddingLeft: 16}}
-                                            onChange={onTypeChange}>
-                                        <Option value="input">Input</Option>
-                                        <Option value="default">Default</Option>
-                                        <Option value="output">Output</Option>
-                                    </Select>
-                                </div>
-                                <div className='leftMargin'>
-                                    <Button type={"primary"} onClick={(event) => createNewNode(event)}>Add</Button>
-                                    <Button className='leftMargin' type={"default"}
-                                            onClick={() => setNodeDrawer(false)}>Return</Button>
-                                </div>
-                            </div>
-                        }
-                        <div className='rightPlacement'>
-                            <Text type="warning">Click once on a node to edit it. Double click a node and press "Delete" key
-                                on your keyboard to delete it.</Text>
-                        </div>
-                    </div>)
-                : <div className={'reverseFlex'}>
+            <div className={'firstNav'}>
+                <Text type="warning">Click once on a node to edit it. Double click a node and press "Delete" key
+                    on your keyboard to delete it.</Text>
+                <div className={'reverseFlex'}>
                     <Button className='leftMargin' icon={<StepBackwardOutlined/>}
                             onClick={props.routeToOverview}>Cancel</Button>
+                    {openType ? <Button className='leftMargin' type={'primary'} icon={<CheckOutlined/>}
+                                        onClick={saveJson}>Save Json</Button> : null}
                 </div>
-            }
+            </div>
             <Modal title="Label Edge" centered visible={isEdgeModalVisible} onOk={updateEdgeName} destroyOnClose={true}
                    onCancel={() => setIsEdgeModalVisible(false)} width={300}>
                 <Input placeholder="New Edge Title"
                        onChange={(inpEvent) => setEdgeTitle(inpEvent.target.value)}/>
-            </Modal>
-            <Modal title={nodeTitle} visible={isModalVisible} onCancel={handleCancel} destroyOnClose={true} footer={
-                <>
-                    <Button key="back" onClick={handleCancel}>
-                        Cancel
-                    </Button>
-                    <Button key="submit" type="primary" onClick={handleOk}>
-                        Save
-                    </Button>
-                </>}>
-                <div className='flexCol'>
-                    <div className={'flexEqualSpacing'} style={{justifyContent: "start"}}>
-                        <Paragraph type={"warning"}>Edit Node name: </Paragraph>
-                        <div style={{marginLeft: 16}}>
-                            <Input defaultValue={nodeTitle}
-                                   onChange={(inpEvent) => setEditNodeTitle(inpEvent.target.value)}/>
-                        </div>
-                    </div>
-                    <Radio.Group onChange={() => radioValueChange}>
-                        <Radio style={radioStyle} value={1}>Add participants when they perform an activity</Radio>
-                        <Radio style={radioStyle} value={2}>Add participants from a segment</Radio>
-                        <br/>
-                    </Radio.Group>
-                </div>
             </Modal>
             <Modal title="Enter Node Title" centered visible={newDraggedNode}
                    onOk={eventAfterDrag} destroyOnClose={true}
@@ -392,6 +349,7 @@ export const AmendAutomationPage = (props) => {
                 <Input placeholder="New Automation Name"
                        onChange={(inpEvent) => setNodeTitle(inpEvent.target.value)}/>
             </Modal>
+            {isModalVisible ? <JourneyEntryModal openModal={isModalVisible} closeJourneyModal={handleCancel}/> : null}
             <div className={openType ? 'gridDisplay editMode' : 'gridDisplay'}>
                 <ReactFlowProvider>
                     {openType ? <NodeSideBar/> : null}

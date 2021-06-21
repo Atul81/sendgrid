@@ -77,4 +77,75 @@
       height: 100%;
     }
   }
+
+  .react-flow__node-default, .react-flow__node-input, .react-flow__node-output {
+    padding: 0;
+    width: 180px;
+    border-radius: 0;
+    border-color: #000c17;
+
+    .ant-card-small > .ant-card-body {
+      padding: 0;
+
+      .ant-card-meta-detail > div:not(:last-child) {
+        margin-top: 4px;
+        margin-bottom: 0;
+
+        .ant-typography {
+          font-size: 10px;
+        }
+      }
+
+      .ant-divider-horizontal {
+        margin: 0 -4px;
+      }
+
+      .ant-card-meta {
+        margin: -2px 0;
+      }
+
+      .ant-card-head {
+        min-height: 28px;
+        height: 28px;
+        background: #f0f2f5;
+
+        .ant-card-head-title {
+          min-height: 28px;
+          height: 28px;
+          padding: 4px 0;
+        }
+      }
+
+      div.ant-typography, .ant-typography p {
+        margin-bottom: 4px;
+      }
+    }
+  }
+}
+
+.journeyModal {
+
+  .ant-modal-content {
+    background: white;
+    width: 50rem;
+    max-height: calc(100vh - 150px);
+    box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.25);
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .ant-form-item {
+    margin-bottom: 8px;
+  }
+
+  .closeIcon {
+    .anticon svg {
+      margin-top: 20px;
+      margin-bottom: 0;
+    }
+  }
+
+  .formListHeader {
+    margin-bottom: 8px;
+  }
 }

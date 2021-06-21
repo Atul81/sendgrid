@@ -15,6 +15,9 @@ export const NodeSideBar = () => {
     return (
         <aside className='sidebar'>
             <div className="description">You can drag these nodes to the pane on the right.</div>
+            <div className="nodeBox output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
+                Add Activity
+            </div>
             <div className="nodeBox input" onDragStart={(event) => onDragStart(event, 'input')} draggable>
                 Input Node
             </div>
@@ -30,6 +33,7 @@ export const NodeSideBar = () => {
             <div className="nodeBox output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
                 Output Node
             </div>
+
         </aside>
     );
 };

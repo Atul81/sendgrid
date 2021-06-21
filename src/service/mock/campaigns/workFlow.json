@@ -533,5 +533,99 @@
         "id": "reactflow__edge-10null-12bT"
       }
     ]
+  },
+  {
+    "data": [
+      {
+        "id": "1",
+        "type": "input",
+        "position": {
+          "x": -70.3139406232911,
+          "y": -434.7686876478748
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "bordered": false,
+              "children": {
+                "key": null,
+                "ref": null,
+                "props": {
+                  "avatar": {
+                    "type": {
+                      "defaultProps": {
+                        "shape": "circle",
+                        "size": "default"
+                      }
+                    },
+                    "key": null,
+                    "ref": null,
+                    "props": {
+                      "src": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
+                      "shape": "circle",
+                      "size": "default"
+                    },
+                    "_owner": null,
+                    "_store": {}
+                  },
+                  "title": "Journey entry",
+                  "description": {
+                    "type": {
+                      "Link": {}
+                    },
+                    "key": null,
+                    "ref": null,
+                    "props": {
+                      "className": "columnFlex",
+                      "children": [
+                        {
+                          "type": "strong",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 10
+                            },
+                            "children": "Evaluate every: 3 hours"
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        },
+                        {
+                          "key": null,
+                          "ref": null,
+                          "props": {},
+                          "_owner": null,
+                          "_store": {}
+                        },
+                        {
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "children": "Segment: all"
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        }
+                      ]
+                    },
+                    "_owner": null,
+                    "_store": {}
+                  }
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      }
+    ],
+    "id": 3
   }
 ]
