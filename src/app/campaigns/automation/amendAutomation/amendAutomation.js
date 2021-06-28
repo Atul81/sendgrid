@@ -16,6 +16,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {NodeSideBar} from "./nodeSideBar";
 import customNode from "./customNode";
 import customNodeTwo from "./customNodeTwo";
+import plusNode from "./plusNode";
 import Paragraph from "antd/es/typography/Paragraph";
 import {GET_SERVER_ERROR, POST_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../../utils/common";
 import {JourneyEntryModal} from "./journeyEntry";
@@ -324,7 +325,8 @@ export const AmendAutomationPage = (props) => {
 
     const nodeTypes = {
         customNode: customNode,
-        customNodeTwo: customNodeTwo
+        customNodeTwo: customNodeTwo,
+        plusNode: plusNode
     };
     return (
         <div className='amendAutomation pageLayout'>
