@@ -537,7 +537,7 @@
   {
     "data": [
       {
-        "id": "1",
+        "id": "1-journeyEntry",
         "type": "input",
         "position": {
           "x": -287.3139406232911,
@@ -624,7 +624,7 @@
         }
       },
       {
-        "id": "2",
+        "id": "2-addActivity",
         "type": "plusNode",
         "position": {
           "x": -204.1655031232911,
@@ -711,9 +711,9 @@
         }
       },
       {
-        "source": "1",
+        "source": "1-journeyEntry",
         "sourceHandle": null,
-        "target": "2",
+        "target": "2-addActivity",
         "targetHandle": "actToJourney",
         "id": "reactflow__edge-1null-2actToJourney"
       }

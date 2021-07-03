@@ -20,6 +20,7 @@ import plusNode from "./plusNode";
 import Paragraph from "antd/es/typography/Paragraph";
 import {GET_SERVER_ERROR, POST_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../../utils/common";
 import {JourneyEntryModal} from "./journeyEntry";
+import {ActivityModal} from "./activityModal";
 
 export const AmendAutomationPage = (props) => {
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -88,7 +89,8 @@ export const AmendAutomationPage = (props) => {
     const [editNodeTitle, setEditNodeTitle] = useState("");
     const [edgeTitle, setEdgeTitle] = useState("");
     const [elementSelected, setElementSelected] = useState({});
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isJourneyModal, setJourneyModal] = useState(false);
+    const [isActivityModal, setActivityModal] = useState(false);
     const [isEdgeModalVisible, setIsEdgeModalVisible] = useState(false);
     const [nodeType, setNodeType] = useState("default");
 
@@ -183,8 +185,16 @@ export const AmendAutomationPage = (props) => {
 
     const onElementClick = (event, element) => {
         if (element.data && element.data.label) {
+            let elementType = element.id.split("-")[1];
+            switch (elementType) {
+                case 'journeyEntry':
+                    setJourneyModal(true);
+                    break;
+                case 'addActivity':
+                    setActivityModal(true);
+                    break;
+            }
             setNodeTitle(element.data.label.props ? element.data.label.props.title : element.data.label);
-            setIsModalVisible(true);
         } else {
             setNodeTitle("");
             setIsEdgeModalVisible(true);
@@ -205,11 +215,13 @@ export const AmendAutomationPage = (props) => {
         })
         setElements(itemElements);
         saveJson();
-        setIsModalVisible(false);
+        setJourneyModal(false);
+        setActivityModal(false);
     };
 
     const handleCancel = () => {
-        setIsModalVisible(false);
+        setJourneyModal(false);
+        setActivityModal(false);
     };
 
     const radioValueChange = (event) => {
@@ -351,10 +363,11 @@ export const AmendAutomationPage = (props) => {
                 <Input placeholder="New Automation Name"
                        onChange={(inpEvent) => setNodeTitle(inpEvent.target.value)}/>
             </Modal>
-            {isModalVisible ? <JourneyEntryModal openModal={isModalVisible} closeJourneyModal={handleCancel}/> : null}
-            <div className={openType ? 'gridDisplay editMode' : 'gridDisplay'}>
+            {isJourneyModal ? <JourneyEntryModal openModal={isJourneyModal} closeModal={handleCancel}/> : null}
+            {isActivityModal ?
+                <ActivityModal activitySelection={true} openModal={isActivityModal} closeModal={handleCancel}/> : null}
+            <div className='gridDisplay'>
                 <ReactFlowProvider>
-                    {openType ? <NodeSideBar/> : null}
                     <div className="reactflow-wrapper" ref={reactFlowWrapper}>
                         <ReactFlow onElementClick={openType ? onElementClick : undefined} elements={elements}
                                    nodeTypes={nodeTypes} nodesDraggable={openType} nodesConnectable={openType}

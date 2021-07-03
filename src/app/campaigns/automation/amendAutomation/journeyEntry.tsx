@@ -21,14 +21,14 @@ export const JourneyEntryModal = (props: any) => {
         return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
     };
     const handleCancel = () => {
-        props.closeJourneyModal();
+        props.closeModal();
     };
 
     const saveJourneyData = (values: any) => {
         console.log(values)
     }
 
-    return <Modal wrapClassName='journeyModal' width={750}
+    return <Modal wrapClassName='journeyModal' width={750} centered
                   title={<Tooltip title={'Info'}><span>Journey Entry</span></Tooltip>}
                   visible={props.openModal}
                   onCancel={handleCancel} destroyOnClose={true} footer={null}>

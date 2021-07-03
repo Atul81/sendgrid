@@ -63,12 +63,6 @@
     }
   }
 
-  .editMode {
-    display: grid;
-    grid-template-columns: auto 80%;
-    grid-row-gap: 16px;
-  }
-
   .gridDisplay {
     height: calc(100vh - 212px);
 
@@ -124,7 +118,6 @@
 }
 
 .journeyModal {
-
   .ant-modal-content {
     background: white;
     width: 50rem;
@@ -147,6 +140,26 @@
 
   .formListHeader {
     margin-bottom: 8px;
+  }
+}
+
+.activitySelection {
+
+}
+.antSelect {
+  .selectionBox {
+    display: flex;
+    span{
+      margin-top: 4px;
+    }
+    .text {
+      margin-left: 8px;
+      display: flex;
+      flex-direction: column;
+      .ant-typography{
+        margin: 0;
+      }
+    }
   }
 }
 
