@@ -13,7 +13,11 @@ export const SendEmail = (props: any) => {
     const {Option} = Select;
 
     const saveSendEmailForm = (values: any) => {
-        props.createCard(values.sendEmailObj, 'sendEmail', 'Send an email');
+        props.createCard(
+            <div style={{display: "flex", justifyContent:'center', flexDirection:'column'}}>
+                <Button>Configure Message</Button>
+                <Paragraph>Sender Address: {values.sendEmailObj.sender}</Paragraph>
+            </div>, 'sendEmail', 'Send an email');
     }
 
     const [allSenders, setAllSenders] = useState<DropDown[]>([]);
@@ -59,12 +63,12 @@ export const SendEmail = (props: any) => {
         </Form.Item>
         <div className='inlineFlexContent'>
             <Form.Item>
-                <Button style={{marginRight: 8}} key="save" onClick={sendTextMsg}>
+                <Button style={{marginRight: 8}} key="send" onClick={sendTextMsg}>
                     Send a text message
                 </Button>
             </Form.Item>
             <Form.Item>
-                <Button style={{marginRight: 8}} key="save" onClick={previewMsg}>
+                <Button style={{marginRight: 8}} key="preview" onClick={previewMsg}>
                     Preview Message
                 </Button>
             </Form.Item>

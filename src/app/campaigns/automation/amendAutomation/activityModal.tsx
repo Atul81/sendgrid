@@ -5,6 +5,7 @@ import './amendAutomation.scss';
 import Paragraph from "antd/es/typography/Paragraph";
 import {SelectValue} from "antd/es/select";
 import {SendEmail} from "./sendEmail";
+import {Wait} from "./wait";
 
 export const ActivityModal = (props: any) => {
 
@@ -36,6 +37,8 @@ export const ActivityModal = (props: any) => {
             case 'sendEmail' : {
                 return <SendEmail createCard={getCardContent}/>
             }
+            case 'wait':
+                return <Wait createCard={getCardContent}/>
         }
     };
 

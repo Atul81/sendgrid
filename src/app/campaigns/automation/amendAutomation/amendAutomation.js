@@ -41,15 +41,12 @@ export const AmendAutomationPage = (props) => {
                             tempObj.push({
                                 ...itr, data: {
                                     label:
-                                        <Card size={"small"} bordered={false}>
-                                            <Meta avatar={<Avatar
-                                                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
-                                                  title={itr.data.label.props.children.props.title}
-                                                  description={<div className={'columnFlex'}>
-                                                      <strong style={{fontSize: 10}}>Evaluate every: 3 hours</strong>
-                                                      <Divider/>
-                                                      <Paragraph>Segment: all</Paragraph>
-                                                  </div>}/>
+                                        <Card title={<div className='titleContent'><img style={{width: 20}} src={`https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png`} alt="icon"/><span>Journey Entry</span></div>}>
+                                            <Typography className={'columnFlex'}>
+                                                <strong style={{fontSize: 10}}>Evaluate every: 3 hours</strong>
+                                                <Divider/>
+                                                <Paragraph>Segment: all</Paragraph>
+                                            </Typography>
                                         </Card>
                                 }
                             });
@@ -144,37 +141,6 @@ export const AmendAutomationPage = (props) => {
 
     const {Meta} = Card;
 
-    const createNewNode = (event) => {
-        if (nodeTitle.length <= 0) {
-            message.error("Node Title Required", 0.5).then(() => {
-            });
-        } else {
-            event.preventDefault();
-            const position = reactFlowInstance.project({
-                x: returnCoordinates(),
-                y: returnCoordinates()
-            });
-            const newNode = {
-                id: getId(),
-                position,
-                type: nodeType,
-                data: {
-                    label:
-                        <Card style={{width: 300, marginTop: 16}} title={nodeTitle} bordered={false}>
-                            <Meta avatar={<Avatar
-                                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
-                                  title={nodeTitle}
-                            />
-                        </Card>
-                }
-            };
-            setElements((es) => es.concat(newNode));
-            setNodeDrawer(false);
-            setNodeTitle("");
-        }
-        setNodeType("default");
-    };
-
     const getId = () => {
         let newNodeId = String(parseInt(id, 10) + 1);
         setId(newNodeId);
@@ -223,10 +189,6 @@ export const AmendAutomationPage = (props) => {
         setActivityModal(false);
     };
 
-    const radioValueChange = (event) => {
-        console.log('radio checked', event.target.value);
-    };
-
     const updateEdgeName = () => {
         let itemElements = [...elements].map(elementItr => {
             if (elementItr.id === elementSelected.id) {
@@ -236,10 +198,6 @@ export const AmendAutomationPage = (props) => {
         })
         setElements(itemElements);
         setIsEdgeModalVisible(false);
-    };
-
-    const onTypeChange = (value) => {
-        setNodeType(value);
     };
 
     const saveJson = () => {
@@ -352,9 +310,9 @@ export const AmendAutomationPage = (props) => {
             type: 'default',
             data: {
                 label:
-                    <Card title={<div><img src={`/assets/images/logoCollapsed.svg`} alt="icon"/><span>Inner Card title</span></div>}  extra={<CloseOutlined/>}>
-                        Inner Card content
-                    </Card>,
+                    <Card title={<div className='titleContent'><img style={{width: 20}} src={`/assets/images/logoCollapsed.svg`} alt="icon"/><span>{nodeTitle}</span></div>}  extra={<CloseOutlined/>}>
+                        {nodeContent}
+                    </Card>
             }
         };
         setElements((es) => es.concat(newNode));
