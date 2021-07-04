@@ -9,11 +9,10 @@ import ReactFlow, {
     removeElements
 } from 'react-flow-renderer';
 import './amendAutomation.scss';
-import {CheckOutlined, StepBackwardOutlined} from "@ant-design/icons";
+import {CheckOutlined, CloseCircleOutlined, CloseOutlined, StepBackwardOutlined} from "@ant-design/icons";
 import {addNewObject, editObjectById, getObjectById} from "../../../../service/serverCalls/mockServerRest";
 import {updateBreadcrumb} from "../../../../store/actions/root";
 import {useDispatch, useSelector} from "react-redux";
-import {NodeSideBar} from "./nodeSideBar";
 import customNode from "./customNode";
 import customNodeTwo from "./customNodeTwo";
 import plusNode from "./plusNode";
@@ -340,6 +339,29 @@ export const AmendAutomationPage = (props) => {
         customNodeTwo: customNodeTwo,
         plusNode: plusNode
     };
+
+    const createNodeFromActivity = (nodeContent, nodeType, nodeTitle) => {
+        console.log(nodeContent, '====>', nodeType);
+        const position = reactFlowInstance.project({
+            x: returnCoordinates(),
+            y: returnCoordinates()
+        });
+        const newNode = {
+            id: getId(),
+            position,
+            type: 'default',
+            data: {
+                label:
+                    <Card title={<div><img src={`/assets/images/logoCollapsed.svg`} alt="icon"/><span>Inner Card title</span></div>}  extra={<CloseOutlined/>}>
+                        Inner Card content
+                    </Card>,
+            }
+        };
+        setElements((es) => es.concat(newNode));
+        setNodeDrawer(false);
+        setNodeTitle("");
+    };
+
     return (
         <div className='amendAutomation pageLayout'>
             <div className={'firstNav'}>
@@ -365,7 +387,8 @@ export const AmendAutomationPage = (props) => {
             </Modal>
             {isJourneyModal ? <JourneyEntryModal openModal={isJourneyModal} closeModal={handleCancel}/> : null}
             {isActivityModal ?
-                <ActivityModal activitySelection={true} openModal={isActivityModal} closeModal={handleCancel}/> : null}
+                <ActivityModal activitySelection={true} createNode={createNodeFromActivity} openModal={isActivityModal}
+                               closeModal={handleCancel}/> : null}
             <div className='gridDisplay'>
                 <ReactFlowProvider>
                     <div className="reactflow-wrapper" ref={reactFlowWrapper}>
