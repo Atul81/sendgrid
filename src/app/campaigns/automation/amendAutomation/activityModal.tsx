@@ -1,11 +1,13 @@
 import React, {useState} from "react";
-import {Button, Modal, Select} from "antd";
+import {Button, message, Modal, Select} from "antd";
 import {MailFilled} from "@ant-design/icons";
 import './amendAutomation.scss';
 import Paragraph from "antd/es/typography/Paragraph";
 import {SelectValue} from "antd/es/select";
 import {SendEmail} from "./sendEmail";
 import {Wait} from "./wait";
+import {YesNoSplit} from "./yesNoSplit";
+import {MultiVariateSplit} from "./multiVariateSplit";
 
 export const ActivityModal = (props: any) => {
 
@@ -34,11 +36,16 @@ export const ActivityModal = (props: any) => {
 
     const switchActivityModal = () => {
         switch (selectedValue) {
-            case 'sendEmail' : {
-                return <SendEmail createCard={getCardContent}/>
-            }
+            case 'sendEmail' :
+                return <SendEmail createCard={getCardContent}/>;
             case 'wait':
-                return <Wait createCard={getCardContent}/>
+                return <Wait createCard={getCardContent}/>;
+            case 'yesNoSplit':
+                return <YesNoSplit createCard={getCardContent}/>;
+            case 'multiVariateSplit':
+                return <MultiVariateSplit createCard={getCardContent}/>;
+            default:
+                message.error('No Implementation for selected type', 0.7).then((onF) => console.log(onF));
         }
     };
 

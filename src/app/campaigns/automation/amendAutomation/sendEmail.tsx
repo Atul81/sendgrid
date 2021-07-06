@@ -76,7 +76,7 @@ export const SendEmail = (props: any) => {
         <Form.Item
             label={<div><strong>Sender email address </strong><span className={'info'}>Info</span></div>}>
             <Form.Item name={['sendEmailObj', 'sender']} noStyle>
-                <Select showSearch placeholder="Select Sender's Emal" suffixIcon={<SearchOutlined/>}
+                <Select showSearch placeholder="Select Sender's Email" suffixIcon={<SearchOutlined/>}
                         optionFilterProp="children" allowClear={true}
                         filterOption={(input, option) => filterCountryOption(input, option)}>
                     {allSenders.map(value => {
