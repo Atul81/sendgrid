@@ -88,7 +88,6 @@ export const AmendAutomationPage = (props) => {
     const [isJourneyModal, setJourneyModal] = useState(false);
     const [isActivityModal, setActivityModal] = useState(false);
     const [isEdgeModalVisible, setIsEdgeModalVisible] = useState(false);
-    const [nodeType, setNodeType] = useState("default");
 
     const nodeStrokeColor = (n) => {
         if (n.style?.background) {

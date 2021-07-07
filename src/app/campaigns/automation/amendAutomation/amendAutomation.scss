@@ -227,6 +227,24 @@
       @extend .removeBtnRad;
     }
   }
+
+  .multiVariateSplit {
+    .multiCloseIcon {
+      .anticon svg {
+        margin-bottom: 22px;
+      }
+    }
+
+    .ant-divider-horizontal {
+      margin: 0 0 4px;
+    }
+
+    .conBtn {
+      width: 45%;
+      margin-bottom: 8px;
+      margin-left: -100px;
+    }
+  }
 }
 
 .antSelect {
