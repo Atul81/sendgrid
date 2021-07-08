@@ -84,8 +84,9 @@ export const TemplatesPage: any = () => {
                 <div className="cardDiv">
                     {templatesDS.map(value => {
                         return (
-                            <Card key={value.id} style={{marginTop: 16}} cover={<img alt="example"
-                                                                                     src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"/>}>
+                            <Card key={value.id} style={{marginTop: 16}}
+                                  cover={<img alt="example"
+                                              src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"/>}>
                                 <Skeleton loading={false} avatar active>
                                     <Meta title={
                                         <div className={'flexEqualSpacing'}>

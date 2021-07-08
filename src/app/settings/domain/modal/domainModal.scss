@@ -12,15 +12,23 @@
     .ant-typography {
       margin-top: 0.5em;
     }
+
     .ant-typography + h5.ant-typography {
       margin-top: 0;
     }
+
     .ant-alert {
       .anticon svg {
         margin-bottom: 0;
       }
+
       font-size: 18px;
     }
+  }
+
+  .copyText {
+    color: red;
+    cursor: pointer;
   }
 
 }

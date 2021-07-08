@@ -3,10 +3,9 @@ import {Alert, Button, Descriptions, message, Modal, Table} from "antd";
 import './domainModal.scss';
 import Title from "antd/es/typography/Title";
 import {DomainModal} from "../../settingsInterface";
-import Paragraph from "antd/es/typography/Paragraph";
 import {getAllServerCall} from "../../../../service/serverCalls/mockServerRest";
-import {DownloadOutlined, DownOutlined} from "@ant-design/icons";
-import {exportCSVFile, GET_SERVER_ERROR} from "../../../../utils/common";
+import {CopyOutlined, DownloadOutlined} from "@ant-design/icons";
+import {exportCSVFile, generateCopiedMessage, GET_SERVER_ERROR} from "../../../../utils/common";
 
 export const DomainModalPage = (props: any) => {
     useEffect(() => {
@@ -14,13 +13,13 @@ export const DomainModalPage = (props: any) => {
             let domainDetailsRes = await getDomainDetailsAsync.json();
             if (domainDetailsRes && domainDetailsRes.domainSettings) {
                 let domainData = domainDetailsRes.domainSettings;
-                setVerificationRecordDS([{
+                let tempObj: DomainModal[] = [];
+                tempObj.push({
                     ...domainData.verificationRecord,
                     key: props.domainObj.key,
                     name: props.domainObj.domain
-                }]);
+                });
                 if (domainData.records) {
-                    let tempObj: DomainModal[] = [];
                     domainData.records.forEach((record: any) => {
                         tempObj.push({
                             ...record,
@@ -28,7 +27,7 @@ export const DomainModalPage = (props: any) => {
                             value: record.value.concat(props.domainObj.domain)
                         })
                     })
-                    setDkimRecordsDS(tempObj);
+                    setDomainRecords(tempObj);
                 }
             }
         }).catch(reason => {
@@ -42,7 +41,15 @@ export const DomainModalPage = (props: any) => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            render: (text: string, record: any) => <span style={{color: "#1890FF"}}>{text}</span>
+            render: ((text: string, record: any) => {
+                return (
+                    <div className='flexEqualSpacing'>
+                        <span style={{color: "#1890FF"}}>{text}</span>
+                        <div className={'copyText'} onClick={() => generateCopiedMessage(record.name)}><CopyOutlined/>
+                        </div>
+                    </div>
+                );
+            })
         },
         {
             title: 'Type',
@@ -53,26 +60,31 @@ export const DomainModalPage = (props: any) => {
             title: 'Value',
             dataIndex: 'value',
             key: 'value',
+            render: ((text: string, record: any) => {
+                return (
+                    <div className='flexEqualSpacing'>
+                        <span style={{color: "#1890FF"}}>{text}</span>
+                        <div className={'copyText'} onClick={() => generateCopiedMessage(record.value)}><CopyOutlined/>
+                        </div>
+                    </div>
+                );
+            })
         }
     ];
-    const [verificationRecordDS, setVerificationRecordDS] = useState<DomainModal[]>([]);
-    const [dkimRecordsDS, setDkimRecordsDS] = useState<DomainModal[]>([]);
+    const [domainRecords, setDomainRecords] = useState<DomainModal[]>([]);
 
     const downloadDomainInfo = () => {
-        let str = columns.map(itr => itr.title).join(",");
-        verificationRecordDS.forEach(item => {
-            let currentRow = item.key + "," + item.name + "," + item.type + "," + item.value;
+        let str = 'S No.,'.concat(columns.map(itr => itr.title).join(','));
+        let sNo = 0;
+        domainRecords.forEach(item => {
+            sNo = item.key ? parseInt(item.key, 10) : sNo;
+            let currentRow = sNo + "," + item.name + "," + item.type + "," + item.value;
             str = str + "\n" + currentRow;
+            sNo = sNo + 1;
         });
         exportCSVFile(str, 'Domain-'.concat(props.domainObj.domain));
-        str = '';
-        dkimRecordsDS.forEach(item => {
-            let currentRow = item.key + "," + item.name + "," + item.type + "," + item.value;
-            str = str + "\n" + currentRow;
-        });
-        exportCSVFile(str, 'DKIM_Records-'.concat(props.domainObj.domain));
     }
-    return <Modal wrapClassName={'modalWrapper'}
+    return <Modal wrapClassName='modalWrapper'
                   title={props.openType === 'create' ? "Verify New Domain" : props.domainObj.domain} centered
                   visible={props.visibility} width={'50%'} footer={null} destroyOnClose={true}
                   onCancel={props.closeDomainPage}>
@@ -86,11 +98,7 @@ export const DomainModalPage = (props: any) => {
             </Descriptions>
             <Button type={"primary"} icon={<DownloadOutlined/>} onClick={downloadDomainInfo}>Download</Button>
         </div>
-        <Title level={5}>Domain Verification Record</Title>
-        <Table columns={columns} dataSource={verificationRecordDS} pagination={false} bordered/>
-        <Paragraph>Add the following CNAME records in your domain's DNS settings for DKIM <span
-            style={{color: "gray"}}>(optional)</span></Paragraph>
-        <Title level={5}>DKIM Records</Title>
-        <Table columns={columns} pagination={false} dataSource={dkimRecordsDS} bordered/>
+        <Title level={5}>Domain Verification& DKIM Records</Title>
+        <Table columns={columns} dataSource={domainRecords} pagination={false} bordered/>
     </Modal>
 }

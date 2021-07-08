@@ -569,7 +569,7 @@ export const ContactsPage: any = () => {
                             </Select>
                         </>}
                 </Modal>
-                <Modal title="Add Contact" centered visible={quickAddModal} width={550} className={'contacts'}
+                <Modal title="Add Contact" centered visible={quickAddModal} width={750} className={'contacts'}
                        footer={quickAddContactDS.length > 0 ?
                            <Button disabled={serviceInProgress} key="done" style={{background: 'darkgreen'}}
                                    type="primary" icon={<CheckOutlined/>} loading={serviceInProgress}

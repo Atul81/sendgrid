@@ -15,8 +15,11 @@ export const MultiVariateSplit = (props: any) => {
         props.createCard(
             <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
                 <Title level={5}>Evaluate Immediately</Title>
-                <Paragraph>Sender Address: {values.sendEmailObj.sender}</Paragraph>
-            </div>, '[yesNoSplit', 'Yes/No Split');
+                <Divider/>
+                {values.multiVariateSplitFormObj.branch.map((itr: any) => {
+                    return <Paragraph><span className="dot"/>{itr}</Paragraph>
+                })}
+            </div>, 'multiVariateSplit', 'Multivariate Split');
     };
 
     const conditionEvalSelect: DropDown[] = [

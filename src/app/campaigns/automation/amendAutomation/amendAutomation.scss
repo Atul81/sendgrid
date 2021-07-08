@@ -171,6 +171,15 @@
 }
 
 .activitySelection {
+
+  .dot {
+    height: 20px;
+    width: 20px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
   .selectDiv {
     display: flex;
     justify-content: space-between;
@@ -242,7 +251,7 @@
     .conBtn {
       width: 45%;
       margin-bottom: 8px;
-      margin-left: -100px;
+      margin-left: -84px;
     }
   }
 }

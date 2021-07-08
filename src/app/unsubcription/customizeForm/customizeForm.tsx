@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import './customizeForm.scss';
-import {Button, Collapse, message, Upload} from "antd";
+import {Button, Collapse, message, Select, Upload} from "antd";
 import {CheckCircleOutlined, UndoOutlined, UploadOutlined} from '@ant-design/icons';
 import Title from "antd/lib/typography/Title";
 import {AccordionHeaderInterface} from "../unsubcriptionInterface";
@@ -8,6 +8,7 @@ import {editObjectById, getAllServerCall} from "../../../service/serverCalls/moc
 import {SketchPicker} from 'react-color'
 import {UploadFile} from "antd/lib/upload/interface";
 import {GET_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../utils/common";
+import {DropDown} from "../../../utils/Interfaces";
 
 export const CustomizeFormPage = () => {
 
@@ -51,7 +52,7 @@ export const CustomizeFormPage = () => {
     }
 
     const cancelAllChanges = () => {
-        setPickColor('#fff');
+        setUnsubscriptionData({...unsubscriptionData, backGroundColor: '#fff'});
         setColor('');
         setFileList([]);
     };
@@ -64,7 +65,7 @@ export const CustomizeFormPage = () => {
         editObjectById({
             id: 1,
             url: imageUrl.length > 0 ? imageUrl : 'https://is2-ssl.mzstatic.com/image/thumb/Purple123/v4/be/a1/be/bea1bef3-c6da-b823-0f9e-fb6ac60f461b/source/200x200bb.jpg',
-            backGroundColor: pickColor
+            ...unsubscriptionData
         }, 'customizeForm').then(async setUnsubscriptionAsync => {
             let unSubscriptionRes = await setUnsubscriptionAsync.json();
             if (unSubscriptionRes) {
@@ -80,24 +81,58 @@ export const CustomizeFormPage = () => {
     };
 
     const {Panel} = Collapse;
+    const {Option} = Select;
+
     const [accordionHeader, setAccordionHeader] = useState<AccordionHeaderInterface[]>([]);
     const [color, setColor] = useState('');
-    const [pickColor, setPickColor] = useState('#fff')
 
     const accordion1ColorChange = (color: any, _: any) => {
         setColor(color);
-        setPickColor(color.hex);
-    }
-
-    const [displayColorPicker, setDisplayColorPicker] = useState(false);
-
-    const handleClick = () => {
-        setDisplayColorPicker(!displayColorPicker);
-
+        setUnsubscriptionData({...unsubscriptionData, backGroundColor: color.hex});
     };
 
+    const accordion2ColorChange = (color: any, _: any) => {
+        setColor(color);
+        setUnsubscriptionData({...unsubscriptionData, banner: color.hex});
+    };
+
+    const [displayColorPicker, setDisplayColorPicker] = useState(false);
+    const [tableColorPicker, setTableColorPicker] = useState(false);
+
+    const handleAccordionOneClick = () => {
+        setDisplayColorPicker(!displayColorPicker);
+    };
+
+    const handleAccordionTwoClick = () => {
+        setTableColorPicker(!tableColorPicker);
+    };
     const handleClose = () => {
         setDisplayColorPicker(false);
+        setTableColorPicker(false);
+    };
+
+    const [unsubscriptionData, setUnsubscriptionData] = useState({
+        backGroundColor: '#fff',
+        banner: '#fff',
+        testDesc: ''
+    });
+
+    const availableFonts: DropDown[] = [
+        {value: '1', label: 'Arial', children: null},
+        {value: '2', label: 'Verdana', children: null},
+        {value: '3', label: 'Brush Script MT', children: null},
+        {value: '4', label: 'Courier New', children: null},
+        {value: '5', label: 'Trebuchet MS', children: null},
+        {value: '6', label: 'Times New Roman', children: null},
+        {value: '7', label: 'Georgia', children: null},
+        {value: '8', label: 'Garamond', children: null},
+        {value: '9', label: 'Courier New', children: null}
+    ];
+
+    const changeAccordion = (curAcc: any) => {
+        console.log(`Active accordion ${curAcc}`);
+        setColor('');
+        setUnsubscriptionData({...unsubscriptionData, backGroundColor: '#fff'});
     };
 
     const getAccordionText = (headerKey: string) => {
@@ -106,9 +141,13 @@ export const CustomizeFormPage = () => {
                 return (
                     <div>
                         <div className='flexEqualSpacing' style={{justifyContent: 'start'}}>
-                            {pickColor !== '#fff' ? <div className='pickedColor'
-                                                         style={{background: pickColor, marginRight: '2%'}}/> : null}
-                            <div className='swatch' onClick={handleClick}> Pick Color</div>
+                            {unsubscriptionData.backGroundColor !== '#fff' ?
+                                <div className='pickedColor'
+                                     style={{
+                                         background: unsubscriptionData.backGroundColor,
+                                         marginRight: '2%'
+                                     }}/> : null}
+                            <div className='swatch' onClick={handleAccordionOneClick}> Pick Color</div>
                         </div>
                         {displayColorPicker ?
                             <div style={{
@@ -124,6 +163,45 @@ export const CustomizeFormPage = () => {
                                 }} onClick={handleClose}/>
                                 <SketchPicker color={color} onChange={accordion1ColorChange}/>
                             </div> : null}
+                    </div>
+                )
+            case "3":
+                return (
+                    <div>
+                        <div className='flexEqualSpacing' style={{justifyContent: 'start'}}>
+                            {unsubscriptionData.banner !== '#fff' ?
+                                <div className='pickedColor'
+                                     style={{background: unsubscriptionData.banner, marginRight: '2%'}}/> : null}
+                            <div className='swatch' onClick={handleAccordionTwoClick}> Pick Color</div>
+                        </div>
+                        {tableColorPicker ?
+                            <div style={{
+                                position: 'absolute',
+                                zIndex: 2
+                            }}>
+                                <div style={{
+                                    position: 'fixed',
+                                    top: '0px',
+                                    right: '0px',
+                                    bottom: '0px',
+                                    left: '0px'
+                                }} onClick={handleClose}/>
+                                <SketchPicker color={color} onChange={accordion2ColorChange}/>
+                            </div> : null}
+                    </div>
+                )
+            case "4":
+                return (
+                    <div>
+                        <Select showSearch placeholder="Select Font family"
+                                onChange={(value: string) => setUnsubscriptionData({
+                                    ...unsubscriptionData,
+                                    testDesc: value
+                                })} allowClear={true}>
+                            {availableFonts.map(value => {
+                                return <Option value={value.label} key={value.value}>{value.label}</Option>
+                            })}
+                        </Select>
                     </div>
                 )
             default:
@@ -192,7 +270,7 @@ export const CustomizeFormPage = () => {
                         <Title level={5}>Customize CSS and colors</Title>
                     </div>
                     <div>
-                        <Collapse accordion>
+                        <Collapse accordion onChange={changeAccordion}>
                             {accordionHeader.map((accValue) => {
                                 return <Panel header={accValue.name} key={accValue.key}>
                                     <p>{getAccordionText(accValue.key)}</p>

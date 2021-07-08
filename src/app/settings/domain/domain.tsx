@@ -7,7 +7,7 @@ import {DnsRecordsPage} from "./dnsRecords/DnsRecordsLoadable";
 import {addNewObject} from "../../../service/serverCalls/mockServerRest";
 import {useDispatch} from "react-redux";
 import {updateActiveContent, updateBreadcrumb} from "../../../store/actions/root";
-import {POST_SERVER_ERROR, urlRegexValidation} from "../../../utils/common";
+import {POST_SERVER_ERROR, validateDomainRegex} from "../../../utils/common";
 import {DomainModalPage} from "./modal/domainModal";
 
 export const DomainSettingsPage: any = () => {
@@ -76,7 +76,16 @@ export const DomainSettingsPage: any = () => {
                     <Form.Item label={<strong>Domain</strong>}>
                         <Form.Item name={['formObj', 'domainName']}
                                    noStyle
-                                   rules={[{required: true, message: 'Domain Name required'}, urlRegexValidation]}>
+                                   rules={[{required: true, message: 'Domain Name required'}, () => ({
+                                       validator(_, value) {
+                                           if (value && validateDomainRegex(value)) {
+                                               debugger
+                                               return Promise.reject(new Error('Domain Format incorrect!'));
+                                           } else {
+                                               return Promise.resolve();
+                                           }
+                                       }
+                                   })]}>
                             <Input className={'maxWidth'} placeholder="Form Domain" type={'text'}/>
                         </Form.Item>
                     </Form.Item>

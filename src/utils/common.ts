@@ -1,4 +1,5 @@
 import {getDate, getMonth, getYear} from "date-fns";
+import {message} from "antd";
 
 export const exportCSVFile = (str: string, fileParam: string) => {
     let day = getDate(new Date()) + '_' + (getMonth(new Date()) + 1) + '_' + getYear(new Date());
@@ -54,18 +55,6 @@ export const textOnlyValidation = () => {
     };
 }
 
-export const urlRegexValidation = () => {
-    return {
-        validator(_: any, value: string) {
-            if (value && validateDomainRegex(value)) {
-                return Promise.reject(new Error('Text value with dot allowed!'));
-            } else {
-                return Promise.resolve();
-            }
-        }
-    };
-}
-
 export const validateTextRegex = (inp: string) => {
     const textRegex = /[^A-Za-z]/
     return textRegex.test(inp);
@@ -79,6 +68,17 @@ export const validateDomainRegex = (inp: string) => {
 export const validateEmail = (email: string) => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email.toLowerCase());
+}
+
+export const generateCopiedMessage = (text: any) => {
+    const columnVal = document.createElement('textarea');
+    columnVal.value = text;
+    document.body.appendChild(columnVal);
+    columnVal.select();
+    document.execCommand('copy');
+    message.success(text.concat(' has been copied on your clipboard'), 0.7).then(() => {
+    });
+    document.body.removeChild(columnVal);
 }
 
 export const GET_SERVER_ERROR = 'Unable to fetch data, we are working on it, please try after sometime';
