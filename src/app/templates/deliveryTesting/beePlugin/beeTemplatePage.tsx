@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 // @ts-ignore
 import BeePlugin from "@mailupinc/bee-plugin";
 import "./beeTemplate.scss";
+import {Input, message, Modal} from "antd";
+import {saveJson} from "../../../../utils/common";
 
 const defaultConfig = {
     autosave: true,
@@ -45,10 +47,16 @@ export const BeeTemplatePage = (props: any) => {
             defaultRows: true
         },
         onSave: (jsonFile: any, htmlFile: any) => {
-            console.log('onSave', jsonFile, htmlFile)
+            props.templateContent(htmlFile, jsonFile);
+            let wnd = window.open("about:blank");
+            // @ts-ignore
+            wnd.document.write(htmlFile);
+            // @ts-ignore
+            wnd.document.close();
         },
         onSaveAsTemplate: (jsonFile: any) => {
-            console.log('onSaveAsTemplate', jsonFile)
+            setJsonContent(jsonFile);
+            setSaveAsTemplate(true);
         },
         onSend: (htmlFile: any) => {
             console.log('onSend', htmlFile)
@@ -58,6 +66,9 @@ export const BeeTemplatePage = (props: any) => {
         }
     };
 
+    const [saveTemplate, setSaveAsTemplate] = useState(false);
+    const [templateName, setTemplateName] = useState('');
+    const [jsonContent, setJsonContent] = useState('');
     const beeInstance = new BeePlugin();
 
     const init = () => {
@@ -76,5 +87,20 @@ export const BeeTemplatePage = (props: any) => {
         console.log(props);
     }, [props]);
 
-    return <div className="beePluginContainer" id="bee-plugin-container"/>
+    const downloadBeeTemplate = () => {
+        saveJson(jsonContent, templateName);
+        setSaveAsTemplate(false);
+        message.success('Saved the template Json', 0.7).then(_ => {
+        });
+    }
+    return <>
+        <div className="beePluginContainer" id="bee-plugin-container"/>
+        <Modal title="Save Template" centered visible={saveTemplate}
+               onOk={downloadBeeTemplate} destroyOnClose={true}
+               onCancel={() => setSaveAsTemplate(false)} width={300}>
+            <Input placeholder="New Automation Name"
+                   onChange={(inpEvent) => setTemplateName(inpEvent.target.value)}/>
+        </Modal>
+    </>
+
 };

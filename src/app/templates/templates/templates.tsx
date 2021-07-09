@@ -9,7 +9,7 @@ import Title from "antd/es/typography/Title";
 import Search from "antd/es/input/Search";
 import {BeeTemplatePage} from "../deliveryTesting/beePlugin/beeTemplatePage";
 import {TemplatesInterface} from "../templatesInterface";
-import {GET_SERVER_ERROR} from "../../../utils/common";
+import {GET_SERVER_ERROR, saveHtml} from "../../../utils/common";
 
 export const TemplatesPage: any = () => {
 
@@ -19,6 +19,7 @@ export const TemplatesPage: any = () => {
     const [templatesDS, setTemplateDS] = useState<TemplatesInterface[]>([]);
     const [templatesDSOps, setTemplateDSOps] = useState<TemplatesInterface[]>([]);
     const [beeOpenType, setBeeOpenType] = useState('newTemplate');
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         getAllTemplates('templates');
@@ -64,8 +65,25 @@ export const TemplatesPage: any = () => {
         }));
     };
 
-    const handlePagination = () => {
-        getAllTemplates('templatesP');
+    const handlePagination = (pageNumber: number) => {
+        /* Use this for backend call
+        * pageNumber signifies the calling param*/
+        switch (pageNumber) {
+            case 1: {
+                getAllTemplates('templates');
+                break
+            }
+            case 2: {
+                getAllTemplates('templatesP');
+                break
+            }
+        }
+        setCurrentPage(pageNumber);
+    };
+
+    const getEmailTemplate = (htmlContent: any, jsonContent: any) => {
+        console.log(htmlContent, jsonContent);
+        saveHtml(htmlContent, String(new Date().getTime()));
     }
     return !openIeFrame ? (
         <div className="templates pageLayout">
@@ -108,7 +126,8 @@ export const TemplatesPage: any = () => {
                     })}
                 </div>
                 <div className='reverseFlex'>
-                    <Pagination defaultPageSize={8} defaultCurrent={1} total={templatesDS.length * 2} onChange={handlePagination}
+                    <Pagination defaultPageSize={8} current={currentPage} total={templatesDS.length * 2}
+                                onChange={handlePagination}
                                 showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}/>
                 </div>
             </div>
@@ -116,7 +135,8 @@ export const TemplatesPage: any = () => {
     ) : <Modal className={'fullScreenModal'} title={'Add/Edit Template'} visible={true} width={'100%'} footer={null}
                onCancel={exitTemplate}>
         <div style={{width: '100%', height: 'calc(100vh - 104px)'}}>
-            <BeeTemplatePage existingTemplate={templateObj} requestType={beeOpenType}/>
+            <BeeTemplatePage existingTemplate={templateObj} requestType={beeOpenType}
+                             templateContent={getEmailTemplate}/>
         </div>
     </Modal>
 }

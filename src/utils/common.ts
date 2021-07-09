@@ -1,6 +1,7 @@
 import {getDate, getMonth, getYear} from "date-fns";
 import {message} from "antd";
 
+const fs = require('fs');
 export const exportCSVFile = (str: string, fileParam: string) => {
     let day = getDate(new Date()) + '_' + (getMonth(new Date()) + 1) + '_' + getYear(new Date());
     const fileName = `${day}_${fileParam}.csv`;
@@ -80,7 +81,25 @@ export const generateCopiedMessage = (text: any) => {
     });
     document.body.removeChild(columnVal);
 }
-
+export const saveHtml = (htmlInp: any, fileName: string) => {
+    let bl = new Blob([htmlInp], {type: "text/html"});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(bl);
+    a.download = `${fileName}.html`;
+    a.hidden = true;
+    document.body.appendChild(a);
+    a.innerHTML = "";
+    a.click();
+};
+export const saveJson = (content: any, fileName: string) => {
+    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(content);
+    let downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", fileName + ".json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
 export const GET_SERVER_ERROR = 'Unable to fetch data, we are working on it, please try after sometime';
 export const POST_SERVER_ERROR = 'Unable to save request, we are working on it, please try after sometime';
 export const PUT_SERVER_ERROR = 'Unable to update request, we are working on it, please try after sometime';
