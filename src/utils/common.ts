@@ -1,7 +1,6 @@
 import {getDate, getMonth, getYear} from "date-fns";
 import {message} from "antd";
 
-const fs = require('fs');
 export const exportCSVFile = (str: string, fileParam: string) => {
     let day = getDate(new Date()) + '_' + (getMonth(new Date()) + 1) + '_' + getYear(new Date());
     const fileName = `${day}_${fileParam}.csv`;
