@@ -79,7 +79,6 @@ export const DomainSettingsPage: any = () => {
                                    rules={[{required: true, message: 'Domain Name required'}, () => ({
                                        validator(_, value) {
                                            if (value && validateDomainRegex(value)) {
-                                               debugger
                                                return Promise.reject(new Error('Domain Format incorrect!'));
                                            } else {
                                                return Promise.resolve();
