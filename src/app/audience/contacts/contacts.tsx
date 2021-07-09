@@ -534,7 +534,7 @@ export const ContactsPage: any = () => {
                         <>
                             <Select onChange={onMultiSelectChange} value={multiSelectValue} mode={'multiple'}
                                     style={{width: 496}}
-                                    dropdownRender={menu => (
+                                    dropdownRender={(menu: any) => (
                                         <div>
                                             {menu}
                                             <Divider style={{margin: '4px 0'}}/>

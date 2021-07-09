@@ -217,7 +217,7 @@ export const DeliveryTestingPage = () => {
                             onClick={navigateToLandingPage}>Cancel</Button>
                 </div>
             </div>
-            <div style={{width: '100%', height: 'calc(100vh - 104px)'}}>
+            <div style={{width: '100%', height: 'calc(100vh - 140px)'}}>
                 <BeeTemplatePage existingTemplate={deliveryObj} requestType={'view'}/>
             </div>
         </div>

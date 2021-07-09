@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {Button, Card, message, Modal, Popover, Skeleton} from "antd";
+import {Button, Card, message, Modal, Pagination, Popover, Skeleton} from "antd";
 import {EllipsisOutlined, PlusOutlined} from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
 import './templates.scss';
@@ -21,7 +21,7 @@ export const TemplatesPage: any = () => {
     const [beeOpenType, setBeeOpenType] = useState('newTemplate');
 
     useEffect(() => {
-        getAllTemplates();
+        getAllTemplates('templates');
     }, [activeMenu]);
 
     const addNewSegment = () => {
@@ -44,8 +44,8 @@ export const TemplatesPage: any = () => {
         setOpenIeFrame(false);
     };
 
-    const getAllTemplates = () => {
-        getAllServerCall('templates').then(async allTemplatesAsync => {
+    const getAllTemplates = (url: string) => {
+        getAllServerCall(url).then(async allTemplatesAsync => {
             let allTemplatesRes = await allTemplatesAsync.json();
             if (allTemplatesRes) {
                 setTemplateDS(allTemplatesRes);
@@ -64,6 +64,9 @@ export const TemplatesPage: any = () => {
         }));
     };
 
+    const handlePagination = () => {
+        getAllTemplates('templatesP');
+    }
     return !openIeFrame ? (
         <div className="templates pageLayout">
             <div className="secondNav">
@@ -82,7 +85,7 @@ export const TemplatesPage: any = () => {
             </div>
             <div className="cardContainer">
                 <div className="cardDiv">
-                    {templatesDS.map(value => {
+                    {templatesDS && templatesDS.length > 0 && templatesDS.slice(0, 8).map(value => {
                         return (
                             <Card key={value.id} style={{marginTop: 16}}
                                   cover={<img alt="example"
@@ -104,11 +107,15 @@ export const TemplatesPage: any = () => {
                         )
                     })}
                 </div>
+                <div className='reverseFlex'>
+                    <Pagination defaultPageSize={8} defaultCurrent={1} total={templatesDS.length * 2} onChange={handlePagination}
+                                showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}/>
+                </div>
             </div>
         </div>
     ) : <Modal className={'fullScreenModal'} title={'Add/Edit Template'} visible={true} width={'100%'} footer={null}
                onCancel={exitTemplate}>
-        <div style={{width: '100%', height: 'calc(100vh - 72px)', marginTop: 24}}>
+        <div style={{width: '100%', height: 'calc(100vh - 104px)'}}>
             <BeeTemplatePage existingTemplate={templateObj} requestType={beeOpenType}/>
         </div>
     </Modal>

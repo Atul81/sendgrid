@@ -11,6 +11,7 @@
   "campaignsForm": "http://localhost:3002/campaignsForm",
   "senders": "http://localhost:3002/senders",
   "templates": "http://localhost:3002/templates",
+  "templatesP": "http://localhost:3002/templatesP",
   "groups": "http://localhost:3002/groups",
   "customizeForm": "http://localhost:3002/customizeForm",
   "domain": "http://localhost:3002/domain",

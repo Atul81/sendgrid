@@ -1,12 +1,11 @@
 .templates {
   .cardContainer {
-    height: calc(100vh - 212px);
+    height: calc(100vh - 288px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
     .cardDiv {
-      overflow: auto;
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
       grid-column-gap: 2%;

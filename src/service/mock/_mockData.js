@@ -42,6 +42,7 @@ const campaigns = require('./campaigns/campaigns.json');
 const campaignsForm = require('./campaigns/campaignsForm.json');
 const senders = require('./campaigns/senders.json');
 const templates = require('./templates/templates.json');
+const templatesP = require('./templates/templatesP.json');
 const deliveryTesting = require('./templates/deliveryTesting.json');
 const groups = require('./unsubscriptions/groups.json');
 const customizeForm = require('./unsubscriptions/customizeForm.json');
@@ -65,6 +66,7 @@ module.exports = () => ({
     campaignsForm,
     senders,
     templates,
+    templatesP,
     deliveryTesting,
     groups,
     customizeForm,
