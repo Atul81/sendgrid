@@ -132,7 +132,6 @@ export const CustomizeFormPage = () => {
     const changeAccordion = (curAcc: any) => {
         console.log(`Active accordion ${curAcc}`);
         setColor('');
-        setUnsubscriptionData({...unsubscriptionData, backGroundColor: '#fff'});
     };
 
     const getAccordionText = (headerKey: string) => {
