@@ -581,10 +581,7 @@ export const ContactsPage: any = () => {
                         <Form form={addContact} layout={'vertical'} onFinish={quickAddContactFormFinish}>
                             <Form.Item label={<strong>Email Address</strong>}>
                                 <Form.Item name={['formObj', 'email']}
-                                           noStyle rules={[{
-                                    required: true,
-                                    message: 'Email Address required'
-                                }, () => ({
+                                           noStyle rules={[() => ({
                                     validator(_, value) {
                                         if (value) {
                                             if (validateEmail(value)) {
@@ -605,6 +602,8 @@ export const ContactsPage: any = () => {
                                             } else {
                                                 return Promise.reject(new Error('Email Address not valid!'));
                                             }
+                                        } else {
+                                            return Promise.reject(new Error('Email Address required'));
                                         }
                                     }
                                 })]}>

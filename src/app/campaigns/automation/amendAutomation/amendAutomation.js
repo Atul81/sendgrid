@@ -9,7 +9,7 @@ import ReactFlow, {
     removeElements
 } from 'react-flow-renderer';
 import './amendAutomation.scss';
-import {CheckOutlined, CloseCircleOutlined, CloseOutlined, StepBackwardOutlined} from "@ant-design/icons";
+import {CheckOutlined, CloseOutlined, StepBackwardOutlined} from "@ant-design/icons";
 import {addNewObject, editObjectById, getObjectById} from "../../../../service/serverCalls/mockServerRest";
 import {updateBreadcrumb} from "../../../../store/actions/root";
 import {useDispatch, useSelector} from "react-redux";
@@ -38,18 +38,49 @@ export const AmendAutomationPage = (props) => {
                     let elementsData = elementsJson.data;
                     elementsData.forEach((itr) => {
                         if (itr.data && itr.data.label && itr.data.label.props) {
-                            tempObj.push({
-                                ...itr, data: {
-                                    label:
-                                        <Card title={<div className='titleContent'><img style={{width: 20}} src={`https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png`} alt="icon"/><span>Journey Entry</span></div>}>
-                                            <Typography className={'columnFlex'}>
-                                                <strong style={{fontSize: 10}}>Evaluate every: 3 hours</strong>
-                                                <Divider/>
-                                                <Paragraph>Segment: all</Paragraph>
-                                            </Typography>
-                                        </Card>
+                            let type = itr.id.split('-')[1];
+                            switch (type) {
+                                case 'journeyEntry': {
+                                    tempObj.push({
+                                        ...itr, data: {
+                                            label:
+                                                <Card title={<div className='titleContent'>
+                                                    <img style={{width: 20}}
+                                                         src={`/assets/icons/icon-timer.svg`}
+                                                         alt="icon"/><span>Journey Entry</span>
+                                                </div>}>
+                                                    <Typography className={'columnFlex'}>
+                                                        <strong style={{fontSize: 10}}>Evaluate every: 3 hours</strong>
+                                                        <Divider/>
+                                                        <Paragraph>Segment: all</Paragraph>
+                                                    </Typography>
+                                                </Card>
+                                        }
+                                    });
+                                    break;
                                 }
-                            });
+                                case 'sendEmail': {
+                                    tempObj.push({
+                                        ...itr, data: {
+                                            label: <Card title={<div className='titleContent'>
+                                                <img style={{width: 20}}
+                                                     src={`/assets/images/logoCollapsed.svg`}
+                                                     alt="icon"/><span>{nodeTitle}</span>
+                                            </div>} extra={<CloseOutlined/>}>
+                                                <div style={{
+                                                    display: "flex",
+                                                    justifyContent: 'center',
+                                                    flexDirection: 'column'
+                                                }}>
+                                                    <Button>Configure Message</Button>
+                                                    <Paragraph>Sender Address: test</Paragraph>
+                                                </div>
+                                            </Card>
+                                        }
+                                    });
+                                    break;
+                                }
+                            }
                             setId(itr.id);
                         } else {
                             tempObj.push(itr);
@@ -309,7 +340,10 @@ export const AmendAutomationPage = (props) => {
             type: 'default',
             data: {
                 label:
-                    <Card title={<div className='titleContent'><img style={{width: 20}} src={`/assets/images/logoCollapsed.svg`} alt="icon"/><span>{nodeTitle}</span></div>}  extra={<CloseOutlined/>}>
+                    <Card title={<div className='titleContent'><img style={{width: 20}}
+                                                                    src={`/assets/images/logoCollapsed.svg`}
+                                                                    alt="icon"/><span>{nodeTitle}</span></div>}
+                          extra={<CloseOutlined/>}>
                         {nodeContent}
                     </Card>
             }

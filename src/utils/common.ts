@@ -56,12 +56,12 @@ export const textOnlyValidation = () => {
 }
 
 export const validateTextRegex = (inp: string) => {
-    const textRegex = /[^A-Za-z]/
+    const textRegex = /[^A-Za-z]/;
     return textRegex.test(inp);
 }
 
 export const validateDomainRegex = (inp: string) => {
-    const textRegex = /[^A-Za-z.]/
+    const textRegex = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
     return textRegex.test(inp);
 }
 
@@ -98,7 +98,8 @@ export const saveJson = (content: any, fileName: string) => {
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
-}
+};
+
 export const GET_SERVER_ERROR = 'Unable to fetch data, we are working on it, please try after sometime';
 export const POST_SERVER_ERROR = 'Unable to save request, we are working on it, please try after sometime';
 export const PUT_SERVER_ERROR = 'Unable to update request, we are working on it, please try after sometime';

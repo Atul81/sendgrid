@@ -25,6 +25,7 @@ export const DomainSettingsPage: any = () => {
     const [domainObj, setDomainObj] = useState({});
     const proceedDomainSettings = (values: any) => {
         let newDomainObj = values.formObj;
+        setDomainId(domainId + 1);
         addNewObject({
             id: domainId,
             domain: newDomainObj.domainName,
@@ -34,7 +35,6 @@ export const DomainSettingsPage: any = () => {
             let newDnsRecordRes = await newDomainObjAsync.json();
             if (newDnsRecordRes) {
                 setDomainId(domainId + 1);
-
                 setDomainModal(true);
                 setDomainObj(newDnsRecordRes);
             }
@@ -59,7 +59,7 @@ export const DomainSettingsPage: any = () => {
     const [openDomainModal, setDomainModal] = useState(false);
 
     return newDomainSettings ? (<div className={'domain'}>
-        <Form form={domainForm} layout={'vertical'} onFinish={proceedDomainSettings}>
+        <Form form={domainForm} layout={'vertical'} noValidate={false} onFinish={proceedDomainSettings}>
             <div className="pageLayout">
                 <div className="firstNav">
                     <div className="leftPlacement">
@@ -76,12 +76,20 @@ export const DomainSettingsPage: any = () => {
                     <Form.Item label={<strong>Domain</strong>}>
                         <Form.Item name={['formObj', 'domainName']}
                                    noStyle
-                                   rules={[{required: true, message: 'Domain Name required'}, () => ({
-                                       validator(_, value) {
-                                           if (value && validateDomainRegex(value)) {
-                                               return Promise.reject(new Error('Domain Format incorrect!'));
-                                           } else {
-                                               return Promise.resolve();
+                                   rules={[() => ({
+                                       validator(_, value, callback) {
+                                           try {
+                                               if (value) {
+                                                   if (value && !validateDomainRegex(value)) {
+                                                       return Promise.reject(new Error('Domain Format incorrect!'));
+                                                   } else {
+                                                       return Promise.resolve();
+                                                   }
+                                               } else {
+                                                   return Promise.reject(new Error('Domain Name Required'));
+                                               }
+                                           } catch (e) {
+                                               callback(e);
                                            }
                                        }
                                    })]}>

@@ -738,7 +738,7 @@
         "id": "reactflow__edge-1null-2actToJourney"
       },
       {
-        "id": "3",
+        "id": "3-wait",
         "position": {
           "x": -493.98972187329105,
           "y": -565.2686876478748
@@ -828,7 +828,7 @@
         }
       },
       {
-        "id": "4",
+        "id": "4-sendEmail",
         "type": "default",
         "position": {
           "x": -498.40183124829105,

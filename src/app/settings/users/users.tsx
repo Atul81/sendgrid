@@ -360,18 +360,19 @@ export const UsersPage: any = () => {
                 <Form form={userModalForm} layout={'vertical'} onFinish={userAmendModalService}>
                     <Form.Item label="User Email">
                         <Form.Item name={['formObj', 'userEmail']}
-                                   noStyle rules={[{required: true, message: 'User Email Address required'}
-                            , () => ({
-                                validator(_, value) {
-                                    if (value) {
-                                        if (validateEmail(value)) {
-                                            return Promise.resolve();
-                                        } else {
-                                            return Promise.reject(new Error('Email Address not valid!'));
-                                        }
+                                   noStyle rules={[() => ({
+                            validator(_, value) {
+                                if (value) {
+                                    if (validateEmail(value)) {
+                                        return Promise.resolve();
+                                    } else {
+                                        return Promise.reject(new Error('Email Address not valid!'));
                                     }
+                                } else {
+                                    return Promise.reject(new Error('Email Address required'));
                                 }
-                            })]}>
+                            }
+                        })]}>
                             <Input disabled={userObj.key > 0} placeholder="Text only" type={"email"}/>
                         </Form.Item>
                     </Form.Item>

@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {DropDown} from "../../../utils/Interfaces";
 import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 import Paragraph from "antd/es/typography/Paragraph";
-import {GET_SERVER_ERROR, validateEmail} from "../../../utils/common";
+import {validateEmail} from "../../../utils/common";
 
 export const FormEditPage: any = (props: any) => {
     const {Option} = Select;
@@ -60,18 +60,19 @@ export const FormEditPage: any = (props: any) => {
                 <Form.Item label={props.type !== 'senders' ? <strong>Email</strong> : <strong>From Email</strong>}
                            required>
                     <Form.Item name={['formObj', 'email']} noStyle
-                               rules={[{required: true, message: 'Email required'},
-                                   () => ({
-                                       validator(_, value) {
-                                           if (value) {
-                                               if (validateEmail(value)) {
-                                                   return Promise.resolve();
-                                               } else {
-                                                   return Promise.reject(new Error('Email Address not valid!'));
-                                               }
+                               rules={[() => ({
+                                   validator(_, value) {
+                                       if (value) {
+                                           if (validateEmail(value)) {
+                                               return Promise.resolve();
+                                           } else {
+                                               return Promise.reject(new Error('Email Address not valid!'));
                                            }
+                                       } else {
+                                           return Promise.reject(new Error('Email Address required'));
                                        }
-                                   })]}>
+                                   }
+                               })]}>
                         <Input disabled={(props.type === 'senders' && props.emailEditable)}
                                placeholder="tony@testing.com" type={"email"}/>
                     </Form.Item>

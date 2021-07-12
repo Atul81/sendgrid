@@ -137,24 +137,25 @@ export const CustomEventsPage: any = () => {
                 <Form form={eventForm} layout={'vertical'} onFinish={editCustomEventService}>
                     <Form.Item label={<strong>Event Name</strong>}>
                         <Form.Item name={['formObj', 'name']}
-                                   noStyle rules={[{required: true, message: 'User Email Address required'},
-                            () => ({
-                                validator(_, value) {
-                                    if (value) {
-                                        if (validateEmail(value)) {
-                                            return Promise.resolve();
-                                        } else {
-                                            return Promise.reject(new Error('Email Address not valid!'));
-                                        }
+                                   noStyle rules={[() => ({
+                            validator(_, value) {
+                                if (value) {
+                                    if (validateEmail(value)) {
+                                        return Promise.resolve();
+                                    } else {
+                                        return Promise.reject(new Error('Email Address not valid!'));
                                     }
+                                } else {
+                                    return Promise.reject(new Error('Email Address required'));
                                 }
-                            })]}>
+                            }
+                        })]}>
                             <Input disabled={true} placeholder="Text only" type={"email"}/>
                         </Form.Item>
                     </Form.Item>
                     <Form.Item label={<strong>Event Description</strong>}>
                         <Form.Item name={['formObj', 'description']} noStyle
-                                   rules={[{required: true, message: 'User Role required'}]}>
+                                   rules={[{required: true, message: 'Event Description required'}]}>
                             <TextArea placeholder="Text only"/>
                         </Form.Item>
                     </Form.Item>

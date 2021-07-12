@@ -97,8 +97,7 @@
           display: flex;
 
           img {
-            margin-left: 4px;
-            margin-right: 8px;
+            margin-right: 4px;
           }
         }
 
@@ -259,6 +258,11 @@
 .antSelect {
   .selectionBox {
     display: flex;
+
+    img {
+      width: 48px;
+      height: 48px;
+    }
 
     span {
       margin-top: 4px;
