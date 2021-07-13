@@ -1,4 +1,4 @@
-import {Avatar, Button, Card, Divider, Input, message, Modal, Select, Typography} from "antd";
+import {Avatar, Button, Card, Divider, Input, message, Modal, Typography} from "antd";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import ReactFlow, {
     addEdge,
@@ -23,6 +23,7 @@ import {ActivityModal} from "./activityModal";
 
 export const AmendAutomationPage = (props) => {
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
+    const [cardType, setCardType] = useState('');
     const [elements, setElements] = useState([]);
     const dispatch = useDispatch();
     const nodeTypeRedux = useSelector((state) => state.root.nodeType);
@@ -38,8 +39,8 @@ export const AmendAutomationPage = (props) => {
                     let elementsData = elementsJson.data;
                     elementsData.forEach((itr) => {
                         if (itr.data && itr.data.label && itr.data.label.props) {
-                            let type = itr.id.split('-')[1];
-                            switch (type) {
+                            let idAndType = itr.id.split('-');
+                            switch (idAndType[1]) {
                                 case 'journeyEntry': {
                                     tempObj.push({
                                         ...itr, data: {
@@ -64,8 +65,8 @@ export const AmendAutomationPage = (props) => {
                                         ...itr, data: {
                                             label: <Card title={<div className='titleContent'>
                                                 <img style={{width: 20}}
-                                                     src={`/assets/images/logoCollapsed.svg`}
-                                                     alt="icon"/><span>{nodeTitle}</span>
+                                                     src={`/assets/icons/icon-send-email.svg`}
+                                                     alt="icon"/><span>Send an Email</span>
                                             </div>} extra={<CloseOutlined/>}>
                                                 <div style={{
                                                     display: "flex",
@@ -73,15 +74,44 @@ export const AmendAutomationPage = (props) => {
                                                     flexDirection: 'column'
                                                 }}>
                                                     <Button>Configure Message</Button>
-                                                    <Paragraph>Sender Address: test</Paragraph>
+                                                    <Paragraph>Sender
+                                                        Address: {itr.data.label.props.children.props.children[1].props.children[1]}</Paragraph>
                                                 </div>
                                             </Card>
                                         }
                                     });
                                     break;
                                 }
+                                case 'wait': {
+                                    let displayData = itr.data.label.props.children.props.children.props;
+                                    tempObj.push({
+                                        ...itr, data: {
+                                            label: <Card title={<div className='titleContent'>
+                                                <img style={{width: 20}}
+                                                     src={`/assets/icons/icon-wait.svg`}
+                                                     alt="icon"/><span>Wait</span>
+                                            </div>} extra={<CloseOutlined/>}>
+                                                <div style={{
+                                                    display: "flex",
+                                                    justifyContent: 'center',
+                                                    flexDirection: 'column'
+                                                }}>
+                                                    <Paragraph>{displayData.children}</Paragraph>
+                                                </div>
+                                            </Card>
+                                        }
+                                    });
+                                    break;
+                                }
+                                case 'addActivity': {
+                                    tempObj.push(itr);
+                                    break;
+                                }
+                                default: {
+                                    message.error(`Integration for card module ${idAndType[1]} not done`, 0.4);
+                                }
                             }
-                            setId(itr.id);
+                            setId(idAndType[0]);
                         } else {
                             tempObj.push(itr);
                         }
@@ -108,18 +138,18 @@ export const AmendAutomationPage = (props) => {
     }, []);
 
     const {Text} = Typography;
-    const {Option} = Select;
     const deleteConfirm = Modal.confirm;
     const [id, setId] = useState('0');
-    const [nodeDrawer, setNodeDrawer] = useState(false);
     const [nodeTitle, setNodeTitle] = useState("");
-    const [editNodeTitle, setEditNodeTitle] = useState("");
     const [edgeTitle, setEdgeTitle] = useState("");
-    const [elementSelected, setElementSelected] = useState({});
+    const [elementSelected, setElementSelected] = useState({id: ''});
     const [isJourneyModal, setJourneyModal] = useState(false);
     const [isActivityModal, setActivityModal] = useState(false);
     const [isEdgeModalVisible, setIsEdgeModalVisible] = useState(false);
-
+    const [modalData, setModalData] = useState({
+        workFlowId: props.amendObj.key,
+        cardId: ''
+    });
     const nodeStrokeColor = (n) => {
         if (n.style?.background) {
             return n.style.background;
@@ -179,6 +209,7 @@ export const AmendAutomationPage = (props) => {
 
 
     const onElementClick = (event, element) => {
+        setElementSelected(element);
         if (element.data && element.data.label) {
             let elementType = element.id.split("-")[1];
             switch (elementType) {
@@ -188,35 +219,32 @@ export const AmendAutomationPage = (props) => {
                 case 'addActivity':
                     setActivityModal(true);
                     break;
+                case "sendEmail":
+                case "wait":
+                case "yesNoSplit":
+                case "multiVariateSplit":
+                    setCardType(elementType);
+                    setActivityModal(true);
+                    break;
+                default:
+                    message.error('Not implemented Yet', 0.5).then(_ => {
+                    });
             }
             setNodeTitle(element.data.label.props ? element.data.label.props.title : element.data.label);
         } else {
             setNodeTitle("");
             setIsEdgeModalVisible(true);
         }
-        setElementSelected(element);
     };
 
-    const handleOk = () => {
-        let itemElements = [...elements].map(elementItr => {
-            if (elementItr.id === elementSelected.id) {
-                elementItr.data = {
-                    label: <Card size={"small"} title={editNodeTitle} bordered={false}>
-                        Card content
-                    </Card>
-                };
-            }
-            return elementItr;
-        })
-        setElements(itemElements);
-        saveJson();
-        setJourneyModal(false);
-        setActivityModal(false);
-    };
+    useEffect(() => {
+        setModalData({...modalData, cardId: elementSelected.id});
+    }, [elementSelected])
 
     const handleCancel = () => {
         setJourneyModal(false);
         setActivityModal(false);
+        setCardType('');
     };
 
     const updateEdgeName = () => {
@@ -349,10 +377,8 @@ export const AmendAutomationPage = (props) => {
             }
         };
         setElements((es) => es.concat(newNode));
-        setNodeDrawer(false);
         setNodeTitle("");
     };
-
     return (
         <div className='amendAutomation pageLayout'>
             <div className={'firstNav'}>
@@ -378,7 +404,8 @@ export const AmendAutomationPage = (props) => {
             </Modal>
             {isJourneyModal ? <JourneyEntryModal openModal={isJourneyModal} closeModal={handleCancel}/> : null}
             {isActivityModal ?
-                <ActivityModal activitySelection={true} createNode={createNodeFromActivity} openModal={isActivityModal}
+                <ActivityModal selectedCardType={cardType}
+                               createNode={createNodeFromActivity} openModal={true} modalData={modalData}
                                closeModal={handleCancel}/> : null}
             <div className='gridDisplay'>
                 <ReactFlowProvider>

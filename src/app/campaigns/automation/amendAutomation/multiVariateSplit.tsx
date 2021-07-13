@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Divider, Form, Input, Select, Space} from "antd";
 import {CheckOutlined, MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
@@ -22,39 +22,81 @@ export const MultiVariateSplit = (props: any) => {
             </div>, 'multiVariateSplit', 'Multivariate Split');
     };
 
+    const [branchCount, setBranchCount] = useState(0);
+
     const conditionEvalSelect: DropDown[] = [
         {value: 'evalIm', label: 'Evaluate Immediately', children: null},
         {value: 'evalPr', label: 'Evaluate Periodically', children: null},
         {value: 'evalMn', label: 'Evaluate Monthly', children: null}
-    ]
+    ];
+    const getBranchStyle = (key: number) => {
+        switch (key) {
+            case 0:
+                return 'orange';
+            case 1:
+                return 'blue';
+            case 2:
+                return 'green';
+            case 3:
+                return 'red';
+            default:
+                return '#bbb';
+
+        }
+    };
+
+    const [arr, setArr] = useState<Number[]>([]);
+
+    useEffect(() => {
+        console.error(arr);
+    }, [branchCount, arr.length]);
+
+
+    const updateBranchCount = (opsType: string) => {
+        let tempObj = [...arr];
+        if (opsType === 'add') {
+            setBranchCount(branchCount + 1);
+            tempObj.push(1);
+        } else {
+            setBranchCount(branchCount - 1);
+            tempObj.pop();
+        }
+        setArr(tempObj);
+    }
+
     return <Form className={'multiVariateSplit'} name="multiVariateSplitForm" form={multiVariateSplitForm}
                  layout={'vertical'}
                  onFinish={saveMultiVariateSplitForm} autoComplete={'off'}>
-        <Form.List name={['multiVariateSplitFormObj', 'branch']}>
-            {(fields, {add, remove}) => (
-                <>
-                    {fields.map(({key, name, fieldKey, ...restField}) => (
-                        <Space key={key} style={{display: 'flex'}} align="center">
-                            <Form.Item label={null}
-                                       {...restField}
-                                       name={[name, 'name']}
-                                       fieldKey={[fieldKey, 'name']}
-                                       rules={[{required: true, message: 'Missing Branch Name'}]}>
-                                <Input placeholder={'Input branch name'}/>
-                            </Form.Item>
-                            <div className={'multiCloseIcon'}>
-                                <MinusCircleOutlined onClick={() => remove(name)}/>
-                            </div>
-                        </Space>
-                    ))}
-                    <Form.Item className='conBtn'>
-                        <Button type="link" onClick={() => add()} block icon={<PlusOutlined/>}>
-                            Add Another Branch
-                        </Button>
+        <div className='variableForm'>
+            {arr.map((value, index) => {
+                return <Space style={{display: 'flex'}} align="center">
+                    <Form.Item label={<div className='branchName'>
+                        <span className='dot' style={{backgroundColor: getBranchStyle(index % 4)}}/>
+                        <span>{`Branch ${String.fromCharCode(65 + index)}`}</span></div>}
+                               requiredMark={'optional'}
+                               name={['branch', `attr${String.fromCharCode(65 + index)}`]}
+                               rules={[{required: true, message: 'Missing Branch condition Attributes'}]}>
+                        <Select dropdownClassName='antSelect' style={{width: 221}}
+                                placeholder="select condition type"
+                                allowClear optionLabelProp="label">
+                            {conditionEvalSelect.map(value => {
+                                return <Option value={value.label} key={value.value}>{value.label}</Option>
+                            })}
+                        </Select>
                     </Form.Item>
-                </>
-            )}
-        </Form.List>
+                    <div className={'multiCloseIcon'}>
+                        <MinusCircleOutlined onClick={() => updateBranchCount('delete')}/>
+                    </div>
+                </Space>
+            })}
+            <Form.Item className='conBtn'>
+                <Button type="link" className='btn' onClick={() => updateBranchCount('add')} block
+                        icon={<PlusOutlined/>}
+                        disabled={branchCount === 4}>
+                    Add Another Branch
+                </Button>
+            </Form.Item>
+        </div>
         <Divider/>
         <Form.Item
             label={<div className='colFlex'><strong>Condition evaluation</strong>

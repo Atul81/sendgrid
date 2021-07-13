@@ -38,6 +38,7 @@ const importsRow = require('./audience/importsRow.json');
 const exportsData = require('./audience/exports.json');
 const automation = require('./campaigns/automation.json');
 const workFlow = require('./campaigns/workFlow.json');
+const cardData = require('./campaigns/cardData.json');
 const campaigns = require('./campaigns/campaigns.json');
 const campaignsForm = require('./campaigns/campaignsForm.json');
 const senders = require('./campaigns/senders.json');
@@ -62,6 +63,7 @@ module.exports = () => ({
     exportsData,
     automation,
     workFlow,
+    cardData,
     campaigns,
     campaignsForm,
     senders,

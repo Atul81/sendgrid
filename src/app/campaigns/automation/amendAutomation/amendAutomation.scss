@@ -231,15 +231,34 @@
 
     .inlineFlexContent {
       display: flex;
-      justify-content: space-evenly;
+      justify-content: space-around;
       @extend .removeBtnRad;
     }
   }
 
   .multiVariateSplit {
-    .multiCloseIcon {
+    .variableForm {
       .anticon svg {
-        margin-bottom: 22px;
+        margin-bottom: 0;
+      }
+
+      .btn {
+        .anticon svg {
+          margin-bottom: 4px;
+        }
+      }
+
+      .branchName {
+        display: flex;
+
+        .dot {
+          height: 8px;
+          width: 8px;
+          border-radius: 50%;
+          display: inline-block;
+          margin-top: 8px;
+          margin-right: 8px;
+        }
       }
     }
 

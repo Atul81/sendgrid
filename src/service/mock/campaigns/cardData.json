@@ -1,0 +1,9 @@
+[
+  {
+    "id": 3,
+    "4-sendEmail": {
+      "senderEmailAddress": "test-example1@gmail.com",
+      "description": "testDesc"
+    }
+  }
+]

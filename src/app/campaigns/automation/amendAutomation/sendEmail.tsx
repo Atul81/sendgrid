@@ -4,7 +4,7 @@ import {CheckOutlined, SearchOutlined} from "@ant-design/icons";
 import './amendAutomation.scss';
 import Paragraph from "antd/es/typography/Paragraph";
 import {DropDown} from "../../../../utils/Interfaces";
-import {getAllServerCall} from "../../../../service/serverCalls/mockServerRest";
+import {getAllServerCall, getObjectById} from "../../../../service/serverCalls/mockServerRest";
 import {GET_SERVER_ERROR} from "../../../../utils/common";
 
 export const SendEmail = (props: any) => {
@@ -14,7 +14,7 @@ export const SendEmail = (props: any) => {
 
     const saveSendEmailForm = (values: any) => {
         props.createCard(
-            <div style={{display: "flex", justifyContent:'center', flexDirection:'column'}}>
+            <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
                 <Button>Configure Message</Button>
                 <Paragraph>Sender Address: {values.sendEmailObj.sender}</Paragraph>
             </div>, 'sendEmail', 'Send an email');
@@ -26,6 +26,20 @@ export const SendEmail = (props: any) => {
         return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
     };
     useEffect(() => {
+        if (props.modalData) {
+            getObjectById(props.modalData.workFlowId, 'cardData').then(async getSenEmailAsync => {
+                let sentEmailRes = await getSenEmailAsync.json();
+                if (sentEmailRes && sentEmailRes[props.modalData.cardId]) {
+                    sentEmailRes = sentEmailRes[props.modalData.cardId];
+                    sendEmailForm.setFieldsValue({
+                        sendEmailObj: {
+                            sender: sentEmailRes.senderEmailAddress,
+                            description: sentEmailRes.description
+                        }
+                    });
+                }
+            });
+        }
         getAllServerCall('senders').then(async allSendersAsync => {
             let allSendersRes = await allSendersAsync.json();
             let tempItrObj: DropDown[] = [];

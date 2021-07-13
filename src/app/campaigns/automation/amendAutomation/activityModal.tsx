@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, message, Modal, Select} from "antd";
 import './amendAutomation.scss';
 import Paragraph from "antd/es/typography/Paragraph";
@@ -10,12 +10,17 @@ import {MultiVariateSplit} from "./multiVariateSplit";
 
 export const ActivityModal = (props: any) => {
 
-    const [showSelect, setShowSelect] = useState(props.activitySelection);
+    const [showSelect, setShowSelect] = useState(true);
     const handleCancel = () => {
         props.closeModal();
     };
 
-    const [selectedValue, setSelectedValue] = useState<SelectValue>(undefined);
+    useEffect(() => {
+        if (props.selectedCardType) {
+            setShowSelect(false);
+        }
+    }, [props.selectedCardType])
+    const [selectedValue, setSelectedValue] = useState<SelectValue>(props.selectedCardType || undefined);
     const [selectedTitle, setSelectedTitle] = useState<string>('');
     const {Option} = Select;
 
@@ -36,7 +41,7 @@ export const ActivityModal = (props: any) => {
     const switchActivityModal = () => {
         switch (selectedValue) {
             case 'sendEmail' :
-                return <SendEmail createCard={getCardContent}/>;
+                return <SendEmail modalData={props.modalData} createCard={getCardContent}/>;
             case 'wait':
                 return <Wait createCard={getCardContent}/>;
             case 'yesNoSplit':
