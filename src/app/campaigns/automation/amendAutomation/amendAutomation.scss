@@ -170,6 +170,11 @@
 }
 
 .activitySelection {
+  .closeIcon {
+    .anticon svg {
+      margin-bottom: 24px;
+    }
+  }
 
   .dot {
     height: 20px;
@@ -206,7 +211,7 @@
       display: flex;
 
       .ant-form-item {
-        min-width: 340px;
+        min-width: 315px;
         margin-right: 22px;
       }
     }
@@ -234,6 +239,12 @@
       justify-content: space-around;
       @extend .removeBtnRad;
     }
+  }
+
+  .condition {
+    width: 171px;
+    margin-bottom: 8px;
+    margin-left: -18px;
   }
 
   .multiVariateSplit {
@@ -267,9 +278,50 @@
     }
 
     .conBtn {
-      width: 45%;
-      margin-bottom: 8px;
-      margin-left: -84px;
+      @extend .condition;
+    }
+  }
+
+
+  .yesNoSplit {
+    .addCon {
+      @extend .condition;
+      width: 150px;
+    }
+
+    .remove {
+      @extend .closeIcon;
+    }
+  }
+
+  .randomSplit {
+    .ant-space-item {
+      width: 678px;
+
+      .ant-form-item-label {
+        margin-right: 60%;
+      }
+
+      .closeIcon {
+        .anticon svg {
+          margin-bottom: 20px;
+          margin-top: 0;
+        }
+      }
+    }
+
+    .conPer {
+      .btn {
+        @extend .condition;
+      }
+      .ant-form-item-control-input-content{
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      strong{
+        align-self: center;
+      }
     }
   }
 }

@@ -2,7 +2,7 @@ import React from "react";
 import {Button, Form, Input, Radio, Select} from "antd";
 import Paragraph from "antd/es/typography/Paragraph";
 import {CheckOutlined} from "@ant-design/icons";
-import {DropDown} from "../../../../utils/Interfaces";
+import {DropDown} from "../../../../../utils/Interfaces";
 
 export const Wait = (props: any) => {
     const [waitForm] = Form.useForm();

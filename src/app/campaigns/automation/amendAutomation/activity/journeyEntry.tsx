@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import {Button, Form, Input, Modal, Radio, Select, Space, Tooltip} from "antd";
 import {CheckOutlined, CloseOutlined, MinusCircleOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
-import {DropDown} from "../../../../utils/Interfaces";
-import './amendAutomation.scss';
+import {DropDown} from "../../../../../utils/Interfaces";
+import '../amendAutomation.scss';
 
 export const JourneyEntryModal = (props: any) => {
 

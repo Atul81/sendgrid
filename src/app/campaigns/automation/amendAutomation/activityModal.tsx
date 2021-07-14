@@ -3,10 +3,12 @@ import {Button, message, Modal, Select} from "antd";
 import './amendAutomation.scss';
 import Paragraph from "antd/es/typography/Paragraph";
 import {SelectValue} from "antd/es/select";
-import {SendEmail} from "./sendEmail";
-import {Wait} from "./wait";
-import {YesNoSplit} from "./yesNoSplit";
-import {MultiVariateSplit} from "./multiVariateSplit";
+import {SendEmail} from "./activity/sendEmail";
+import {Wait} from "./activity/wait";
+import {YesNoSplit} from "./activity/yesNoSplit";
+import {MultiVariateSplit} from "./activity/multiVariateSplit";
+import {Holdout} from "./activity/holdout";
+import {RandomSplit} from "./activity/randomSplit";
 
 export const ActivityModal = (props: any) => {
 
@@ -48,20 +50,24 @@ export const ActivityModal = (props: any) => {
                 return <YesNoSplit createCard={getCardContent}/>;
             case 'multiVariateSplit':
                 return <MultiVariateSplit createCard={getCardContent}/>;
+            case 'holdOut':
+                return <Holdout createCard={getCardContent}/>;
+            case 'randomSplit':
+                return <RandomSplit createCard={getCardContent}/>;
             default:
+                setSelectedValue(undefined);
                 message.error('No Implementation for selected type', 0.7).then((onF) => console.log(onF));
         }
     };
 
-    // Add svg image in the title
-    return <Modal wrapClassName='activitySelection' width={showSelect ? 600 : 750}
+    return <Modal wrapClassName='activitySelection' width={showSelect ? 700 : 700}
                   title={showSelect ? 'Add Activity' : selectedTitle}
                   visible={props.openModal}
                   onCancel={handleCancel} destroyOnClose={true} footer={null} centered>
         {showSelect ?
             <div className='selectDiv'>
                 <Select dropdownClassName='antSelect' style={{width: '84%'}} placeholder="select one activity"
-                        allowClear onChange={onSelectChange} optionLabelProp="label">
+                        allowClear onChange={onSelectChange} value={selectedValue} optionLabelProp="label">
                     <Option value="sendEmail" label="Send an Email">
                         <div className="selectionBox">
                             <img src={'/assets/icons/icon-send-email.svg'}
@@ -89,7 +95,7 @@ export const ActivityModal = (props: any) => {
                                  alt="icon"/>
                             <div className='text'>
                                 <Paragraph strong>Yes/No Split</Paragraph>
-                                <Paragraph>Sends participants down one of two paths based on certain criteria. For
+                                <Paragraph>Sends participants down one of two paths based on certain criteria. \n For
                                     example you can send all participants who read an email down one path, and everyone
                                     else
                                     down the other path.</Paragraph>
@@ -128,7 +134,7 @@ export const ActivityModal = (props: any) => {
                         </div>
                     </Option>
                 </Select>
-                <Button type={'primary'} onClick={onSelectDone}>Done</Button>
+                <Button type={'primary'} disabled={!selectedValue} onClick={onSelectDone}>Done</Button>
             </div> : switchActivityModal()
         }
     </Modal>

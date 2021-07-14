@@ -18,7 +18,7 @@ import customNodeTwo from "./customNodeTwo";
 import plusNode from "./plusNode";
 import Paragraph from "antd/es/typography/Paragraph";
 import {GET_SERVER_ERROR, POST_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../../utils/common";
-import {JourneyEntryModal} from "./journeyEntry";
+import {JourneyEntryModal} from "./activity/journeyEntry";
 import {ActivityModal} from "./activityModal";
 
 export const AmendAutomationPage = (props) => {

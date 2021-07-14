@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Button, Form, Input, message, Select} from "antd";
 import {CheckOutlined, SearchOutlined} from "@ant-design/icons";
-import './amendAutomation.scss';
+import '../amendAutomation.scss';
 import Paragraph from "antd/es/typography/Paragraph";
-import {DropDown} from "../../../../utils/Interfaces";
-import {getAllServerCall, getObjectById} from "../../../../service/serverCalls/mockServerRest";
-import {GET_SERVER_ERROR} from "../../../../utils/common";
+import {DropDown} from "../../../../../utils/Interfaces";
+import {getAllServerCall, getObjectById} from "../../../../../service/serverCalls/mockServerRest";
+import {GET_SERVER_ERROR} from "../../../../../utils/common";
 
 export const SendEmail = (props: any) => {
 

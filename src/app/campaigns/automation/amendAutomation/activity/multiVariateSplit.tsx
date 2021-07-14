@@ -3,8 +3,8 @@ import {Button, Divider, Form, Input, Select, Space} from "antd";
 import {CheckOutlined, MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
 import Paragraph from "antd/es/typography/Paragraph";
-import {DropDown} from "../../../../utils/Interfaces";
-import './amendAutomation.scss';
+import {DropDown} from "../../../../../utils/Interfaces";
+import '../amendAutomation.scss';
 
 export const MultiVariateSplit = (props: any) => {
 
@@ -74,7 +74,7 @@ export const MultiVariateSplit = (props: any) => {
                         <span className='dot' style={{backgroundColor: getBranchStyle(index % 4)}}/>
                         <span>{`Branch ${String.fromCharCode(65 + index)}`}</span></div>}
                                requiredMark={'optional'}
-                               name={['branch', `attr${String.fromCharCode(65 + index)}`]}
+                               name={['multiVariateSplitFormObj', `attr${String.fromCharCode(65 + index)}`]}
                                rules={[{required: true, message: 'Missing Branch condition Attributes'}]}>
                         <Select dropdownClassName='antSelect' style={{width: 221}}
                                 placeholder="select condition type"

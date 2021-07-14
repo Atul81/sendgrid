@@ -3,7 +3,7 @@ import {Button, Form, Input, Select, Space} from "antd";
 import Paragraph from "antd/es/typography/Paragraph";
 import Title from "antd/es/typography/Title";
 import {CheckOutlined, MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
-import {DropDown} from "../../../../utils/Interfaces";
+import {DropDown} from "../../../../../utils/Interfaces";
 
 export const YesNoSplit = (props: any) => {
 
@@ -42,7 +42,7 @@ export const YesNoSplit = (props: any) => {
         <Form.Item
             label={<strong>Choose a journey message activity and event </strong>}>
             <Form.Item name={['yesNoSplitFormObj', 'sender']} noStyle>
-                <Select showSearch placeholder="Select Sender's Email" allowClear={true}>
+                <Select showSearch placeholder="select journey message activity and event" style={{width: 600}} allowClear={true}>
                     {journeyMessage.map(value => {
                         return <Option value={value.label} key={value.value}>{value.label}</Option>
                     })}
@@ -59,18 +59,18 @@ export const YesNoSplit = (props: any) => {
                                        name={[name, 'attr']}
                                        fieldKey={[fieldKey, 'attr']}
                                        rules={[{required: true, message: 'Missing Condition'}]}>
-                                <Select showSearch placeholder="Select Sender's Email" allowClear={true}>
+                                <Select style={{width: 600}} showSearch placeholder="select journey message activity and event" allowClear={true}>
                                     {conditionsSelect.map(value => {
                                         return <Option value={value.label} key={value.value}>{value.label}</Option>
                                     })}
                                 </Select>
                             </Form.Item>
-                            <div className={'closeIcon'}>
+                            <div className={'remove'}>
                                 <MinusCircleOutlined onClick={() => remove(name)}/>
                             </div>
                         </Space>
                     ))}
-                    <Form.Item style={{width: '45%'}}>
+                    <Form.Item className='addCon'>
                         <Button type="link" onClick={() => add()} block icon={<PlusOutlined/>}>
                             Add Condition
                         </Button>
