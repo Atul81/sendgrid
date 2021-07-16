@@ -72,7 +72,7 @@
     }
   }
 
-  .react-flow__node-default, .react-flow__node-input, .react-flow__node-output {
+  .react-flow__node-default, .react-flow__node-input, .react-flow__node-output, .react-flow__node-multiBranchNode {
     padding: 0;
     width: 196px;
     border-radius: 0;
@@ -137,6 +137,15 @@
         .ant-divider-horizontal {
           margin: 0 0 4px;
           padding: 0;
+        }
+
+        .dot {
+          height: 4px;
+          width: 4px;
+          border-radius: 50%;
+          display: inline-block;
+          margin-top: 4px;
+          margin-right: 1px;
         }
       }
     }
@@ -314,12 +323,14 @@
       .btn {
         @extend .condition;
       }
-      .ant-form-item-control-input-content{
+
+      .ant-form-item-control-input-content {
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
       }
-      strong{
+
+      strong {
         align-self: center;
       }
     }

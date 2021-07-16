@@ -12,7 +12,7 @@ export const Wait = (props: any) => {
         props.createCard(
             <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
                 <Paragraph>Wait for: {values.waitObj.timeAmount} {values.waitObj.timeUnit}</Paragraph>
-            </div>, 'wait', 'Wait');
+            </div>, 'wait', 'Wait', '/assets/icons/icon-wait.svg', null);
     }
     const radioStyle = {
         display: 'block',

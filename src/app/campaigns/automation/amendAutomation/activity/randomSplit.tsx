@@ -16,7 +16,7 @@ export const RandomSplit = (props: any) => {
                 {values.multiVariateSplitFormObj.branch.map((itr: any) => {
                     return <Paragraph><span className="dot"/>{itr}</Paragraph>
                 })}
-            </div>, 'multiVariateSplit', 'Multivariate Split');
+            </div>, 'randomSplit', 'Random Split', '/assets/icons/icon-random-split.svg', branchCount);
     };
 
     const [branchCount, setBranchCount] = useState(0);

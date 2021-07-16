@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Button, Divider, Form, Input, Select, Space} from "antd";
 import {CheckOutlined, MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
-import Title from "antd/es/typography/Title";
 import Paragraph from "antd/es/typography/Paragraph";
 import {DropDown} from "../../../../../utils/Interfaces";
 import '../amendAutomation.scss';
@@ -14,12 +13,10 @@ export const MultiVariateSplit = (props: any) => {
     const saveMultiVariateSplitForm = (values: any) => {
         props.createCard(
             <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
-                <Title level={5}>Evaluate Immediately</Title>
-                <Divider/>
-                {values.multiVariateSplitFormObj.branch.map((itr: any) => {
-                    return <Paragraph><span className="dot"/>{itr}</Paragraph>
+                {Object.keys(values.multiVariateSplitFormObj.branch).map((itr: any, index: number) => {
+                    return <Paragraph> <span className='dot' style={{backgroundColor: getBranchStyle(index % 4)}}/>Branch {itr}</Paragraph>
                 })}
-            </div>, 'multiVariateSplit', 'Multivariate Split');
+            </div>, 'multiVariateSplit', 'Multivariate Split', '/assets/icons/icon-multivariate-split.svg', Object.keys(values.multiVariateSplitFormObj.branch));
     };
 
     const [branchCount, setBranchCount] = useState(0);
@@ -74,7 +71,7 @@ export const MultiVariateSplit = (props: any) => {
                         <span className='dot' style={{backgroundColor: getBranchStyle(index % 4)}}/>
                         <span>{`Branch ${String.fromCharCode(65 + index)}`}</span></div>}
                                requiredMark={'optional'}
-                               name={['multiVariateSplitFormObj', `attr${String.fromCharCode(65 + index)}`]}
+                               name={['multiVariateSplitFormObj', 'branch', `${String.fromCharCode(65 + index)}`]}
                                rules={[{required: true, message: 'Missing Branch condition Attributes'}]}>
                         <Select dropdownClassName='antSelect' style={{width: 221}}
                                 placeholder="select condition type"

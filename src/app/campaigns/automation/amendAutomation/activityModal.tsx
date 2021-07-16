@@ -35,8 +35,8 @@ export const ActivityModal = (props: any) => {
         setShowSelect(false);
     };
 
-    const getCardContent = (content: any, nodeType: string, nodeTitle: string) => {
-        props.createNode(content, nodeType, nodeTitle);
+    const getCardContent = (content: any, nodeType: string, nodeTitle: string, nodeSvg: string, branchCount: number) => {
+        props.createNode(content, nodeType, nodeTitle, nodeSvg, branchCount);
         handleCancel();
     };
 

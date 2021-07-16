@@ -13,8 +13,7 @@ import {CheckOutlined, CloseOutlined, StepBackwardOutlined} from "@ant-design/ic
 import {addNewObject, editObjectById, getObjectById} from "../../../../service/serverCalls/mockServerRest";
 import {updateBreadcrumb} from "../../../../store/actions/root";
 import {useDispatch, useSelector} from "react-redux";
-import customNode from "./customNode";
-import customNodeTwo from "./customNodeTwo";
+import multiBranchNode from "./multiBranchNode";
 import plusNode from "./plusNode";
 import Paragraph from "antd/es/typography/Paragraph";
 import {GET_SERVER_ERROR, POST_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../../utils/common";
@@ -351,26 +350,28 @@ export const AmendAutomationPage = (props) => {
     }, [reactFlowInstance, elements.length]);
 
     const nodeTypes = {
-        customNode: customNode,
-        customNodeTwo: customNodeTwo,
+        multiBranchNode: multiBranchNode,
         plusNode: plusNode
     };
 
-    const createNodeFromActivity = (nodeContent, nodeType, nodeTitle) => {
-        console.log(nodeContent, '====>', nodeType);
+    const createNodeFromActivity = (nodeContent, nodeType, nodeTitle, nodeSvg, branchCount) => {
         const position = reactFlowInstance.project({
             x: returnCoordinates(),
             y: returnCoordinates()
         });
         const newNode = {
-            id: getId(),
+            id: getId().concat(`-${nodeType}`),
             position,
-            type: 'default',
-            data: {
+            type: nodeType === 'multiVariateSplit' ? 'multiBranchNode' : 'default',
+            data: nodeType === 'multiVariateSplit' ? {
+                nodeContent: nodeContent,
+                nodeTitle: nodeTitle,
+                nodeSvg: nodeSvg,
+                branchCount: branchCount
+            } : {
                 label:
-                    <Card title={<div className='titleContent'><img style={{width: 20}}
-                                                                    src={`/assets/images/logoCollapsed.svg`}
-                                                                    alt="icon"/><span>{nodeTitle}</span></div>}
+                    <Card title={<div className='titleContent'>
+                        <img style={{width: 20}} src={nodeSvg} alt="icon"/><span>{nodeTitle}</span></div>}
                           extra={<CloseOutlined/>}>
                         {nodeContent}
                     </Card>

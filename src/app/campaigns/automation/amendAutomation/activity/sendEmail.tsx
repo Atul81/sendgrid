@@ -17,7 +17,7 @@ export const SendEmail = (props: any) => {
             <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
                 <Button>Configure Message</Button>
                 <Paragraph>Sender Address: {values.sendEmailObj.sender}</Paragraph>
-            </div>, 'sendEmail', 'Send an email');
+            </div>, 'sendEmail', 'Send an email', '/assets/icons/icon-send-email.svg', null);
     }
 
     const [allSenders, setAllSenders] = useState<DropDown[]>([]);
