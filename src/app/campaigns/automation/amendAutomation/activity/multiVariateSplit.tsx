@@ -47,7 +47,6 @@ export const MultiVariateSplit = (props: any) => {
     const [arr, setArr] = useState<Number[]>([]);
 
     useEffect(() => {
-        console.error(arr);
     }, [branchCount, arr.length]);
 
 

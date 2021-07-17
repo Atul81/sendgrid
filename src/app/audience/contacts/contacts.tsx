@@ -75,7 +75,7 @@ export const ContactsPage: any = () => {
             }
             setAllSegments(data);
         }).catch(reason => {
-            console.log(reason);
+            console.error(reason);
             message.error('Unable to fetch segments data', 0.8).then(() => {
             });
         });
@@ -89,7 +89,7 @@ export const ContactsPage: any = () => {
             }
             setAllTags(data);
         }).catch(reason => {
-            console.log(reason);
+            console.error(reason);
             message.error('Unable to fetch tags data', 0.8).then(() => {
             });
         });
@@ -133,7 +133,7 @@ export const ContactsPage: any = () => {
             setContactDS(data);
             setContactDSOps(data);
         }).catch(reason => {
-            console.log(reason);
+            console.error(reason);
             message.error(GET_SERVER_ERROR, 0.8).then(() => {
             });
         });
@@ -267,7 +267,7 @@ export const ContactsPage: any = () => {
                 setEditPage(true);
             }
         }).catch(reason => {
-            console.log(reason);
+            console.error(reason);
             message.error(GET_SERVER_ERROR, 0.8).then(() => {
             });
         });
@@ -362,7 +362,7 @@ export const ContactsPage: any = () => {
                         cancelQuickAdd();
                     }
                 }).catch(reason => {
-                    console.log(reason);
+                    console.error(reason);
                     setServiceInProgress(false);
                     message.error(POST_SERVER_ERROR, 0.8).then(() => {
                     });
@@ -426,13 +426,13 @@ export const ContactsPage: any = () => {
                                 populateAllContacts();
                             }
                         }).catch(reason => {
-                            console.log(reason);
+                            console.error(reason);
                             message.error(PUT_SERVER_ERROR, 0.8).then(() => {
                             });
                         });
                     }
                 }).catch(reason => {
-                    console.log(reason);
+                    console.error(reason);
                     message.error(GET_SERVER_ERROR, 0.8).then(() => {
                     });
                 });

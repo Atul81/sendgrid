@@ -1,4 +1,4 @@
-import {Avatar, Button, Card, Divider, Input, message, Modal, Typography} from "antd";
+import {Button, Card, Divider, Input, message, Modal, Typography} from "antd";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import ReactFlow, {
     addEdge,
@@ -12,7 +12,7 @@ import './amendAutomation.scss';
 import {CheckOutlined, CloseOutlined, StepBackwardOutlined} from "@ant-design/icons";
 import {addNewObject, editObjectById, getObjectById} from "../../../../service/serverCalls/mockServerRest";
 import {updateBreadcrumb} from "../../../../store/actions/root";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import multiBranchNode from "./multiBranchNode";
 import plusNode from "./plusNode";
 import Paragraph from "antd/es/typography/Paragraph";
@@ -25,9 +25,8 @@ export const AmendAutomationPage = (props) => {
     const [cardType, setCardType] = useState('');
     const [elements, setElements] = useState([]);
     const dispatch = useDispatch();
-    const nodeTypeRedux = useSelector((state) => state.root.nodeType);
     const openType = (props.amendObj && (props.amendObj.viewType === 'edit' || props.amendObj.viewType === 'create'));
-
+    let elementsTemp = [];
     useEffect(() => {
         dispatch(updateBreadcrumb(['Campaigns', 'Automation', `Modify Automation: ${props.amendObj.name}`]));
         if (props.amendObj.viewType !== 'create' && props.amendObj.key) {
@@ -66,7 +65,8 @@ export const AmendAutomationPage = (props) => {
                                                 <img style={{width: 20}}
                                                      src={`/assets/icons/icon-send-email.svg`}
                                                      alt="icon"/><span>Send an Email</span>
-                                            </div>} extra={<CloseOutlined/>}>
+                                            </div>} extra={<CloseOutlined
+                                                onClick={(e) => deleteNodeClick(e, itr.id)}/>}>
                                                 <div style={{
                                                     display: "flex",
                                                     justifyContent: 'center',
@@ -89,7 +89,8 @@ export const AmendAutomationPage = (props) => {
                                                 <img style={{width: 20}}
                                                      src={`/assets/icons/icon-wait.svg`}
                                                      alt="icon"/><span>Wait</span>
-                                            </div>} extra={<CloseOutlined/>}>
+                                            </div>} extra={<CloseOutlined
+                                                onClick={(e) => deleteNodeClick(e, itr.id)}/>}>
                                                 <div style={{
                                                     display: "flex",
                                                     justifyContent: 'center',
@@ -148,8 +149,10 @@ export const AmendAutomationPage = (props) => {
     const [modalData, setModalData] = useState({
         workFlowId: props.amendObj.key,
         cardId: '',
-        currentElement: {}
+        currentElement: {},
+        nodeTitle: ''
     });
+    const orphanChildIds = useRef([]);
     const nodeStrokeColor = (n) => {
         if (n.style?.background) {
             return n.style.background;
@@ -170,7 +173,6 @@ export const AmendAutomationPage = (props) => {
         if (n.style?.background) {
             return n.style.background;
         }
-
         return '#fff';
     };
 
@@ -186,6 +188,11 @@ export const AmendAutomationPage = (props) => {
                 cancelText: 'No',
                 onOk() {
                     setElements((els) => removeElements(elementsToRemove, els));
+                    orphanChildIds.current.forEach(itr => {
+                        let orphanEls = new Array({id: itr});
+                        setElements((els) => removeElements(orphanEls, els));
+                    });
+                    orphanChildIds.current = [];
                 },
                 onCancel() {
                     console.log('Node deletion cancelled');
@@ -193,24 +200,19 @@ export const AmendAutomationPage = (props) => {
             });
         }
     };
+
     const onConnect = (params) => setElements((els) => addEdge(params, els));
-
-    const returnCoordinates = () => {
-        return Math.floor(Math.random() * (400 - 40) + 40)
-    }
-
-    const {Meta} = Card;
 
     const getId = () => {
         let newNodeId = String(parseInt(id, 10) + 1);
-        setId(newNodeId);
+        setId(id + 1);
         return `${newNodeId}`;
     };
 
 
     const onElementClick = (event, element) => {
         setElementSelected(element);
-        if (element.data && (element.data.label || element.data.branchCount)) {
+        if (element.type === 'plusNode' || (element.data && (element.data.label || element.data.branchCount))) {
             let elementType = element.id.split("-")[1];
             switch (elementType) {
                 case 'journeyEntry':
@@ -220,9 +222,32 @@ export const AmendAutomationPage = (props) => {
                     setActivityModal(true);
                     break;
                 case "sendEmail":
+                    setNodeTitle('Send an Email');
+                    setCardType(elementType);
+                    setActivityModal(true);
+                    break;
                 case "wait":
+                    setNodeTitle('Wait');
+                    setCardType(elementType);
+                    setActivityModal(true);
+                    break;
                 case "yesNoSplit":
+                    setNodeTitle('Yes/No Split');
+                    setCardType(elementType);
+                    setActivityModal(true);
+                    break;
                 case "multiVariateSplit":
+                    setNodeTitle('Multivariate Split');
+                    setCardType(elementType);
+                    setActivityModal(true);
+                    break;
+                case "randomSplit":
+                    setNodeTitle('Random Split');
+                    setCardType(elementType);
+                    setActivityModal(true);
+                    break;
+                case "holdout":
+                    setNodeTitle('Holdout');
                     setCardType(elementType);
                     setActivityModal(true);
                     break;
@@ -230,16 +255,20 @@ export const AmendAutomationPage = (props) => {
                     message.error('Not implemented Yet', 0.5).then(_ => {
                     });
             }
-            setNodeTitle(element.data.label.props ? element.data.label.props.title : element.data.label ? element.data.label : element.data.nodeTitle);
         } else {
-            setNodeTitle("");
             setIsEdgeModalVisible(true);
         }
     };
 
     useEffect(() => {
-        setModalData({...modalData, cardId: elementSelected.id, currentElement: elementSelected});
-    }, [elementSelected])
+        let id = elementSelected.id.split("-")[1];
+        setModalData({
+            ...modalData,
+            cardId: (id !== 'addActivity' && id !== 'journeyEntry') ? elementSelected.id : undefined,
+            currentElement: elementSelected,
+            nodeTitle: nodeTitle
+        });
+    }, [elementSelected, nodeTitle, cardType])
 
     const handleCancel = () => {
         setJourneyModal(false);
@@ -295,71 +324,34 @@ export const AmendAutomationPage = (props) => {
         }, [reactFlowInstance]
     );
 
-    const [dragEvent, setDragEvent] = useState(null);
-
-    const onDrop = (event) => {
-        event.preventDefault();
-        setNewDraggedNode(true);
-        setDragEvent(event);
-    };
-
-    const [newDraggedNode, setNewDraggedNode] = useState(false);
-
-    const onDragOver = (event) => {
-        event.preventDefault();
-        event.dataTransfer.dropEffect = 'move';
-    };
-
-    const eventAfterDrag = () => {
-        if (nodeTitle !== '') {
-            const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-            const position = reactFlowInstance.project({
-                x: dragEvent.clientX - reactFlowBounds.left,
-                y: dragEvent.clientY - reactFlowBounds.top,
-            });
-            const newNode = {
-                id: getId(),
-                position,
-                type: nodeTypeRedux,
-                data: {
-                    label:
-                        <Card size={"small"} bordered={false}>
-                            <Meta avatar={<Avatar
-                                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
-                                  title={nodeTitle}
-                                  description={<Typography className={'columnFlex'}>
-                                      <strong style={{fontSize: 10}}>Evaluate every: 3 hours</strong>
-                                      <Divider/>
-                                      <Paragraph>Segment: all</Paragraph>
-                                  </Typography>}/>
-                        </Card>
-                }
-            };
-            setNewDraggedNode(false);
-            setElements((es) => es.concat(newNode));
-            setDragEvent(null);
-        } else {
-            message.error("Node Title required").then(() => {
-            });
-        }
-    };
-
     useEffect(() => {
         if (reactFlowInstance && elements.length > 0) {
             reactFlowInstance.fitView();
         }
-    }, [reactFlowInstance, elements.length]);
+        if (elementsTemp.length > 0) {
+            setElements(elementsTemp);
+        }
+    }, [reactFlowInstance, elements.length, elementsTemp, orphanChildIds]);
 
     const nodeTypes = {
         multiBranchNode: multiBranchNode,
         plusNode: plusNode
     };
 
+    const deleteNodeClick = (event, nodeId) => {
+        handleCancel();
+        onElementsRemove(new Array({id: nodeId}));
+        orphanChildIds.current = elements.filter(value => {
+            return value.source && value.source === nodeId;
+        }).map(val => val.target);
+        event.stopPropagation();
+    };
+
     const createNodeFromActivity = (nodeContent, nodeType, nodeTitle, nodeSvg, branchCount, existingNodeId) => {
-        const position = reactFlowInstance.project({
-            x: existingNodeId ? modalData.currentElement. returnCoordinates(),
-            y: returnCoordinates()
-        });
+        const position = existingNodeId ? modalData.currentElement.position : {
+            x: Math.floor(modalData.currentElement.position.x + Math.random() * 70),
+            y: Math.floor(modalData.currentElement.position.y + Math.random() * 110)
+        };
         let newNodeId = existingNodeId ? existingNodeId : getId().concat(`-${nodeType}`);
         const newNode = {
             id: newNodeId,
@@ -375,14 +367,60 @@ export const AmendAutomationPage = (props) => {
                 label:
                     <Card title={<div className='titleContent'>
                         <img style={{width: 20}} src={nodeSvg} alt="icon"/><span>{nodeTitle}</span></div>}
-                          extra={<CloseOutlined/>}>
+                          extra={<CloseOutlined onClick={(e) => deleteNodeClick(e, newNodeId)}/>}>
                         {nodeContent}
                     </Card>
             }
         };
-        console.error(newNode);
         setElements((es) => es.concat(newNode));
+        elementsTemp = [...elements];
+        elements.push(newNode);
+        if (!existingNodeId) {
+            createTargetEdgeNode(newNodeId, elementSelected.id, null);
+            createSourceEdgeNode(newNodeId, nodeType, branchCount, position);
+        }
         setNodeTitle("");
+    };
+    const createSourceEdgeNode = (sourceId, nodeType, branchCount, position) => {
+        if (nodeType === 'multiVariateSplit' || nodeType === 'randomSplit' || nodeType === 'yesNoSplit') {
+            let counter = 0;
+            while (counter < branchCount) {
+                createAddActivityNode(sourceId, `srcToAct${counter}`, position, counter);
+                counter++;
+            }
+        } else {
+            createAddActivityNode(sourceId, null, position, 0);
+        }
+    };
+
+    const createAddActivityNode = (sourceId, sourceHandler, oldPosition, counter) => {
+        const position = {
+            x: Math.floor(oldPosition.x + Math.random() * 70),
+            y: Math.floor(oldPosition.y + Math.random() * 110)
+        };
+        let newNodeId = String(parseInt(getId(), 10) + counter).concat(`-addActivity`);
+        const activityNode = {
+            id: newNodeId,
+            position,
+            type: 'plusNode'
+        };
+        setElements((es) => es.concat(activityNode));
+        elementsTemp = [...elements];
+        elements.push(activityNode);
+        createTargetEdgeNode(newNodeId, sourceId, sourceHandler)
+    }
+
+    const createTargetEdgeNode = (targetId, sourceId, sourceHandler) => {
+        let edgeNode = {
+            "source": sourceId,
+            "sourceHandle": sourceHandler,
+            "target": targetId,
+            "targetHandle": `plusToNode`,
+            "id": `reactflow__edge-src${sourceId}-tr${targetId}`
+        }
+        setElements((es) => es.concat(edgeNode));
+        elementsTemp = [...elements];
+        elements.push(edgeNode);
     };
     return (
         <div className='amendAutomation pageLayout'>
@@ -401,12 +439,6 @@ export const AmendAutomationPage = (props) => {
                 <Input placeholder="New Edge Title"
                        onChange={(inpEvent) => setEdgeTitle(inpEvent.target.value)}/>
             </Modal>
-            <Modal title="Enter Node Title" centered visible={newDraggedNode}
-                   onOk={eventAfterDrag} destroyOnClose={true}
-                   onCancel={() => setNewDraggedNode(false)} width={300}>
-                <Input placeholder="New Automation Name"
-                       onChange={(inpEvent) => setNodeTitle(inpEvent.target.value)}/>
-            </Modal>
             {isJourneyModal ? <JourneyEntryModal openModal={isJourneyModal} closeModal={handleCancel}/> : null}
             {isActivityModal ?
                 <ActivityModal selectedCardType={cardType}
@@ -418,9 +450,8 @@ export const AmendAutomationPage = (props) => {
                         <ReactFlow onElementClick={openType ? onElementClick : undefined} elements={elements}
                                    nodeTypes={nodeTypes} nodesDraggable={openType} nodesConnectable={openType}
                                    ref={reactFlowInstance} paneMoveable={openType}
-                                   onNodeDragStop={openType ? onNodeDragStop : undefined}
-                                   onDrop={openType ? onDrop : undefined} onDragOver={openType ? onDragOver : undefined}
                                    onElementsRemove={openType ? onElementsRemove : undefined}
+                                   onNodeDragStop={openType ? onNodeDragStop : undefined}
                                    onConnect={openType ? onConnect : undefined} onLoad={onLoad}
                                    deleteKeyCode={46}>
                             <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2}/>

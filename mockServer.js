@@ -8,5 +8,5 @@ server.use(middlewares);
 server.use(router);
 
 server.listen(3002, () => {
-    console.log('JSON Server is running')
+    console.error('JSON Server is running')
 });

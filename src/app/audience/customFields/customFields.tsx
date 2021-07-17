@@ -95,7 +95,7 @@ export const CustomFieldsPage: any = () => {
             setCustomFieldsDS(data);
             setCustomFieldsDSOps(data);
         }).catch(reason => {
-            console.log(reason);
+            console.error(reason);
             message.error(GET_SERVER_ERROR, 0.8).then(() => {
             });
         });
@@ -125,7 +125,7 @@ export const CustomFieldsPage: any = () => {
                 populateAllSegments();
             }
         }).catch(reason => {
-            console.log(reason);
+            console.error(reason);
         });
     }
     const onSearch = (searchParam: string) => {
@@ -162,7 +162,7 @@ export const CustomFieldsPage: any = () => {
                     message.success("Custom Field Data successfully updated", 0.6);
                 }
             }).catch(reason => {
-                console.log(reason);
+                console.error(reason);
                 message.error(PUT_SERVER_ERROR, 0.8).then(() => {
                 });
             });
@@ -177,7 +177,7 @@ export const CustomFieldsPage: any = () => {
                     message.success("Custom Field Data successfully created", 0.6);
                 }
             }).catch(reason => {
-                console.log(reason);
+                console.error(reason);
                 message.error(POST_SERVER_ERROR, 0.8).then(() => {
                 });
             });

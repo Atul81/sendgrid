@@ -23,7 +23,7 @@ export const ActivityModal = (props: any) => {
         }
     }, [props.selectedCardType])
     const [selectedValue, setSelectedValue] = useState<SelectValue>(props.selectedCardType || undefined);
-    const [selectedTitle, setSelectedTitle] = useState<string>('');
+    const [selectedTitle, setSelectedTitle] = useState<string>(props.modalData.nodeTitle || undefined);
     const {Option} = Select;
 
     const onSelectChange = (value: any, option: any) => {
@@ -35,8 +35,8 @@ export const ActivityModal = (props: any) => {
         setShowSelect(false);
     };
 
-    const getCardContent = (content: any, nodeType: string, nodeTitle: string, nodeSvg: string, branchCount: number) => {
-        props.createNode(content, nodeType, nodeTitle, nodeSvg, branchCount);
+    const getCardContent = (content: any, nodeType: string, nodeTitle: string, nodeSvg: string, branchCount: number, existingNodeId: string) => {
+        props.createNode(content, nodeType, nodeTitle, nodeSvg, branchCount, existingNodeId);
         handleCancel();
     };
 
@@ -45,15 +45,15 @@ export const ActivityModal = (props: any) => {
             case 'sendEmail' :
                 return <SendEmail modalData={props.modalData} createCard={getCardContent}/>;
             case 'wait':
-                return <Wait createCard={getCardContent}/>;
+                return <Wait modalData={props.modalData} createCard={getCardContent}/>;
             case 'yesNoSplit':
-                return <YesNoSplit createCard={getCardContent}/>;
+                return <YesNoSplit modalData={props.modalData} createCard={getCardContent}/>;
             case 'multiVariateSplit':
-                return <MultiVariateSplit createCard={getCardContent}/>;
+                return <MultiVariateSplit modalData={props.modalData} createCard={getCardContent}/>;
             case 'holdOut':
-                return <Holdout createCard={getCardContent}/>;
+                return <Holdout modalData={props.modalData} createCard={getCardContent}/>;
             case 'randomSplit':
-                return <RandomSplit createCard={getCardContent}/>;
+                return <RandomSplit modalData={props.modalData} createCard={getCardContent}/>;
             default:
                 setSelectedValue(undefined);
                 message.error('No Implementation for selected type', 0.7).then((onF) => console.log(onF));

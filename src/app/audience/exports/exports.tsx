@@ -19,7 +19,7 @@ export const ExportPage: any = () => {
             setExportContactDS(tempObj);
             setExportContactDSOps(tempObj);
         }).catch(reason => {
-            console.log(reason);
+            console.error(reason);
             message.error(GET_SERVER_ERROR, 0.8).then(() => {
             });
         });

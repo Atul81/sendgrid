@@ -6,6 +6,7 @@ import Paragraph from "antd/es/typography/Paragraph";
 import {DropDown} from "../../../../../utils/Interfaces";
 import {getAllServerCall, getObjectById} from "../../../../../service/serverCalls/mockServerRest";
 import {GET_SERVER_ERROR} from "../../../../../utils/common";
+import {debug} from "@amcharts/amcharts4/.internal/core/utils/Debug";
 
 export const SendEmail = (props: any) => {
 

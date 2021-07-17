@@ -735,8 +735,7 @@
         "sourceHandle": null,
         "target": "2-addActivity",
         "targetHandle": "actToJourney",
-        "id": "reactflow__edge-1null-2actToJourney",
-        "label": "Journey entry node"
+        "id": "reactflow__edge-1null-2actToJourney"
       },
       {
         "id": "3-wait",

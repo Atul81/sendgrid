@@ -29,7 +29,7 @@ export const EditContactPage: any = (props: any) => {
             }
             setCustomFieldsDS(data);
         }).catch(reason => {
-            console.log(reason);
+            console.error(reason);
             message.error(GET_SERVER_ERROR, 0.8).then(() => {
             });
         });
@@ -63,7 +63,7 @@ export const EditContactPage: any = (props: any) => {
                     message.success("Contact Data successfully updated", 0.6);
                 }
             }).catch(reason => {
-                console.log(reason);
+                console.error(reason);
                 message.error(PUT_SERVER_ERROR, 0.8).then(() => {
                 });
             });
@@ -80,7 +80,7 @@ export const EditContactPage: any = (props: any) => {
                     message.success("New Contact successfully created", 0.6);
                 }
             }).catch(reason => {
-                console.log(reason);
+                console.error(reason);
                 message.error("Unable to create new contact", 0.6).then(() => {
                 });
             });
