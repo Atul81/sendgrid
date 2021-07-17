@@ -209,7 +209,7 @@ export const AmendAutomationPage = (props) => {
 
     const onElementClick = (event, element) => {
         setElementSelected(element);
-        if (element.data && element.data.label) {
+        if (element.data && (element.data.label || element.data.branchCount)) {
             let elementType = element.id.split("-")[1];
             switch (elementType) {
                 case 'journeyEntry':
@@ -359,15 +359,17 @@ export const AmendAutomationPage = (props) => {
             x: returnCoordinates(),
             y: returnCoordinates()
         });
+        let newNodeId =  getId().concat(`-${nodeType}`);
         const newNode = {
-            id: getId().concat(`-${nodeType}`),
+            id: newNodeId,
             position,
             type: nodeType === 'multiVariateSplit' ? 'multiBranchNode' : 'default',
             data: nodeType === 'multiVariateSplit' ? {
                 nodeContent: nodeContent,
                 nodeTitle: nodeTitle,
                 nodeSvg: nodeSvg,
-                branchCount: branchCount
+                branchCount: branchCount,
+                id: newNodeId
             } : {
                 label:
                     <Card title={<div className='titleContent'>

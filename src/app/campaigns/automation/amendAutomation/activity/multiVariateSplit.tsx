@@ -16,7 +16,7 @@ export const MultiVariateSplit = (props: any) => {
                 {Object.keys(values.multiVariateSplitFormObj.branch).map((itr: any, index: number) => {
                     return <Paragraph> <span className='dot' style={{backgroundColor: getBranchStyle(index % 4)}}/>Branch {itr}</Paragraph>
                 })}
-            </div>, 'multiVariateSplit', 'Multivariate Split', '/assets/icons/icon-multivariate-split.svg', Object.keys(values.multiVariateSplitFormObj.branch));
+            </div>, 'multiVariateSplit', 'Multivariate Split', '/assets/icons/icon-multivariate-split.svg', Object.keys(values.multiVariateSplitFormObj.branch).length+1);
     };
 
     const [branchCount, setBranchCount] = useState(0);
