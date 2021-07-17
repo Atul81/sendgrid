@@ -14,9 +14,11 @@ export const MultiVariateSplit = (props: any) => {
         props.createCard(
             <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
                 {Object.keys(values.multiVariateSplitFormObj.branch).map((itr: any, index: number) => {
-                    return <Paragraph> <span className='dot' style={{backgroundColor: getBranchStyle(index % 4)}}/>Branch {itr}</Paragraph>
+                    return <Paragraph> <span className='dot'
+                                             style={{backgroundColor: getBranchStyle(index % 4)}}/>Branch {itr}
+                    </Paragraph>
                 })}
-            </div>, 'multiVariateSplit', 'Multivariate Split', '/assets/icons/icon-multivariate-split.svg', Object.keys(values.multiVariateSplitFormObj.branch).length+1);
+            </div>, 'multiVariateSplit', 'Multivariate Split', '/assets/icons/icon-multivariate-split.svg', Object.keys(values.multiVariateSplitFormObj.branch).length + 1, props.modalData ? props.modalData.cardId : null);
     };
 
     const [branchCount, setBranchCount] = useState(0);

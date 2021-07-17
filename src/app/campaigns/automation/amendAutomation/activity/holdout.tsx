@@ -17,7 +17,7 @@ export const Holdout = (props: any) => {
                 {values.holdOut.branch.map((itr: any) => {
                     return <Paragraph><span className="dot"/>{itr}</Paragraph>
                 })}
-            </div>, 'holdout', 'Holdout', '/assets/icons/icon-holdout.svg', null);
+            </div>, 'holdout', 'Holdout', '/assets/icons/icon-holdout.svg', null, props.modalData ? props.modalData.cardId : null);
     };
 
 

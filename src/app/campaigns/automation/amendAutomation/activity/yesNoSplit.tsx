@@ -25,7 +25,7 @@ export const YesNoSplit = (props: any) => {
             <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
                 <Title level={5}>Evaluate Immediately</Title>
                 <Paragraph>Sender Address: {values.sendEmailObj.sender}</Paragraph>
-            </div>, 'yesNoSplit', 'Yes/No Split', '/assets/icons/icon-yes-no.svg', null);
+            </div>, 'yesNoSplit', 'Yes/No Split', '/assets/icons/icon-yes-no.svg', null, props.modalData ? props.modalData.cardId : null);
     };
 
     return <Form className={'yesNoSplit'} name="yesNoSplitForm" form={yesNoSplitForm} layout={'vertical'}

@@ -147,7 +147,8 @@ export const AmendAutomationPage = (props) => {
     const [isEdgeModalVisible, setIsEdgeModalVisible] = useState(false);
     const [modalData, setModalData] = useState({
         workFlowId: props.amendObj.key,
-        cardId: ''
+        cardId: '',
+        currentElement: {}
     });
     const nodeStrokeColor = (n) => {
         if (n.style?.background) {
@@ -229,7 +230,7 @@ export const AmendAutomationPage = (props) => {
                     message.error('Not implemented Yet', 0.5).then(_ => {
                     });
             }
-            setNodeTitle(element.data.label.props ? element.data.label.props.title : element.data.label);
+            setNodeTitle(element.data.label.props ? element.data.label.props.title : element.data.label ? element.data.label : element.data.nodeTitle);
         } else {
             setNodeTitle("");
             setIsEdgeModalVisible(true);
@@ -237,7 +238,7 @@ export const AmendAutomationPage = (props) => {
     };
 
     useEffect(() => {
-        setModalData({...modalData, cardId: elementSelected.id});
+        setModalData({...modalData, cardId: elementSelected.id, currentElement: elementSelected});
     }, [elementSelected])
 
     const handleCancel = () => {
@@ -354,12 +355,12 @@ export const AmendAutomationPage = (props) => {
         plusNode: plusNode
     };
 
-    const createNodeFromActivity = (nodeContent, nodeType, nodeTitle, nodeSvg, branchCount) => {
+    const createNodeFromActivity = (nodeContent, nodeType, nodeTitle, nodeSvg, branchCount, existingNodeId) => {
         const position = reactFlowInstance.project({
-            x: returnCoordinates(),
+            x: existingNodeId ? modalData.currentElement. returnCoordinates(),
             y: returnCoordinates()
         });
-        let newNodeId =  getId().concat(`-${nodeType}`);
+        let newNodeId = existingNodeId ? existingNodeId : getId().concat(`-${nodeType}`);
         const newNode = {
             id: newNodeId,
             position,
@@ -379,6 +380,7 @@ export const AmendAutomationPage = (props) => {
                     </Card>
             }
         };
+        console.error(newNode);
         setElements((es) => es.concat(newNode));
         setNodeTitle("");
     };
