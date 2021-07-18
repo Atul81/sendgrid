@@ -72,7 +72,7 @@
     }
   }
 
-  .react-flow__node-default, .react-flow__node-input, .react-flow__node-output, .react-flow__node-multiBranchNode {
+  .react-flow__node-default, .react-flow__node-input, .react-flow__node-output, .react-flow__node-multiBranchNode, .react-flow__node-emptyCardNode {
     padding: 0;
     width: 196px;
     border-radius: 0;
@@ -305,7 +305,7 @@
 
   .randomSplit {
     .ant-space-item {
-      width: 678px;
+      width: 620px;
 
       .ant-form-item-label {
         margin-right: 60%;

@@ -25,6 +25,10 @@ export default memo(({data}) => {
                 throw new Error('No Implementation found');
         }
     }
+
+    const deleteNodeClick = (e, id, title) => {
+        // use redux
+    }
     return (
         <div key={data.id}>
             <Handle
@@ -37,7 +41,7 @@ export default memo(({data}) => {
             <div style={{borderStyle: 'solid', borderWidth: 1}}>
                 <Card title={<div className='titleContent'>
                     <img style={{width: 20}} src={data.nodeSvg} alt="icon"/><span>{data.nodeTitle}</span></div>}
-                      extra={<CloseOutlined/>}>
+                      extra={<CloseOutlined onClick={(e) => deleteNodeClick(e, data.id, data.nodeTitle)}/>}>
                     {data.nodeContent}
                 </Card>
             </div>

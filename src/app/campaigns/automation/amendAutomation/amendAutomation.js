@@ -16,9 +16,11 @@ import {useDispatch} from "react-redux";
 import multiBranchNode from "./multiBranchNode";
 import plusNode from "./plusNode";
 import Paragraph from "antd/es/typography/Paragraph";
-import {GET_SERVER_ERROR, POST_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../../utils/common";
+import {GET_SERVER_ERROR, getBranchStyle, POST_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../../utils/common";
 import {JourneyEntryModal} from "./activity/journeyEntry";
 import {ActivityModal} from "./activityModal";
+import emptyCardNode from "./emptyCardNode";
+import Title from "antd/es/typography/Title";
 
 export const AmendAutomationPage = (props) => {
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -36,7 +38,9 @@ export const AmendAutomationPage = (props) => {
                     let tempObj = [];
                     let elementsData = elementsJson.data;
                     elementsData.forEach((itr) => {
-                        if (itr.data && itr.data.label && itr.data.label.props) {
+                        if (itr.source) {
+                            tempObj.push({...itr});
+                        } else if (itr.id) {
                             let idAndType = itr.id.split('-');
                             switch (idAndType[1]) {
                                 case 'journeyEntry': {
@@ -66,7 +70,7 @@ export const AmendAutomationPage = (props) => {
                                                      src={`/assets/icons/icon-send-email.svg`}
                                                      alt="icon"/><span>Send an Email</span>
                                             </div>} extra={<CloseOutlined
-                                                onClick={(e) => deleteNodeClick(e, itr.id)}/>}>
+                                                onClick={(e) => deleteNodeClick(e, itr.id, 'Send an Email')}/>}>
                                                 <div style={{
                                                     display: "flex",
                                                     justifyContent: 'center',
@@ -90,30 +94,86 @@ export const AmendAutomationPage = (props) => {
                                                      src={`/assets/icons/icon-wait.svg`}
                                                      alt="icon"/><span>Wait</span>
                                             </div>} extra={<CloseOutlined
-                                                onClick={(e) => deleteNodeClick(e, itr.id)}/>}>
+                                                onClick={(e) => deleteNodeClick(e, itr.id, 'Wait')}/>}>
                                                 <div style={{
                                                     display: "flex",
                                                     justifyContent: 'center',
                                                     flexDirection: 'column'
                                                 }}>
-                                                    <Paragraph>{displayData.children}</Paragraph>
+                                                    <Paragraph>Wait
+                                                        for: {displayData.children[1]} {displayData.children[3]}</Paragraph>
                                                 </div>
                                             </Card>
                                         }
                                     });
                                     break;
                                 }
-                                case 'addActivity': {
-                                    tempObj.push(itr);
+                                case 'holdOut': {
+                                    tempObj.push({
+                                        ...itr, type: 'multiBranchNode', data: {
+                                            "nodeTitle": itr.data.nodeTitle,
+                                            "nodeSvg": itr.data.nodeSvg,
+                                            "branchCount": itr.data.branchCount,
+                                            "nodeContent": <div style={{
+                                                display: "flex",
+                                                justifyContent: 'center',
+                                                flexDirection: 'column'
+                                            }}>
+                                                <Title
+                                                    level={5}>Holdout: {itr.data.nodeContent.props.children.props.children[1]}%</Title>
+                                            </div>
+                                        }
+                                    });
+                                    break;
+                                }
+                                case 'yesNoSplit': {
+                                    tempObj.push({
+                                        ...itr, type: 'multiBranchNode', data: {
+                                            "nodeTitle": itr.data.nodeTitle,
+                                            "nodeSvg": itr.data.nodeSvg,
+                                            "branchCount": itr.data.branchCount,
+                                            "nodeContent": <div style={{
+                                                display: "flex",
+                                                justifyContent: 'center',
+                                                flexDirection: 'column'
+                                            }}>
+                                                <Title
+                                                    level={5}>{itr.data.nodeContent.props.children[2].props.children}</Title>
+                                                <Divider/>
+                                                <Paragraph>Event: {itr.data.nodeContent.props.children[2].props.children[1]}</Paragraph>
+                                            </div>
+                                        }
+                                    });
+                                    break;
+                                }
+                                case 'randomSplit':
+                                case 'multiVariateSplit': {
+                                    tempObj.push({
+                                        ...itr, type: 'multiBranchNode', data: {
+                                            "nodeTitle": itr.data.nodeTitle,
+                                            "nodeSvg": itr.data.nodeSvg,
+                                            "branchCount": itr.data.branchCount,
+                                            "nodeContent": <div style={{
+                                                display: "flex",
+                                                justifyContent: 'center',
+                                                flexDirection: 'column'
+                                            }}>
+                                                {itr.data.nodeContent.props.children.map((chItr, index) => {
+                                                    return <Paragraph> <span className='dot'
+                                                                             style={{backgroundColor: getBranchStyle(index % 4)}}/>Branch {String.fromCharCode(65 + index)}
+                                                    </Paragraph>
+                                                })}
+                                            </div>
+                                        }
+                                    });
                                     break;
                                 }
                                 default: {
-                                    message.error(`Integration for card module ${idAndType[1]} not done`, 0.4);
+                                    tempObj.push({...itr});
+                                    break;
                                 }
                             }
                             setId(idAndType[0]);
-                        } else {
-                            tempObj.push(itr);
                         }
                     });
                     setElements(tempObj);
@@ -179,10 +239,8 @@ export const AmendAutomationPage = (props) => {
     const onElementsRemove = (elementsToRemove) => {
         if (elementsToRemove[0]) {
             deleteConfirm({
-                title: 'Are you sure delete following node/relation?',
-                content: elementsToRemove[0].data ?
-                    elementsToRemove[0].data.label.props ? elementsToRemove[0].data.label.props.title :
-                        elementsToRemove[0].data.label : 'Relation',
+                title: 'Are you sure delete following node?',
+                content: elementsToRemove[0].nodeTitle,
                 okText: 'Yes',
                 okType: 'danger',
                 cancelText: 'No',
@@ -246,7 +304,7 @@ export const AmendAutomationPage = (props) => {
                     setCardType(elementType);
                     setActivityModal(true);
                     break;
-                case "holdout":
+                case "holdOut":
                     setNodeTitle('Holdout');
                     setCardType(elementType);
                     setActivityModal(true);
@@ -303,7 +361,6 @@ export const AmendAutomationPage = (props) => {
         });
     };
 
-
     const onNodeDragStop = (event, node) => {
         let oldElements = [...elements];
         for (let i = 0; i < elements.length; i++) {
@@ -335,12 +392,13 @@ export const AmendAutomationPage = (props) => {
 
     const nodeTypes = {
         multiBranchNode: multiBranchNode,
-        plusNode: plusNode
+        plusNode: plusNode,
+        emptyCardNode: emptyCardNode
     };
 
-    const deleteNodeClick = (event, nodeId) => {
+    const deleteNodeClick = (event, nodeId, nodeTitle) => {
         handleCancel();
-        onElementsRemove(new Array({id: nodeId}));
+        onElementsRemove(new Array({id: nodeId, nodeTitle: nodeTitle}));
         orphanChildIds.current = elements.filter(value => {
             return value.source && value.source === nodeId;
         }).map(val => val.target);
@@ -349,15 +407,15 @@ export const AmendAutomationPage = (props) => {
 
     const createNodeFromActivity = (nodeContent, nodeType, nodeTitle, nodeSvg, branchCount, existingNodeId) => {
         const position = existingNodeId ? modalData.currentElement.position : {
-            x: Math.floor(modalData.currentElement.position.x + Math.random() * 70),
-            y: Math.floor(modalData.currentElement.position.y + Math.random() * 110)
+            x: Math.floor(modalData.currentElement.position.x + Math.random() * 40),
+            y: Math.floor(modalData.currentElement.position.y + Math.random() * 150)
         };
         let newNodeId = existingNodeId ? existingNodeId : getId().concat(`-${nodeType}`);
         const newNode = {
             id: newNodeId,
             position,
-            type: nodeType === 'multiVariateSplit' ? 'multiBranchNode' : 'default',
-            data: nodeType === 'multiVariateSplit' ? {
+            type: (nodeType === 'randomSplit' || nodeType === 'yesNoSplit' || nodeType === 'multiVariateSplit' || nodeType === 'holdOut') ? 'multiBranchNode' : 'default',
+            data: (nodeType === 'randomSplit' || nodeType === 'yesNoSplit' || nodeType === 'multiVariateSplit' || nodeType === 'holdOut') ? {
                 nodeContent: nodeContent,
                 nodeTitle: nodeTitle,
                 nodeSvg: nodeSvg,
@@ -367,7 +425,7 @@ export const AmendAutomationPage = (props) => {
                 label:
                     <Card title={<div className='titleContent'>
                         <img style={{width: 20}} src={nodeSvg} alt="icon"/><span>{nodeTitle}</span></div>}
-                          extra={<CloseOutlined onClick={(e) => deleteNodeClick(e, newNodeId)}/>}>
+                          extra={<CloseOutlined onClick={(e) => deleteNodeClick(e, newNodeId, nodeTitle)}/>}>
                         {nodeContent}
                     </Card>
             }
@@ -376,47 +434,61 @@ export const AmendAutomationPage = (props) => {
         elementsTemp = [...elements];
         elements.push(newNode);
         if (!existingNodeId) {
-            createTargetEdgeNode(newNodeId, elementSelected.id, null);
+            createTargetEdgeNode(newNodeId, elementSelected.id, null, null);
             createSourceEdgeNode(newNodeId, nodeType, branchCount, position);
         }
         setNodeTitle("");
     };
     const createSourceEdgeNode = (sourceId, nodeType, branchCount, position) => {
-        if (nodeType === 'multiVariateSplit' || nodeType === 'randomSplit' || nodeType === 'yesNoSplit') {
+        if (nodeType === 'multiVariateSplit' || nodeType === 'randomSplit' || nodeType === 'yesNoSplit' || nodeType === 'holdOut') {
             let counter = 0;
+            let edgeLabel = null;
             while (counter < branchCount) {
-                createAddActivityNode(sourceId, `srcToAct${counter}`, position, counter);
+                if (nodeType === 'yesNoSplit') {
+                    counter === 0 ? edgeLabel = 'Yes' : edgeLabel = 'No';
+                } else if (nodeType === 'holdOut') {
+                    counter === 0 ? edgeLabel = null : edgeLabel = 'Holdout';
+                } else {
+                    edgeLabel = `Branch ${String.fromCharCode(65 + counter)}`;
+                    if (counter === branchCount - 1 && nodeType === 'multiVariateSplit') {
+                        edgeLabel = 'Else';
+                    }
+                }
+                edgeLabel !== 'Holdout' ? createAddActivityNode(sourceId, `srcToAct${counter}`, position, counter, edgeLabel, 'plusNode') :
+                    createAddActivityNode(sourceId, `srcToAct${counter}`, position, counter, edgeLabel, 'emptyCardNode');
                 counter++;
             }
         } else {
-            createAddActivityNode(sourceId, null, position, 0);
+            createAddActivityNode(sourceId, null, position, 0, null, 'plusNode');
         }
     };
 
-    const createAddActivityNode = (sourceId, sourceHandler, oldPosition, counter) => {
+    const createAddActivityNode = (sourceId, sourceHandler, oldPosition, counter, label, cardType) => {
         const position = {
-            x: Math.floor(oldPosition.x + Math.random() * 70),
-            y: Math.floor(oldPosition.y + Math.random() * 110)
+            x: Math.floor(oldPosition.x + Math.random() * 40),
+            y: Math.floor(oldPosition.y + Math.random() * 150)
         };
-        let newNodeId = String(parseInt(getId(), 10) + counter).concat(`-addActivity`);
+        let newNodeId = String(parseInt(getId(), 10) + counter).concat(cardType === 'plusNode' ? `-addActivity` : '-emptyCardNode');
         const activityNode = {
             id: newNodeId,
             position,
-            type: 'plusNode'
+            type: cardType,
+            data: cardType === 'emptyCardNode' ? {id: newNodeId} : null
         };
         setElements((es) => es.concat(activityNode));
         elementsTemp = [...elements];
         elements.push(activityNode);
-        createTargetEdgeNode(newNodeId, sourceId, sourceHandler)
-    }
+        createTargetEdgeNode(newNodeId, sourceId, sourceHandler, label)
+    };
 
-    const createTargetEdgeNode = (targetId, sourceId, sourceHandler) => {
+    const createTargetEdgeNode = (targetId, sourceId, sourceHandler, label) => {
         let edgeNode = {
             "source": sourceId,
             "sourceHandle": sourceHandler,
             "target": targetId,
-            "targetHandle": `plusToNode`,
-            "id": `reactflow__edge-src${sourceId}-tr${targetId}`
+            "targetHandle": label === 'Holdout' ? 'emptyCardVoid' : `plusToNode`,
+            "id": `reactflow__edge-src${sourceId}-tr${targetId}`,
+            "label": label
         }
         setElements((es) => es.concat(edgeNode));
         elementsTemp = [...elements];
@@ -450,10 +522,8 @@ export const AmendAutomationPage = (props) => {
                         <ReactFlow onElementClick={openType ? onElementClick : undefined} elements={elements}
                                    nodeTypes={nodeTypes} nodesDraggable={openType} nodesConnectable={openType}
                                    ref={reactFlowInstance} paneMoveable={openType}
-                                   onElementsRemove={openType ? onElementsRemove : undefined}
                                    onNodeDragStop={openType ? onNodeDragStop : undefined}
-                                   onConnect={openType ? onConnect : undefined} onLoad={onLoad}
-                                   deleteKeyCode={46}>
+                                   onConnect={openType ? onConnect : undefined} onLoad={onLoad}>
                             <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2}/>
                             <Controls/>
                             <Background color="#aaa" gap={16}/>

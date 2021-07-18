@@ -1,22 +1,28 @@
 import React, {useEffect, useState} from "react";
-import {Button, Divider, Form, Input, Space} from "antd";
+import {Button, Divider, Form, Input, message, Popover, Space} from "antd";
 import {CheckOutlined, MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
-import Title from "antd/es/typography/Title";
 import Paragraph from "antd/es/typography/Paragraph";
 import '../amendAutomation.scss';
 
 export const RandomSplit = (props: any) => {
 
-    const [randomSplitSplit] = Form.useForm();
+    const [randomSplitForm] = Form.useForm();
+    const [percentage, setPercentage] = useState(0);
     const saveRandomSplitForm = (values: any) => {
-        props.createCard(
-            <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
-                <Title level={5}>Evaluate Immediately</Title>
-                <Divider/>
-                {values.multiVariateSplitFormObj.branch.map((itr: any) => {
-                    return <Paragraph><span className="dot"/>{itr}</Paragraph>
-                })}
-            </div>, 'randomSplit', 'Random Split', '/assets/icons/icon-random-split.svg', branchCount, props.modalData ? props.modalData.cardId : null);
+        if (percentage === 0 || percentage > 100) {
+            message.error('Sum of percentages of all the branch should be hundred(100)', 0.8).then(_ => {
+            });
+        } else {
+            props.createCard(
+                <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
+                    {values.randomSplitFormObj.branch && Object.keys(values.randomSplitFormObj.branch).map((itr: any, index: number) => {
+                        return <Paragraph key={index}>
+                            <span className='dot' style={{backgroundColor: getBranchStyle(index % 4)}}/>
+                            Branch {itr}
+                        </Paragraph>
+                    })}
+                </div>, 'randomSplit', 'Random Split', '/assets/icons/icon-random-split.svg', values.randomSplitFormObj.branch ? Object.keys(values.randomSplitFormObj.branch).length : null, props.modalData ? props.modalData.cardId : null);
+        }
     };
 
     const [branchCount, setBranchCount] = useState(0);
@@ -41,10 +47,14 @@ export const RandomSplit = (props: any) => {
     const [arr, setArr] = useState<Number[]>([]);
 
     useEffect(() => {
-        console.error(arr);
-    }, [branchCount, arr.length]);
+    }, [branchCount, arr.length, percentage]);
 
-
+    const updatePercentage = () => {
+        let tempPercentage = 0;
+        let branchFormValues = randomSplitForm.getFieldsValue().randomSplitFormObj.branch;
+        Object.keys(branchFormValues).map(itr => tempPercentage += parseInt(branchFormValues[itr], 10));
+        setPercentage(tempPercentage);
+    }
     const updateBranchCount = (opsType: string) => {
         let tempObj = [...arr];
         if (opsType === 'add') {
@@ -57,7 +67,7 @@ export const RandomSplit = (props: any) => {
         setArr(tempObj);
     };
 
-    return <Form className='multiVariateSplit randomSplit' name="randomSplit" form={randomSplitSplit}
+    return <Form className='multiVariateSplit randomSplit' name="randomSplit" form={randomSplitForm}
                  layout={'horizontal'} colon={false}
                  onFinish={saveRandomSplitForm} autoComplete={'off'}>
         <div className='variableForm'>
@@ -65,11 +75,12 @@ export const RandomSplit = (props: any) => {
                 return <Space align="center">
                     <Form.Item label={<div className='branchName'>
                         <span className='dot' style={{backgroundColor: getBranchStyle(index % 4)}}/>
-                        <span>{`Branch ${String.fromCharCode(65 + index)}`}</span></div>}
+                        <span><Popover content={<p>Input type should be percentage</p>} title={null}>
+                            <span>{`Branch ${String.fromCharCode(65 + index)}`}</span> </Popover></span></div>}
                                requiredMark={'optional'}
-                               name={['randomSplitFormObj', `attr${String.fromCharCode(65 + index)}`]}
+                               name={['randomSplitFormObj', 'branch', `${String.fromCharCode(65 + index)}`]}
                                rules={[{required: true, message: 'Missing Branch condition Attributes'}]}>
-                        <Input placeholder={'Enter split percentage'} type={'number'}/>
+                        <Input onChange={updatePercentage} placeholder={'Enter split percentage'} type={'number'}/>
                     </Form.Item>
                     <div className={'closeIcon'}>
                         <MinusCircleOutlined onClick={() => updateBranchCount('delete')}/>
@@ -82,7 +93,7 @@ export const RandomSplit = (props: any) => {
                         disabled={branchCount === 5}>
                     Add Another Branch
                 </Button>
-                {branchCount > 0 ? <strong>Total Percentage: 80%</strong> : null}
+                {branchCount > 0 ? <strong>Total Percentage: {percentage}%</strong> : null}
             </Form.Item>
         </div>
         <Divider/>

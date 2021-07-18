@@ -100,6 +100,22 @@ export const saveJson = (content: any, fileName: string) => {
     downloadAnchorNode.remove();
 };
 
+export const getBranchStyle = (key: number) => {
+    switch (key) {
+        case 0:
+            return 'orange';
+        case 1:
+            return 'blue';
+        case 2:
+            return 'green';
+        case 3:
+            return 'red';
+        default:
+            return '#bbb';
+
+    }
+};
+
 export const GET_SERVER_ERROR = 'Unable to fetch data, we are working on it, please try after sometime';
 export const POST_SERVER_ERROR = 'Unable to save request, we are working on it, please try after sometime';
 export const PUT_SERVER_ERROR = 'Unable to update request, we are working on it, please try after sometime';

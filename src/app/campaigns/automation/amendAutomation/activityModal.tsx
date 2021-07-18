@@ -7,7 +7,7 @@ import {SendEmail} from "./activity/sendEmail";
 import {Wait} from "./activity/wait";
 import {YesNoSplit} from "./activity/yesNoSplit";
 import {MultiVariateSplit} from "./activity/multiVariateSplit";
-import {Holdout} from "./activity/holdout";
+import {HoldOut} from "./activity/holdOut";
 import {RandomSplit} from "./activity/randomSplit";
 
 export const ActivityModal = (props: any) => {
@@ -51,7 +51,7 @@ export const ActivityModal = (props: any) => {
             case 'multiVariateSplit':
                 return <MultiVariateSplit modalData={props.modalData} createCard={getCardContent}/>;
             case 'holdOut':
-                return <Holdout modalData={props.modalData} createCard={getCardContent}/>;
+                return <HoldOut modalData={props.modalData} createCard={getCardContent}/>;
             case 'randomSplit':
                 return <RandomSplit modalData={props.modalData} createCard={getCardContent}/>;
             default:
@@ -60,7 +60,7 @@ export const ActivityModal = (props: any) => {
         }
     };
 
-    return <Modal wrapClassName='activitySelection' width={showSelect ? 700 : 700}
+    return <Modal wrapClassName='activitySelection' width={700}
                   title={showSelect ? 'Add Activity' : selectedTitle}
                   visible={props.openModal}
                   onCancel={handleCancel} destroyOnClose={true} footer={null} centered>
@@ -113,12 +113,12 @@ export const ActivityModal = (props: any) => {
                             </div>
                         </div>
                     </Option>
-                    <Option value="holdOut" label="Holdout">
+                    <Option value="holdOut" label="HoldOut">
                         <div className="selectionBox">
                             <img src={'/assets/icons/icon-holdout.svg'}
                                  alt="icon"/>
                             <div className='text'>
-                                <Paragraph strong>Holdout</Paragraph>
+                                <Paragraph strong>HoldOut</Paragraph>
                                 <Paragraph>Ends the journey for a specified number of participants.</Paragraph>
                             </div>
                         </div>

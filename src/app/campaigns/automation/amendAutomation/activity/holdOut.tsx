@@ -1,33 +1,28 @@
 import React from "react";
-import {Button, Divider, Form, Input} from "antd";
+import {Button, Form, Input} from "antd";
 import {CheckOutlined} from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
-import Paragraph from "antd/es/typography/Paragraph";
 import '../amendAutomation.scss';
 
-export const Holdout = (props: any) => {
+export const HoldOut = (props: any) => {
 
     const [holdOutForm] = Form.useForm();
 
     const saveHoldOutForm = (values: any) => {
         props.createCard(
             <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
-                <Title level={5}>Evaluate Immediately</Title>
-                <Divider/>
-                {values.holdOut.branch.map((itr: any) => {
-                    return <Paragraph><span className="dot"/>{itr}</Paragraph>
-                })}
-            </div>, 'holdout', 'Holdout', '/assets/icons/icon-holdout.svg', null, props.modalData ? props.modalData.cardId : null);
+                <Title level={5}>Holdout: {values.holdOutFormObj.holdOutPercentage}%</Title>
+            </div>, 'holdOut', 'HoldOut', '/assets/icons/icon-holdout.svg', 2, props.modalData ? props.modalData.cardId : null);
     };
-
 
     return <Form className={'holdOut'} name="holdOutForm" form={holdOutForm}
                  layout={'vertical'}
                  onFinish={saveHoldOutForm} autoComplete={'off'}>
         <Form.Item label={<div className='colFlex'><strong>Holdout Percentage</strong>
             <span>Specify the percentage of customers who should exit the journey</span>
-        </div>}>
-            <Form.Item name={['holdOutFormObj', 'evaluation']} noStyle>
+        </div>
+        }>
+            <Form.Item name={['holdOutFormObj', 'holdOutPercentage']} noStyle>
                 <Input placeholder={'Enter a description for this step'} type={'number'}/>
             </Form.Item>
         </Form.Item>

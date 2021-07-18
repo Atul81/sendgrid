@@ -4,6 +4,7 @@ import {CheckOutlined, MinusCircleOutlined, PlusOutlined} from "@ant-design/icon
 import Paragraph from "antd/es/typography/Paragraph";
 import {DropDown} from "../../../../../utils/Interfaces";
 import '../amendAutomation.scss';
+import {getBranchStyle} from "../../../../../utils/common";
 
 export const MultiVariateSplit = (props: any) => {
 
@@ -13,12 +14,13 @@ export const MultiVariateSplit = (props: any) => {
     const saveMultiVariateSplitForm = (values: any) => {
         props.createCard(
             <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
-                {Object.keys(values.multiVariateSplitFormObj.branch).map((itr: any, index: number) => {
+                {values.multiVariateSplitFormObj.branch && Object.keys(values.multiVariateSplitFormObj.branch).map((itr: any, index: number) => {
                     return <Paragraph> <span className='dot'
                                              style={{backgroundColor: getBranchStyle(index % 4)}}/>Branch {itr}
                     </Paragraph>
                 })}
-            </div>, 'multiVariateSplit', 'Multivariate Split', '/assets/icons/icon-multivariate-split.svg', Object.keys(values.multiVariateSplitFormObj.branch).length + 1, props.modalData ? props.modalData.cardId : null);
+            </div>, 'multiVariateSplit', 'Multivariate Split', '/assets/icons/icon-multivariate-split.svg',
+            values.multiVariateSplitFormObj.branch ? Object.keys(values.multiVariateSplitFormObj.branch).length + 1 : null, props.modalData ? props.modalData.cardId : null);
     };
 
     const [branchCount, setBranchCount] = useState(0);
@@ -28,21 +30,7 @@ export const MultiVariateSplit = (props: any) => {
         {value: 'evalPr', label: 'Evaluate Periodically', children: null},
         {value: 'evalMn', label: 'Evaluate Monthly', children: null}
     ];
-    const getBranchStyle = (key: number) => {
-        switch (key) {
-            case 0:
-                return 'orange';
-            case 1:
-                return 'blue';
-            case 2:
-                return 'green';
-            case 3:
-                return 'red';
-            default:
-                return '#bbb';
 
-        }
-    };
 
     const [arr, setArr] = useState<Number[]>([]);
 

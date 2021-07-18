@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Form, Input, Select, Space} from "antd";
+import {Button, Divider, Form, Input, Select, Space} from "antd";
 import Paragraph from "antd/es/typography/Paragraph";
 import Title from "antd/es/typography/Title";
 import {CheckOutlined, MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
@@ -21,11 +21,17 @@ export const YesNoSplit = (props: any) => {
         {value: 'hardBounce', label: 'Hard bounce', children: null}];
 
     const saveYesNoSplitForm = (values: any) => {
+        let event = '';
+        for (let i = 0; i < values.yesNoSplitFormObj.conditions.length; i++) {
+            event = event.concat(values.yesNoSplitFormObj.conditions[i].attr).concat(', ');
+        }
+        event = event.length > 0 ? event.substr(0, event.length - 2) : '';
         props.createCard(
             <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
-                <Title level={5}>Evaluate Immediately</Title>
-                <Paragraph>Sender Address: {values.sendEmailObj.sender}</Paragraph>
-            </div>, 'yesNoSplit', 'Yes/No Split', '/assets/icons/icon-yes-no.svg', null, props.modalData ? props.modalData.cardId : null);
+                <Title level={5}>{values.yesNoSplitFormObj.evaluation}</Title>
+                <Divider/>
+                <Paragraph>Event: {event}</Paragraph>
+            </div>, 'yesNoSplit', 'Yes/No Split', '/assets/icons/icon-yes-no-split.svg', 2, props.modalData ? props.modalData.cardId : null);
     };
 
     return <Form className={'yesNoSplit'} name="yesNoSplitForm" form={yesNoSplitForm} layout={'vertical'}
@@ -42,7 +48,8 @@ export const YesNoSplit = (props: any) => {
         <Form.Item
             label={<strong>Choose a journey message activity and event </strong>}>
             <Form.Item name={['yesNoSplitFormObj', 'sender']} noStyle>
-                <Select showSearch placeholder="select journey message activity and event" style={{width: 600}} allowClear={true}>
+                <Select showSearch placeholder="select journey message activity and event" style={{width: 600}}
+                        allowClear={true}>
                     {journeyMessage.map(value => {
                         return <Option value={value.label} key={value.value}>{value.label}</Option>
                     })}
@@ -59,7 +66,8 @@ export const YesNoSplit = (props: any) => {
                                        name={[name, 'attr']}
                                        fieldKey={[fieldKey, 'attr']}
                                        rules={[{required: true, message: 'Missing Condition'}]}>
-                                <Select style={{width: 600}} showSearch placeholder="select journey message activity and event" allowClear={true}>
+                                <Select style={{width: 600}} showSearch
+                                        placeholder="select journey message activity and event" allowClear={true}>
                                     {conditionsSelect.map(value => {
                                         return <Option value={value.label} key={value.value}>{value.label}</Option>
                                     })}
