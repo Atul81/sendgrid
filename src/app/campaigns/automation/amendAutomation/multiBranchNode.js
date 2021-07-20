@@ -1,12 +1,13 @@
 import React, {memo} from 'react';
-
 import {Handle} from 'react-flow-renderer';
 import {CloseOutlined} from "@ant-design/icons";
 import './amendAutomation.scss';
 import {Card, message} from "antd";
+import {updateIdForDelete} from "../../../../store/actions/root";
+import {useDispatch} from "react-redux";
 
 export default memo(({data}) => {
-
+    const dispatch = useDispatch();
     const getLeftLocation = () => {
         switch (data.branchCount) {
             case 1:
@@ -26,8 +27,8 @@ export default memo(({data}) => {
         }
     }
 
-    const deleteNodeClick = (e, id, title) => {
-        // use redux
+    const deleteNodeClick = (event, id, title) => {
+        dispatch(updateIdForDelete({event:event, nodeId: id, nodeTitle: title, isRedux: true}));
     }
     return (
         <div key={data.id}>

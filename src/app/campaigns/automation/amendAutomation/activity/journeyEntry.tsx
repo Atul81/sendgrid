@@ -1,20 +1,26 @@
-import React, {useState} from "react";
-import {Button, Form, Input, Modal, Radio, Select, Space, Tooltip} from "antd";
+import React, {useEffect, useState} from "react";
+import {Button, Form, Input, message, Modal, Radio, Select, Space, Tooltip} from "antd";
 import {CheckOutlined, CloseOutlined, MinusCircleOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import {DropDown} from "../../../../../utils/Interfaces";
 import '../amendAutomation.scss';
+import {editObjectById, getAllServerCall, getObjectById} from "../../../../../service/serverCalls/mockServerRest";
+import {GET_SERVER_ERROR} from "../../../../../utils/common";
+import {useDispatch, useSelector} from "react-redux";
+import {updateWorkFlowCardData} from "../../../../../store/actions/root";
 
 export const JourneyEntryModal = (props: any) => {
 
     const [journeyForm] = Form.useForm();
     const {Option} = Select;
-
+    const dispatch = useDispatch();
+    const [workFlowData, setWorkFlowData] = useState({});
     const radioStyle = {
         display: 'block',
         height: '30px',
         lineHeight: '30px',
     };
-
+    // @ts-ignore
+    const workFlowCardData = useSelector((state) => state.root.workFlowData);
     const [allEvents, setAllEvents] = useState<DropDown[]>([]);
     const [allSegments, setAllSegments] = useState<DropDown[]>([]);
     const filterCountryOption = (input: string, option: any) => {
@@ -24,11 +30,75 @@ export const JourneyEntryModal = (props: any) => {
         props.closeModal();
     };
 
+    useEffect(() => {
+        getAllServerCall('segments').then(async response => {
+            let resBody = await response.json();
+            let data: DropDown[] = [];
+            if (resBody && Array.isArray(resBody)) {
+                resBody.forEach((itr: any) => {
+                    data.push({value: itr.id, label: itr.name, children: null});
+                });
+            }
+            setAllSegments(data);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
+        getAllServerCall('customEvents').then(async response => {
+            let resBody = await response.json();
+            let data: DropDown[] = [];
+            if (resBody && Array.isArray(resBody)) {
+                resBody.forEach((itr: any) => {
+                    data.push({value: itr.id, label: itr.name, children: null});
+                });
+            }
+            setAllEvents(data);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
+        getObjectById(props.data.workflowKey, 'cardData').then(async getAllWorkFlowAsync => {
+            let getAllWorkflowRes = await getAllWorkFlowAsync.json();
+            journeyForm.setFieldsValue({
+                journeyInfo: {
+                    testName: getAllWorkflowRes[props.data.id] ? getAllWorkflowRes[props.data.id].testName : undefined,
+                    event: getAllWorkflowRes[props.data.id] ? getAllWorkflowRes[props.data.id].event : undefined,
+                    segments: getAllWorkflowRes[props.data.id] ? getAllWorkflowRes[props.data.id].segments : undefined,
+                    description: getAllWorkflowRes[props.data.id] ? getAllWorkflowRes[props.data.id].description : undefined,
+                    attributes: getAllWorkflowRes[props.data.id] ? getAllWorkflowRes[props.data.id].attributes : undefined,
+                    metrics: getAllWorkflowRes[props.data.id] ? getAllWorkflowRes[props.data.id].metrics : undefined
+                }
+            });
+            setWorkFlowData(getAllWorkflowRes);
+            console.error(journeyForm.getFieldsValue())
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
+    }, []);
     const saveJourneyData = (values: any) => {
-        console.log(values)
+        dispatch(updateWorkFlowCardData({...workFlowCardData, [props.data.id]: values.journeyInfo}));
+        editObjectById({
+            id: props.data.workflowKey,
+            ...workFlowData,
+            [props.data.id]: values.journeyInfo
+        }, 'cardData').then(async journeyDataAsync => {
+            let journeyDataRes = await journeyDataAsync.json();
+            if (journeyDataRes) {
+                message.success('Journey data has been successfully updated', 0.6).then(_ => {
+                });
+            }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
     }
 
-    return <Modal wrapClassName='journeyModal' width={750} centered
+    return <Modal key={props.data.id} wrapClassName='journeyModal' width={750} centered
                   title={<Tooltip title={'Info'}><span>Journey Entry</span></Tooltip>}
                   visible={props.openModal}
                   onCancel={handleCancel} destroyOnClose={true} footer={null}>

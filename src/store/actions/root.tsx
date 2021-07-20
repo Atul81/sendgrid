@@ -34,3 +34,12 @@ export const updateSidebarCollapse = (payload: any) => ({
     payload
 });
 
+export const updateIdForDelete = (payload: any) => ({
+    type: types.ID_FOR_DELETE,
+    payload
+});
+
+export const updateWorkFlowCardData = (payload: any) => ({
+    type: types.WORKFLOW_CARD_DATA,
+    payload
+});

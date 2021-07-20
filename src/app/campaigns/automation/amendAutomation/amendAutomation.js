@@ -11,8 +11,8 @@ import ReactFlow, {
 import './amendAutomation.scss';
 import {CheckOutlined, CloseOutlined, StepBackwardOutlined} from "@ant-design/icons";
 import {addNewObject, editObjectById, getObjectById} from "../../../../service/serverCalls/mockServerRest";
-import {updateBreadcrumb} from "../../../../store/actions/root";
-import {useDispatch} from "react-redux";
+import {updateBreadcrumb, updateIdForDelete, updateWorkFlowCardData} from "../../../../store/actions/root";
+import {useDispatch, useSelector} from "react-redux";
 import multiBranchNode from "./multiBranchNode";
 import plusNode from "./plusNode";
 import Paragraph from "antd/es/typography/Paragraph";
@@ -29,158 +29,170 @@ export const AmendAutomationPage = (props) => {
     const dispatch = useDispatch();
     const openType = (props.amendObj && (props.amendObj.viewType === 'edit' || props.amendObj.viewType === 'create'));
     let elementsTemp = [];
+    const nodeForDelete = useSelector((state) => state.root.nodeForDelete);
+    const workFlowCardDataRedux = useSelector((state) => state.root.workFlowData);
+    const journeyData = useRef(null);
     useEffect(() => {
         dispatch(updateBreadcrumb(['Campaigns', 'Automation', `Modify Automation: ${props.amendObj.name}`]));
         if (props.amendObj.viewType !== 'create' && props.amendObj.key) {
-            getObjectById(props.amendObj.key, 'workFlow').then(async response => {
-                let elementsJson = await response.json();
-                if (elementsJson) {
-                    let tempObj = [];
-                    let elementsData = elementsJson.data;
-                    elementsData.forEach((itr) => {
-                        if (itr.source) {
-                            tempObj.push({...itr});
-                        } else if (itr.id) {
-                            let idAndType = itr.id.split('-');
-                            switch (idAndType[1]) {
-                                case 'journeyEntry': {
-                                    tempObj.push({
-                                        ...itr, data: {
-                                            label:
-                                                <Card title={<div className='titleContent'>
+            getObjectById(props.amendObj.key, 'cardData').then(async workflowCardDataAsync => {
+                let workflowCardDataRes = await workflowCardDataAsync.json();
+                dispatch(updateWorkFlowCardData(workflowCardDataRes));
+                getObjectById(props.amendObj.key, 'workFlow').then(async workFlowAsync => {
+                    let elementsJson = await workFlowAsync.json();
+                    if (elementsJson) {
+                        let tempObj = [];
+                        let elementsData = elementsJson.data;
+                        elementsData.forEach((itr) => {
+                            if (itr.source) {
+                                tempObj.push({...itr});
+                            } else if (itr.id) {
+                                let idAndType = itr.id.split('-');
+                                switch (idAndType[1]) {
+                                    case 'journeyEntry': {
+                                        journeyData.current = itr;
+                                        tempObj.push({
+                                            ...itr, data: {
+                                                label:
+                                                    <Card title={<div className='titleContent'>
+                                                        <img style={{width: 20}}
+                                                             src={`/assets/icons/icon-timer.svg`}
+                                                             alt="icon"/><span>Journey Entry</span>
+                                                    </div>}>
+                                                        <Typography className={'columnFlex'}>
+                                                            <strong style={{fontSize: 10}}>Evaluate every: 3
+                                                                hours</strong>
+                                                            <Divider/>
+                                                            <Paragraph>Segment: {workFlowCardDataRedux[itr.id] ? workFlowCardDataRedux[itr.id].segments : workflowCardDataRes[itr.id].segments}</Paragraph>
+                                                        </Typography>
+                                                    </Card>
+                                            }
+                                        });
+                                        break;
+                                    }
+                                    case 'sendEmail': {
+                                        tempObj.push({
+                                            ...itr, data: {
+                                                label: <Card title={<div className='titleContent'>
                                                     <img style={{width: 20}}
-                                                         src={`/assets/icons/icon-timer.svg`}
-                                                         alt="icon"/><span>Journey Entry</span>
-                                                </div>}>
-                                                    <Typography className={'columnFlex'}>
-                                                        <strong style={{fontSize: 10}}>Evaluate every: 3 hours</strong>
-                                                        <Divider/>
-                                                        <Paragraph>Segment: all</Paragraph>
-                                                    </Typography>
+                                                         src={`/assets/icons/icon-send-email.svg`}
+                                                         alt="icon"/><span>Send an Email</span>
+                                                </div>} extra={<CloseOutlined
+                                                    onClick={(e) => deleteNodeClick(e, itr.id, 'Send an Email', false)}/>}>
+                                                    <div style={{
+                                                        display: "flex",
+                                                        justifyContent: 'center',
+                                                        flexDirection: 'column'
+                                                    }}>
+                                                        <Button>Configure Message</Button>
+                                                        <Paragraph>Sender
+                                                            Address: {itr.data.label.props.children.props.children[1].props.children[1]}</Paragraph>
+                                                    </div>
                                                 </Card>
-                                        }
-                                    });
-                                    break;
-                                }
-                                case 'sendEmail': {
-                                    tempObj.push({
-                                        ...itr, data: {
-                                            label: <Card title={<div className='titleContent'>
-                                                <img style={{width: 20}}
-                                                     src={`/assets/icons/icon-send-email.svg`}
-                                                     alt="icon"/><span>Send an Email</span>
-                                            </div>} extra={<CloseOutlined
-                                                onClick={(e) => deleteNodeClick(e, itr.id, 'Send an Email')}/>}>
-                                                <div style={{
+                                            }
+                                        });
+                                        break;
+                                    }
+                                    case 'wait': {
+                                        let displayData = itr.data.label.props.children.props.children.props;
+                                        tempObj.push({
+                                            ...itr, data: {
+                                                label: <Card title={<div className='titleContent'>
+                                                    <img style={{width: 20}}
+                                                         src={`/assets/icons/icon-wait.svg`}
+                                                         alt="icon"/><span>Wait</span>
+                                                </div>} extra={<CloseOutlined
+                                                    onClick={(e) => deleteNodeClick(e, itr.id, 'Wait', false)}/>}>
+                                                    <div style={{
+                                                        display: "flex",
+                                                        justifyContent: 'center',
+                                                        flexDirection: 'column'
+                                                    }}>
+                                                        <Paragraph>Wait
+                                                            for: {displayData.children[1]} {displayData.children[3]}</Paragraph>
+                                                    </div>
+                                                </Card>
+                                            }
+                                        });
+                                        break;
+                                    }
+                                    case 'holdOut': {
+                                        tempObj.push({
+                                            ...itr, type: 'multiBranchNode', data: {
+                                                "nodeTitle": itr.data.nodeTitle,
+                                                "nodeSvg": itr.data.nodeSvg,
+                                                "branchCount": itr.data.branchCount,
+                                                "id": itr.id,
+                                                "nodeContent": <div style={{
                                                     display: "flex",
                                                     justifyContent: 'center',
                                                     flexDirection: 'column'
                                                 }}>
-                                                    <Button>Configure Message</Button>
-                                                    <Paragraph>Sender
-                                                        Address: {itr.data.label.props.children.props.children[1].props.children[1]}</Paragraph>
+                                                    <Title
+                                                        level={5}>Holdout: {itr.data.nodeContent.props.children.props.children[1]}%</Title>
                                                 </div>
-                                            </Card>
-                                        }
-                                    });
-                                    break;
-                                }
-                                case 'wait': {
-                                    let displayData = itr.data.label.props.children.props.children.props;
-                                    tempObj.push({
-                                        ...itr, data: {
-                                            label: <Card title={<div className='titleContent'>
-                                                <img style={{width: 20}}
-                                                     src={`/assets/icons/icon-wait.svg`}
-                                                     alt="icon"/><span>Wait</span>
-                                            </div>} extra={<CloseOutlined
-                                                onClick={(e) => deleteNodeClick(e, itr.id, 'Wait')}/>}>
-                                                <div style={{
+                                            }
+                                        });
+                                        break;
+                                    }
+                                    case 'yesNoSplit': {
+                                        tempObj.push({
+                                            ...itr, type: 'multiBranchNode', data: {
+                                                "nodeTitle": itr.data.nodeTitle,
+                                                "nodeSvg": itr.data.nodeSvg,
+                                                "branchCount": itr.data.branchCount,
+                                                "id": itr.id,
+                                                "nodeContent": <div style={{
                                                     display: "flex",
                                                     justifyContent: 'center',
                                                     flexDirection: 'column'
                                                 }}>
-                                                    <Paragraph>Wait
-                                                        for: {displayData.children[1]} {displayData.children[3]}</Paragraph>
+                                                    <Title
+                                                        level={5}>{itr.data.nodeContent.props.children[2].props.children}</Title>
+                                                    <Divider/>
+                                                    <Paragraph>Event: {itr.data.nodeContent.props.children[2].props.children[1]}</Paragraph>
                                                 </div>
-                                            </Card>
-                                        }
-                                    });
-                                    break;
+                                            }
+                                        });
+                                        break;
+                                    }
+                                    case 'randomSplit':
+                                    case 'multiVariateSplit': {
+                                        tempObj.push({
+                                            ...itr, type: 'multiBranchNode', data: {
+                                                "nodeTitle": itr.data.nodeTitle,
+                                                "nodeSvg": itr.data.nodeSvg,
+                                                "branchCount": itr.data.branchCount,
+                                                "id": itr.id,
+                                                "nodeContent": <div style={{
+                                                    display: "flex",
+                                                    justifyContent: 'center',
+                                                    flexDirection: 'column'
+                                                }}>
+                                                    {itr.data.nodeContent.props.children.map((chItr, index) => {
+                                                        return <Paragraph> <span className='dot'
+                                                                                 style={{backgroundColor: getBranchStyle(index % 4)}}/>Branch {String.fromCharCode(65 + index)}
+                                                        </Paragraph>
+                                                    })}
+                                                </div>
+                                            }
+                                        });
+                                        break;
+                                    }
+                                    default: {
+                                        tempObj.push({...itr});
+                                        break;
+                                    }
                                 }
-                                case 'holdOut': {
-                                    tempObj.push({
-                                        ...itr, type: 'multiBranchNode', data: {
-                                            "nodeTitle": itr.data.nodeTitle,
-                                            "nodeSvg": itr.data.nodeSvg,
-                                            "branchCount": itr.data.branchCount,
-                                            "nodeContent": <div style={{
-                                                display: "flex",
-                                                justifyContent: 'center',
-                                                flexDirection: 'column'
-                                            }}>
-                                                <Title
-                                                    level={5}>Holdout: {itr.data.nodeContent.props.children.props.children[1]}%</Title>
-                                            </div>
-                                        }
-                                    });
-                                    break;
-                                }
-                                case 'yesNoSplit': {
-                                    tempObj.push({
-                                        ...itr, type: 'multiBranchNode', data: {
-                                            "nodeTitle": itr.data.nodeTitle,
-                                            "nodeSvg": itr.data.nodeSvg,
-                                            "branchCount": itr.data.branchCount,
-                                            "nodeContent": <div style={{
-                                                display: "flex",
-                                                justifyContent: 'center',
-                                                flexDirection: 'column'
-                                            }}>
-                                                <Title
-                                                    level={5}>{itr.data.nodeContent.props.children[2].props.children}</Title>
-                                                <Divider/>
-                                                <Paragraph>Event: {itr.data.nodeContent.props.children[2].props.children[1]}</Paragraph>
-                                            </div>
-                                        }
-                                    });
-                                    break;
-                                }
-                                case 'randomSplit':
-                                case 'multiVariateSplit': {
-                                    tempObj.push({
-                                        ...itr, type: 'multiBranchNode', data: {
-                                            "nodeTitle": itr.data.nodeTitle,
-                                            "nodeSvg": itr.data.nodeSvg,
-                                            "branchCount": itr.data.branchCount,
-                                            "nodeContent": <div style={{
-                                                display: "flex",
-                                                justifyContent: 'center',
-                                                flexDirection: 'column'
-                                            }}>
-                                                {itr.data.nodeContent.props.children.map((chItr, index) => {
-                                                    return <Paragraph> <span className='dot'
-                                                                             style={{backgroundColor: getBranchStyle(index % 4)}}/>Branch {String.fromCharCode(65 + index)}
-                                                    </Paragraph>
-                                                })}
-                                            </div>
-                                        }
-                                    });
-                                    break;
-                                }
-                                default: {
-                                    tempObj.push({...itr});
-                                    break;
-                                }
+                                setId(idAndType[0]);
                             }
-                            setId(idAndType[0]);
-                        }
+                        });
+                        setElements(tempObj);
+                    }
+                }).catch(reason => {
+                    console.log(reason);
+                    message.error(GET_SERVER_ERROR, 0.8).then(() => {
                     });
-                    setElements(tempObj);
-                }
-            }).catch(reason => {
-                console.log(reason);
-                message.error(GET_SERVER_ERROR, 0.8).then(() => {
                 });
             });
         } else {
@@ -396,14 +408,44 @@ export const AmendAutomationPage = (props) => {
         emptyCardNode: emptyCardNode
     };
 
-    const deleteNodeClick = (event, nodeId, nodeTitle) => {
+    const deleteNodeClick = (event, nodeId, nodeTitle, isRedux) => {
         handleCancel();
         onElementsRemove(new Array({id: nodeId, nodeTitle: nodeTitle}));
         orphanChildIds.current = elements.filter(value => {
             return value.source && value.source === nodeId;
         }).map(val => val.target);
-        event.stopPropagation();
+        dispatch(updateIdForDelete({}));
+        if (!isRedux) {
+            event.stopPropagation();
+        }
     };
+
+    useEffect(() => {
+        if (Object.keys(nodeForDelete).length > 0) {
+            deleteNodeClick(nodeForDelete.event, nodeForDelete.nodeId, nodeForDelete.nodeTitle, nodeForDelete.isRedux);
+        }
+        if (journeyData.current && workFlowCardDataRedux[journeyData.current.id]) {
+            let newJourneyNode = {
+                ...journeyData.current, data: {
+                    label:
+                        <Card title={<div className='titleContent'>
+                            <img style={{width: 20}}
+                                 src={`/assets/icons/icon-timer.svg`}
+                                 alt="icon"/><span>Journey Entry</span>
+                        </div>}>
+                            <Typography className={'columnFlex'}>
+                                <strong style={{fontSize: 10}}>Evaluate every: 3
+                                    hours</strong>
+                                <Divider/>
+                                <Paragraph>Segment: {workFlowCardDataRedux[journeyData.current.id].segments}</Paragraph>
+                            </Typography>
+                        </Card>
+                }
+            }
+            setElements((es) => es.concat(newJourneyNode));
+        }
+
+    }, [nodeForDelete, workFlowCardDataRedux]);
 
     const createNodeFromActivity = (nodeContent, nodeType, nodeTitle, nodeSvg, branchCount, existingNodeId) => {
         const position = existingNodeId ? modalData.currentElement.position : {
@@ -425,7 +467,7 @@ export const AmendAutomationPage = (props) => {
                 label:
                     <Card title={<div className='titleContent'>
                         <img style={{width: 20}} src={nodeSvg} alt="icon"/><span>{nodeTitle}</span></div>}
-                          extra={<CloseOutlined onClick={(e) => deleteNodeClick(e, newNodeId, nodeTitle)}/>}>
+                          extra={<CloseOutlined onClick={(e) => deleteNodeClick(e, newNodeId, nodeTitle, false)}/>}>
                         {nodeContent}
                     </Card>
             }
@@ -511,7 +553,8 @@ export const AmendAutomationPage = (props) => {
                 <Input placeholder="New Edge Title"
                        onChange={(inpEvent) => setEdgeTitle(inpEvent.target.value)}/>
             </Modal>
-            {isJourneyModal ? <JourneyEntryModal openModal={isJourneyModal} closeModal={handleCancel}/> : null}
+            {isJourneyModal ? <JourneyEntryModal data={{...elementSelected, workflowKey: props.amendObj.key}}
+                                                 openModal={isJourneyModal} closeModal={handleCancel}/> : null}
             {isActivityModal ?
                 <ActivityModal selectedCardType={cardType}
                                createNode={createNodeFromActivity} openModal={true} modalData={modalData}

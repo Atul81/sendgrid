@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Divider, Form, Input, Select, Space} from "antd";
+import {Button, Divider, Form, Input, message, Select, Space} from "antd";
 import {CheckOutlined, MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import Paragraph from "antd/es/typography/Paragraph";
 import {DropDown} from "../../../../../utils/Interfaces";
@@ -12,18 +12,23 @@ export const MultiVariateSplit = (props: any) => {
     const {Option} = Select;
 
     const saveMultiVariateSplitForm = (values: any) => {
-        props.createCard(
-            <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
-                {values.multiVariateSplitFormObj.branch && Object.keys(values.multiVariateSplitFormObj.branch).map((itr: any, index: number) => {
-                    return <Paragraph> <span className='dot'
-                                             style={{backgroundColor: getBranchStyle(index % 4)}}/>Branch {itr}
-                    </Paragraph>
-                })}
-            </div>, 'multiVariateSplit', 'Multivariate Split', '/assets/icons/icon-multivariate-split.svg',
-            values.multiVariateSplitFormObj.branch ? Object.keys(values.multiVariateSplitFormObj.branch).length + 1 : null, props.modalData ? props.modalData.cardId : null);
+        if (branchCount === 0) {
+            message.error("At least one branch selection is required").then(_ => {
+            })
+        } else {
+            props.createCard(
+                <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
+                    {values.multiVariateSplitFormObj.branch && Object.keys(values.multiVariateSplitFormObj.branch).map((itr: any, index: number) => {
+                        return <Paragraph> <span className='dot'
+                                                 style={{backgroundColor: getBranchStyle(index % 4)}}/>Branch {itr}
+                        </Paragraph>
+                    })}
+                </div>, 'multiVariateSplit', 'Multivariate Split', '/assets/icons/icon-multivariate-split.svg',
+                values.multiVariateSplitFormObj.branch ? Object.keys(values.multiVariateSplitFormObj.branch).length + 1 : null, props.modalData ? props.modalData.cardId : null);
+        }
     };
 
-    const [branchCount, setBranchCount] = useState(0);
+    const [branchCount, setBranchCount] = useState(1);
 
     const conditionEvalSelect: DropDown[] = [
         {value: 'evalIm', label: 'Evaluate Immediately', children: null},
@@ -32,7 +37,7 @@ export const MultiVariateSplit = (props: any) => {
     ];
 
 
-    const [arr, setArr] = useState<Number[]>([]);
+    const [arr, setArr] = useState<Number[]>([1]);
 
     useEffect(() => {
     }, [branchCount, arr.length]);
@@ -71,14 +76,14 @@ export const MultiVariateSplit = (props: any) => {
                         </Select>
                     </Form.Item>
                     <div className={'multiCloseIcon'}>
-                        <MinusCircleOutlined onClick={() => updateBranchCount('delete')}/>
+                        {branchCount > 1 ? <MinusCircleOutlined onClick={() => updateBranchCount('delete')}/> : null}
                     </div>
                 </Space>
             })}
             <Form.Item className='conBtn'>
                 <Button type="link" className='btn' onClick={() => updateBranchCount('add')} block
                         icon={<PlusOutlined/>}
-                        disabled={branchCount === 4}>
+                        disabled={branchCount >= 4}>
                     Add Another Branch
                 </Button>
             </Form.Item>

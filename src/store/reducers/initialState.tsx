@@ -7,6 +7,8 @@ export default {
         allSegments: [],
         nodeType: 'default',
         userRole: {},
-        collapsed: false
+        collapsed: false,
+        nodeForDelete: {},
+        workFlowData: {}
     }
 };

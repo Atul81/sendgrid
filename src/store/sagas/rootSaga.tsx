@@ -44,6 +44,16 @@ export function* updateSidebarCollapse({type: string, payload}) {
     yield put({type: types.COLLAPSE_SIDEBAR_SUCCESS, collapsed: payload});
 }
 
+// @ts-ignore
+export function* updateIdForDelete({type: string, payload}) {
+    yield put({type: types.ID_FOR_DELETE_SUCCESS, nodeForDelete: payload});
+}
+
+// @ts-ignore
+export function* updateWorkFlowCardData({type: string, payload}) {
+    yield put({type: types.WORKFLOW_CARD_DATA_SUCCESS, workFlowData: payload});
+}
+
 
 export function* watchRootSaga() {
     yield all([
@@ -52,6 +62,8 @@ export function* watchRootSaga() {
         takeLatest((types.ALL_SEGMENTS), updateAllSegments),
         takeLatest((types.NODE_TYPE), updateNodeType),
         takeLatest((types.USER_ROLE), updateUserRole),
-        takeLatest((types.COLLAPSE_SIDEBAR), updateSidebarCollapse)
+        takeLatest((types.COLLAPSE_SIDEBAR), updateSidebarCollapse),
+        takeLatest((types.ID_FOR_DELETE), updateIdForDelete),
+        takeLatest((types.WORKFLOW_CARD_DATA), updateWorkFlowCardData)
     ]);
 }
