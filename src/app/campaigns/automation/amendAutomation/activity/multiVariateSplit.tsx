@@ -4,18 +4,38 @@ import {CheckOutlined, MinusCircleOutlined, PlusOutlined} from "@ant-design/icon
 import Paragraph from "antd/es/typography/Paragraph";
 import {DropDown} from "../../../../../utils/Interfaces";
 import '../amendAutomation.scss';
-import {getBranchStyle} from "../../../../../utils/common";
+import {GET_SERVER_ERROR, getBranchStyle} from "../../../../../utils/common";
+import {useSelector} from "react-redux";
+import {editObjectById, getObjectById} from "../../../../../service/serverCalls/mockServerRest";
 
 export const MultiVariateSplit = (props: any) => {
 
     const [multiVariateSplitForm] = Form.useForm();
     const {Option} = Select;
 
+    // @ts-ignore
+    const workFlowCardData = useSelector((state) => state.root.workFlowData);
+
     const saveMultiVariateSplitForm = (values: any) => {
         if (branchCount === 0) {
             message.error("At least one branch selection is required").then(_ => {
             })
         } else {
+            editObjectById({
+                id: props.modalData.cardId,
+                ...workFlowCardData,
+                [props.modalData.cardId]: values.multiVariateSplitFormObj
+            }, 'cardData').then(async waitAsync => {
+                let waitRes = await waitAsync.json();
+                if (waitRes) {
+                    message.success('Multivariate form data has been successfully updated', 0.6).then(_ => {
+                    });
+                }
+            }).catch(reason => {
+                console.log(reason);
+                message.error(GET_SERVER_ERROR, 0.8).then(() => {
+                });
+            });
             props.createCard(
                 <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
                     {values.multiVariateSplitFormObj.branch && Object.keys(values.multiVariateSplitFormObj.branch).map((itr: any, index: number) => {
@@ -28,6 +48,35 @@ export const MultiVariateSplit = (props: any) => {
         }
     };
 
+    useEffect(() => {
+        if (props.modalData) {
+            getObjectById(props.modalData.workFlowId, 'cardData').then(async getMultivariateAsync => {
+                let multiVariateRes = await getMultivariateAsync.json();
+                if (multiVariateRes && multiVariateRes[props.modalData.cardId]) {
+                    multiVariateRes = multiVariateRes[props.modalData.cardId];
+                    setBranchCount(Object.keys(multiVariateRes.branch).length);
+                    let arrLength = Object.keys(multiVariateRes.branch).length;
+                    let tempObj = [];
+                    while (arrLength-- > 0) {
+                        tempObj.push(1);
+                    }
+                    multiVariateSplitForm.setFieldsValue({
+                        multiVariateSplitFormObj: {
+                            branch: multiVariateRes.branch,
+                            evaluation: multiVariateRes.evaluation,
+                            description: multiVariateRes.description
+                        }
+                    });
+                    setArr(tempObj);
+                }
+            }).catch(_ => {
+                console.log("Unable to get wait data");
+                message.error(GET_SERVER_ERROR, 0.8).then(() => {
+                });
+            });
+        }
+    }, []);
+
     const [branchCount, setBranchCount] = useState(1);
 
     const conditionEvalSelect: DropDown[] = [
@@ -36,11 +85,10 @@ export const MultiVariateSplit = (props: any) => {
         {value: 'evalMn', label: 'Evaluate Monthly', children: null}
     ];
 
-
     const [arr, setArr] = useState<Number[]>([1]);
 
     useEffect(() => {
-    }, [branchCount, arr.length]);
+    }, [branchCount, arr]);
 
 
     const updateBranchCount = (opsType: string) => {
