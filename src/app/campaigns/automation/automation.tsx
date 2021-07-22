@@ -125,6 +125,16 @@ export const AutomationPage: any = () => {
                 message.error(POST_SERVER_ERROR, 0.8).then(() => {
                 });
             });
+            addNewObject({id: automationId}, 'cardData').then(async cardDataAsync => {
+                let cardDataRes = await cardDataAsync.json();
+                if (cardDataRes) {
+                    console.log("Mock server endpoint for card data created");
+                }
+            }).catch(reason => {
+                console.log(reason);
+                message.error(POST_SERVER_ERROR, 0.8).then(() => {
+                });
+            });
         } else {
             message.error("Automation Name required", 0.5).then(() => {
             });

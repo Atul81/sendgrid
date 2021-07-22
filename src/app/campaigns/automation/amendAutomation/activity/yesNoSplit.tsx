@@ -1,9 +1,12 @@
-import React from "react";
-import {Button, Divider, Form, Input, Select, Space} from "antd";
+import React, {useEffect} from "react";
+import {Button, Divider, Form, Input, message, Select, Space} from "antd";
 import Paragraph from "antd/es/typography/Paragraph";
 import Title from "antd/es/typography/Title";
 import {CheckOutlined, MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import {DropDown} from "../../../../../utils/Interfaces";
+import {getObjectById} from "../../../../../service/serverCalls/mockServerRest";
+import {GET_SERVER_ERROR} from "../../../../../utils/common";
+import {useSelector} from "react-redux";
 
 export const YesNoSplit = (props: any) => {
 
@@ -31,8 +34,32 @@ export const YesNoSplit = (props: any) => {
                 <Title level={5}>{values.yesNoSplitFormObj.evaluation}</Title>
                 <Divider/>
                 <Paragraph>Event: {event}</Paragraph>
-            </div>, 'yesNoSplit', 'Yes/No Split', '/assets/icons/icon-yes-no-split.svg', 2, props.modalData ? props.modalData.cardId : null);
+            </div>, 'yesNoSplit', 'Yes/No Split', '/assets/icons/icon-yes-no-split.svg', 2, props.modalData ? props.modalData.cardId : null, values.yesNoSplitFormObj);
     };
+
+    useEffect(() => {
+        if (props.modalData) {
+            getObjectById(props.modalData.workFlowId, 'cardData').then(async getYesNoDataAsync => {
+                let getYesNoDataRes = await getYesNoDataAsync.json();
+                if (getYesNoDataRes && getYesNoDataRes[props.modalData.cardId]) {
+                    getYesNoDataRes = getYesNoDataRes[props.modalData.cardId];
+                    yesNoSplitForm.setFieldsValue({
+                        yesNoSplitFormObj: {
+                            conditionType: getYesNoDataRes.conditionType,
+                            sender: getYesNoDataRes.sender,
+                            conditions: getYesNoDataRes.conditions,
+                            evaluation: getYesNoDataRes.evaluation,
+                            description: getYesNoDataRes.description
+                        }
+                    });
+                }
+            }).catch(_ => {
+                console.log("Unable to get yes/No data");
+                message.error(GET_SERVER_ERROR, 0.8).then(() => {
+                });
+            });
+        }
+    }, []);
 
     return <Form className={'yesNoSplit'} name="yesNoSplitForm" form={yesNoSplitForm} layout={'vertical'}
                  onFinish={saveYesNoSplitForm} autoComplete={'off'}>

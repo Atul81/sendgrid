@@ -1845,5 +1845,211 @@
       }
     ],
     "id": 3
+  },
+  {
+    "id": 4,
+    "data": [
+      {
+        "id": "1-journeyEntry",
+        "type": "input",
+        "position": {
+          "x": -287.3139406232911,
+          "y": -665.7686876478748
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "title": {
+                "type": "div",
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "titleContent",
+                  "children": [
+                    {
+                      "type": "img",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "style": {
+                          "width": 20
+                        },
+                        "src": "/assets/icons/icon-timer.svg",
+                        "alt": "icon"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "type": "span",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": "Journey Entry"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              "children": {
+                "type": {
+                  "Link": {}
+                },
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "columnFlex",
+                  "children": [
+                    {
+                      "type": "strong",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "style": {
+                          "fontSize": 10
+                        },
+                        "children": "Evaluate every: 3 hours"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "key": null,
+                      "ref": null,
+                      "props": {},
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": "Segment: all"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "id": "2-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -204.1655031232911,
+          "y": -588.2686876478748
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "title": {
+                "type": "div",
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "titleContent",
+                  "children": [
+                    {
+                      "type": "img",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "style": {
+                          "width": 20
+                        },
+                        "src": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
+                        "alt": "icon"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "type": "span",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": "Journey Entry"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              "children": {
+                "type": {
+                  "Link": {}
+                },
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "columnFlex",
+                  "children": [
+                    {
+                      "type": "strong",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "style": {
+                          "fontSize": 10
+                        },
+                        "children": "Evaluate every: 3 hours"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "key": null,
+                      "ref": null,
+                      "props": {},
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": "Segment: all"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "1-journeyEntry",
+        "sourceHandle": null,
+        "target": "2-addActivity",
+        "targetHandle": "actToJourney",
+        "id": "reactflow__edge-1null-2actToJourney"
+      }
+    ]
   }
 ]

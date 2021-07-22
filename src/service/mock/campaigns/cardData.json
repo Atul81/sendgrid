@@ -44,6 +44,53 @@
     "411115-holdOut": {
       "holdOutPercentage": "323",
       "description": "regbr"
+    },
+    "4112-wait": {
+      "activityWait": "periodTime",
+      "timeAmount": "45",
+      "timeUnit": "minutes",
+      "description": "htrrthrh"
+    },
+    "41112-yesNoSplit": {
+      "conditionType": "Event",
+      "sender": "Unconfigured Message",
+      "conditions": [
+        {
+          "attr": "Soft bounce"
+        }
+      ],
+      "evaluation": "Unconfigured Message",
+      "description": "frewfgerger"
+    },
+    "411112-randomSplit": {
+      "description": "wegverge",
+      "branch": {
+        "A": "54",
+        "B": "32",
+        "C": "14"
+      }
+    }
+  },
+  {
+    "id": 4,
+    "1-journeyEntry": {
+      "testName": 1,
+      "event": "Event Web Hook Requests Three",
+      "attributes": [
+        {
+          "attr": "4354556",
+          "value": "64564"
+        }
+      ],
+      "metrics": [
+        {
+          "attr": "4656456",
+          "operator": "546456",
+          "value": "645645"
+        }
+      ],
+      "segments": "The Xennials",
+      "description": "vsdrtrtsdvt"
     }
   }
 ]

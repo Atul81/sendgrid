@@ -3,13 +3,16 @@ import {Button, Divider, Form, Input, message, Popover, Space} from "antd";
 import {CheckOutlined, MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import Paragraph from "antd/es/typography/Paragraph";
 import '../amendAutomation.scss';
+import {getObjectById} from "../../../../../service/serverCalls/mockServerRest";
+import {GET_SERVER_ERROR} from "../../../../../utils/common";
 
 export const RandomSplit = (props: any) => {
 
     const [randomSplitForm] = Form.useForm();
     const [percentage, setPercentage] = useState(0);
+
     const saveRandomSplitForm = (values: any) => {
-        if (percentage === 0 || percentage > 100) {
+        if (branchCount === 0 || percentage !== 100) {
             message.error('Sum of percentages of all the branch should be hundred(100)', 0.8).then(_ => {
             });
         } else {
@@ -21,7 +24,7 @@ export const RandomSplit = (props: any) => {
                             Branch {itr}
                         </Paragraph>
                     })}
-                </div>, 'randomSplit', 'Random Split', '/assets/icons/icon-random-split.svg', values.randomSplitFormObj.branch ? Object.keys(values.randomSplitFormObj.branch).length : null, props.modalData ? props.modalData.cardId : null);
+                </div>, 'randomSplit', 'Random Split', '/assets/icons/icon-random-split.svg', values.randomSplitFormObj.branch ? Object.keys(values.randomSplitFormObj.branch).length : null, props.modalData ? props.modalData.cardId : null, values.randomSplitFormObj);
         }
     };
 
@@ -66,6 +69,35 @@ export const RandomSplit = (props: any) => {
         }
         setArr(tempObj);
     };
+
+    useEffect(() => {
+        if (props.modalData) {
+            getObjectById(props.modalData.workFlowId, 'cardData').then(async getRandomSplitAsync => {
+                let randomSplitRes = await getRandomSplitAsync.json();
+                if (randomSplitRes && randomSplitRes[props.modalData.cardId]) {
+                    randomSplitRes = randomSplitRes[props.modalData.cardId];
+                    setBranchCount(Object.keys(randomSplitRes.branch).length);
+                    let arrLength = Object.keys(randomSplitRes.branch).length;
+                    let tempObj = [];
+                    while (arrLength-- > 0) {
+                        tempObj.push(1);
+                    }
+                    randomSplitForm.setFieldsValue({
+                        randomSplitFormObj: {
+                            branch: randomSplitRes.branch,
+                            description: randomSplitRes.description
+                        }
+                    });
+                    setArr(tempObj);
+                    setPercentage(100);
+                }
+            }).catch(_ => {
+                console.log("Unable to get random split data");
+                message.error(GET_SERVER_ERROR, 0.8).then(() => {
+                });
+            });
+        }
+    }, []);
 
     return <Form className='multiVariateSplit randomSplit' name="randomSplit" form={randomSplitForm}
                  layout={'horizontal'} colon={false}

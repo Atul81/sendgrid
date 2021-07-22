@@ -3,36 +3,18 @@ import {Button, Form, Input, message, Radio, Select} from "antd";
 import Paragraph from "antd/es/typography/Paragraph";
 import {CheckOutlined} from "@ant-design/icons";
 import {DropDown} from "../../../../../utils/Interfaces";
-import {editObjectById, getObjectById} from "../../../../../service/serverCalls/mockServerRest";
+import {getObjectById} from "../../../../../service/serverCalls/mockServerRest";
 import {GET_SERVER_ERROR} from "../../../../../utils/common";
-import {useSelector} from "react-redux";
 
 export const Wait = (props: any) => {
     const [waitForm] = Form.useForm();
     const {Option} = Select;
-    // @ts-ignore
-    const workFlowCardData = useSelector((state) => state.root.workFlowData);
 
     const saveWaitForm = (values: any) => {
-        editObjectById({
-            id: props.modalData.cardId,
-            ...workFlowCardData,
-            [props.modalData.cardId]: values.waitObj
-        }, 'cardData').then(async waitAsync => {
-            let waitRes = await waitAsync.json();
-            if (waitRes) {
-                message.success('Wait data has been successfully updated', 0.6).then(_ => {
-                });
-            }
-        }).catch(reason => {
-            console.log(reason);
-            message.error(GET_SERVER_ERROR, 0.8).then(() => {
-            });
-        });
         props.createCard(
             <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
                 <Paragraph>Wait for: {values.waitObj.timeAmount} {values.waitObj.timeUnit}</Paragraph>
-            </div>, 'wait', 'Wait', '/assets/icons/icon-wait.svg', null, props.modalData ? props.modalData.cardId : null);
+            </div>, 'wait', 'Wait', '/assets/icons/icon-wait.svg', null, props.modalData ? props.modalData.cardId : null, values.waitObj);
     };
 
     useEffect(() => {

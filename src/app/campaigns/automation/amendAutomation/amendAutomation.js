@@ -282,7 +282,7 @@ export const AmendAutomationPage = (props) => {
 
     const onElementClick = (event, element) => {
         setElementSelected(element);
-        if (element.type === 'plusNode' || (element.data && (element.data.label || element.data.branchCount))) {
+        if (element.type === 'emptyCardNode' || element.type === 'plusNode' || (element.data && (element.data.label || element.data.branchCount))) {
             let elementType = element.id.split("-")[1];
             switch (elementType) {
                 case 'journeyEntry':
@@ -320,6 +320,8 @@ export const AmendAutomationPage = (props) => {
                     setNodeTitle('Holdout');
                     setCardType(elementType);
                     setActivityModal(true);
+                    break;
+                case "emptyCardNode":
                     break;
                 default:
                     message.error('Not implemented Yet', 0.5).then(_ => {
@@ -447,7 +449,7 @@ export const AmendAutomationPage = (props) => {
 
     }, [nodeForDelete, workFlowCardDataRedux]);
 
-    const createNodeFromActivity = (nodeContent, nodeType, nodeTitle, nodeSvg, branchCount, existingNodeId) => {
+    const createNodeFromActivity = (nodeContent, nodeType, nodeTitle, nodeSvg, branchCount, existingNodeId, formData) => {
         const position = existingNodeId ? modalData.currentElement.position : {
             x: Math.floor(modalData.currentElement.position.x + Math.random() * 40),
             y: Math.floor(modalData.currentElement.position.y + Math.random() * 150)
@@ -480,7 +482,28 @@ export const AmendAutomationPage = (props) => {
             createSourceEdgeNode(newNodeId, nodeType, branchCount, position);
         }
         setNodeTitle("");
+        saveAutomationData(formData, newNodeId);
     };
+
+    const saveAutomationData = (formData, newNodeId) => {
+        editObjectById({
+            id: newNodeId,
+            ...workFlowCardDataRedux,
+            [newNodeId]: formData
+        }, 'cardData').then(async nodeDataAsync => {
+            let nodeDataRes = await nodeDataAsync.json();
+            if (nodeDataRes) {
+                message.success('Node data has been successfully captured', 0.6).then(_ => {
+                });
+            }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
+    };
+
+
     const createSourceEdgeNode = (sourceId, nodeType, branchCount, position) => {
         if (nodeType === 'multiVariateSplit' || nodeType === 'randomSplit' || nodeType === 'yesNoSplit' || nodeType === 'holdOut') {
             let counter = 0;
