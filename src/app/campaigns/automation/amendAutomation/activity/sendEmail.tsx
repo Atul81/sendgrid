@@ -4,21 +4,38 @@ import {CheckOutlined, SearchOutlined} from "@ant-design/icons";
 import '../amendAutomation.scss';
 import Paragraph from "antd/es/typography/Paragraph";
 import {DropDown} from "../../../../../utils/Interfaces";
-import {getAllServerCall, getObjectById} from "../../../../../service/serverCalls/mockServerRest";
+import {editObjectById, getAllServerCall, getObjectById} from "../../../../../service/serverCalls/mockServerRest";
 import {GET_SERVER_ERROR} from "../../../../../utils/common";
-import {debug} from "@amcharts/amcharts4/.internal/core/utils/Debug";
+import {useSelector} from "react-redux";
 
 export const SendEmail = (props: any) => {
 
     const [sendEmailForm] = Form.useForm();
     const {Option} = Select;
-
+    // @ts-ignore
+    const workFlowCardData = useSelector((state) => state.root.workFlowData);
     const saveSendEmailForm = (values: any) => {
+        editObjectById({
+            id: props.modalData.cardId,
+            ...workFlowCardData,
+            [props.modalData.cardId]: values.sendEmailObj
+        }, 'cardData').then(async sendEmailAsync => {
+            let sendEmailRes = await sendEmailAsync.json();
+            if (sendEmailRes) {
+                message.success('Send Email data has been successfully updated', 0.6).then(_ => {
+                });
+            }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
         props.createCard(
             <div style={{display: "flex", justifyContent: 'center', flexDirection: 'column'}}>
                 <Button>Configure Message</Button>
                 <Paragraph>Sender Address: {values.sendEmailObj.sender}</Paragraph>
             </div>, 'sendEmail', 'Send an email', '/assets/icons/icon-send-email.svg', null, props.modalData ? props.modalData.cardId : null);
+
     }
 
     const [allSenders, setAllSenders] = useState<DropDown[]>([]);
@@ -34,11 +51,15 @@ export const SendEmail = (props: any) => {
                     sentEmailRes = sentEmailRes[props.modalData.cardId];
                     sendEmailForm.setFieldsValue({
                         sendEmailObj: {
-                            sender: sentEmailRes.senderEmailAddress,
+                            sender: sentEmailRes.sender,
                             description: sentEmailRes.description
                         }
                     });
                 }
+            }).catch(_ => {
+                console.log("Unable to get send email data");
+                message.error(GET_SERVER_ERROR, 0.8).then(() => {
+                });
             });
         }
         getAllServerCall('senders').then(async allSendersAsync => {
