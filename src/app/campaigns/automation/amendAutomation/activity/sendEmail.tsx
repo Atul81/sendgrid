@@ -36,7 +36,7 @@ export const SendEmail = (props: any) => {
                 <Paragraph>Sender Address: {values.sendEmailObj.sender}</Paragraph>
             </div>, 'sendEmail', 'Send an email', '/assets/icons/icon-send-email.svg', null, props.modalData ? props.modalData.cardId : null);
 
-    }
+    };
 
     const [allSenders, setAllSenders] = useState<DropDown[]>([]);
 
