@@ -1,33 +1,41 @@
-import React, {useRef, useState} from "react";
-import {message, Radio, Select, Upload} from "antd";
+import React, {useEffect, useState} from "react";
+import {message, Select, Upload} from "antd";
 import 'antd/dist/antd.css';
 import {InboxOutlined} from '@ant-design/icons';
 import Paragraph from "antd/es/typography/Paragraph";
 import {Link} from "react-router-dom";
-import {AddSegment} from "../../audience/contactInterface";
+import {AddSegment} from "../../audience/audienceInterface";
 import Title from "antd/lib/typography/Title";
-import {filterSelectOptions} from "../../../utils/common";
+import {filterSelectOptions, GET_SERVER_ERROR} from "../../../utils/common";
+import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
 
 export const UploadPage: any = (props: any) => {
+
+    useEffect(() => {
+        getAllServerCall('segments').then(async response => {
+            let resBody = await response.json();
+            let data: AddSegment[] = [];
+            if (resBody && Array.isArray(resBody)) {
+                resBody.forEach((itr: any) => {
+                    data.push({segment: itr.name, key: itr.id});
+                });
+            }
+            setAllSegments(data);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
+    }, []);
+
     const {Dragger} = Upload;
     const {Option} = Select;
-
-    const [allSegments, setAllSegments] = useState<AddSegment[]>(
-        [{
-            key: 'xennials',
-            segment: 'The Xennials'
-        }, {
-            key: 'lg',
-            segment: 'LG Curve'
-        }, {
-            key: 'samsung',
-            segment: 'Samsung Curve'
-        }]);
+    const [allSegments, setAllSegments] = useState<AddSegment[]>([]);
     const [segmentSelected, setSegmentSelected] = useState<AddSegment>({
         key: '',
         segment: ''
     });
-    const [showSegment, setShowSegment] = useState(false);
+
     const uploadProps = {
         name: 'file',
         multiple: false,
@@ -48,34 +56,23 @@ export const UploadPage: any = (props: any) => {
         },
     };
 
-    const radioValueChange = (event: any) => {
-        setShowSegment(event.target.value === 'existingSegment');
-    };
-
     const newSegmentSelectChange = (option: any) => {
         setSegmentSelected({key: option.key, segment: option.children});
     };
     return (
         <>
             <p className="ant-upload-hint">
-                <Radio.Group onChange={(event) => radioValueChange(event)}>
-                    <Radio value='existingSegment'>Add Contact to Segment</Radio>
-                    <Radio.Button value='createSegment'>Add Contact to a new Segment</Radio.Button>
-                    <br/>
-                </Radio.Group>
-                <br/>
-                {showSegment ? <>
-                    <Title level={5}>Select Segment</Title>
-                    <Select style={{width: 360}} showSearch
-                            value={segmentSelected.segment.length === 0 ? undefined : segmentSelected.segment}
-                            placeholder="Select Segments"
-                            optionFilterProp="children"
-                            filterOption={(input, option) => filterSelectOptions(input, option)}
-                            onChange={(value, option) => newSegmentSelectChange(option)}>
-                        {allSegments.map(value => {
-                            return <Option key={value.key} value={value.key}>{value.segment}</Option>
-                        })}
-                    </Select></> : null}
+                <Title level={5}>Select Segment</Title>
+                <Select style={{width: 360}} showSearch
+                        value={segmentSelected.segment.length === 0 ? undefined : segmentSelected.segment}
+                        placeholder="Select Segments"
+                        optionFilterProp="children"
+                        filterOption={(input, option) => filterSelectOptions(input, option)}
+                        onChange={(value, option) => newSegmentSelectChange(option)}>
+                    {allSegments.map(value => {
+                        return <Option key={value.key} value={value.key}>{value.segment}</Option>
+                    })}
+                </Select>
             </p>
             <Paragraph>Download our <Link to='/files/Contact_Upload_Template.csv' target={'_blank'}
                                           style={{color: "red", cursor: 'pointer'}} download>CSV template</Link> to

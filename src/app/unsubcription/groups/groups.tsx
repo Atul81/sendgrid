@@ -1,13 +1,31 @@
 import React, {useEffect, useState} from "react";
-import {Button, Form, Input, Modal, Popconfirm, Space, Switch, Table} from "antd";
-import {CloseOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
+import {Button, Form, Input, message, Modal, Popconfirm, Space, Switch, Table} from "antd";
+import {CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
 import {GroupNameInterface} from "../unsubcriptionInterface";
 import Paragraph from "antd/es/typography/Paragraph";
+import {useLocation} from "react-router-dom";
+import {
+    addNewObject,
+    deleteObjectById,
+    editObjectById,
+    getAllServerCall
+} from "../../../service/serverCalls/mockServerRest";
+import {updateActiveContent, updateBreadcrumb} from "../../../store/actions/root";
+import {useDispatch} from "react-redux";
+import Search from "antd/es/input/Search";
+import {GET_SERVER_ERROR, POST_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../utils/common";
 
 export const GroupsPage: any = () => {
+    const dispatch = useDispatch();
     const [groupNameDS, setGroupNameDS] = useState<GroupNameInterface[]>([]);
+    const [groupNameDSOps, setGroupNameDSOps] = useState<GroupNameInterface[]>([]);
     const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
+    const urlPath = useLocation();
+    const [groupId, setGroupId] = useState(7);
+    const [groupObj, setGroupObj] = useState({
+        id: ''
+    });
 
     const contactRowSelection = {
         onChange: (selectedRowKeys: React.Key[], selectedRows: GroupNameInterface[]) => {
@@ -19,33 +37,32 @@ export const GroupsPage: any = () => {
         }
     };
     useEffect(() => {
-        let data: GroupNameInterface[] = [];
-        for (let i = 0; i < 100; i++) {
-            data.push({
-                key: i.toString(10),
-                groupName: `email+test@gmail.com ${i} Unsubscribe`,
-                groupDesc: `${i} Unsubscribe`,
-                globalDisplay: true
-            });
-        }
-        setGroupNameDS(data);
-    }, []);
+        dispatch(updateBreadcrumb(['unsubscription', 'groups']));
+        dispatch(updateActiveContent('groups'));
+        populateAllGroups();
+    }, [dispatch, urlPath.pathname]);
 
     const openGroupNameEdit = (record: any) => {
-        console.log(record);
         unsubscribeForm.setFieldsValue({
             formObj: {
                 groupName: record.groupName,
                 groupDesc: record.groupDesc,
-                globalDisplay: record.globalDisplay
+                globalDisplay: record.globalDisplay,
             }
         });
+        setGroupObj({...record, id: record.key});
         setSwitchCheck(record.globalDisplay);
         setAmendGroupModal(true);
     };
 
     const deleteGroupName = (record: any) => {
-        console.log(record);
+        deleteObjectById(record.key, 'groups').then(async deleteGroupAsync => {
+            let delGroupRes = await deleteGroupAsync.json();
+            if (delGroupRes) {
+                message.success(`Group ${record.groupName} has been successfully deleted`, 0.7);
+                populateAllGroups();
+            }
+        })
     }
     const columns = [
         {
@@ -54,7 +71,6 @@ export const GroupsPage: any = () => {
             key: 'groupName',
         },
         {
-            title: 'Action',
             dataIndex: '',
             key: 'action',
             width: '75px',
@@ -84,66 +100,138 @@ export const GroupsPage: any = () => {
         setAmendGroupModal(false);
         unsubscribeForm.resetFields();
         setSwitchCheck(false);
+        setGroupObj({id: ''});
     };
 
     const amendGroupService = (values: any) => {
-        console.log(values, switchCheck);
+        if (groupObj && groupObj.id) {
+            let editObject = {
+                ...values.formObj,
+                globalDisplay: switchCheck,
+                id: groupObj.id
+            }
+            editObjectById(editObject, 'groups').then(async editGroupAsync => {
+                let editGroupRes = await editGroupAsync.json();
+                if (editGroupRes) {
+                    message.success(`Group ${values.formObj.groupName} has been successfully updated`);
+                }
+            }).catch(reason => {
+                console.log(reason);
+                message.error(PUT_SERVER_ERROR, 0.8).then(() => {
+                });
+            });
+        } else {
+            let newGrpId = groupId + 1;
+            let amendGrpObj = {...values.formObj, globalDisplay: switchCheck, id: newGrpId};
+            addNewObject(amendGrpObj, 'groups').then(async newGroupAsync => {
+                let newGrpRes = await newGroupAsync.json();
+                if (newGrpRes) {
+                    message.success(`New Group ${amendGrpObj.groupName} has been successfully created`, 0.6);
+                    setGroupId(newGrpId);
+                }
+            }).catch(reason => {
+                console.log(reason);
+                message.error(POST_SERVER_ERROR, 0.8).then(() => {
+                });
+            });
+        }
+        setAmendGroupModal(false);
+        populateAllGroups();
     };
 
-    return <div className={'pageLayout'}>
-        <div className="reverseFlex">
-            <Button style={{marginRight: 8}} key="addGroup" type="primary" onClick={() => setAmendGroupModal(true)}
-                    icon={<PlusOutlined/>}>
-                Add New
-            </Button>
-            {selectedGroups.length > 0 ?
-                <Button style={{marginRight: 8}} key="delGroup" type="primary" danger icon={<DeleteOutlined/>}>
-                    Delete
-                </Button> : null}
-        </div>
-        <Modal title="Add Unsubscribe Group" centered visible={amendGroupModal} width={500} footer={null}
-               closable={false}
-               onCancel={cancelUnsubscribeAmend}>
-            <div className='columnFlex'>
-                <Form form={unsubscribeForm} layout={'vertical'} onFinish={amendGroupService}>
-                    <Form.Item label="Group Name" required>
-                        <Form.Item name={['formObj', 'groupName']}
-                                   noStyle rules={[{required: true, message: 'Email Address required'}]}>
-                            <Input placeholder="Text Only" type={"text"}/>
-                        </Form.Item>
-                    </Form.Item>
-                    <Form.Item label="Group Description">
-                        <Form.Item name={['formObj', 'groupDesc']} noStyle>
-                            <TextArea placeholder="Text Only"/>
-                        </Form.Item>
-                    </Form.Item>
-                    <Form.Item label={null}>
-                        <Form.Item name={['formObj', 'globalDisplay']} noStyle>
-                            <div className={'flexEqualSpacing'}>
-                                <Switch checked={switchCheck}/>
-                                <Paragraph>Display this group in global subscription preferences</Paragraph></div>
-                        </Form.Item>
-                    </Form.Item>
-                    <div className='reverseFlex'>
-                        <Form.Item>
-                            <Button key="cancel" htmlType={'reset'} onClick={cancelUnsubscribeAmend}
-                                    icon={<CloseOutlined/>}>
-                                Cancel
-                            </Button>
-                        </Form.Item>
-                        <Form.Item>
-                            <Button style={{marginRight: 8}} key="quickAdd" htmlType={'submit'} type="primary"
-                                    icon={<PlusOutlined/>}>
-                                Add
-                            </Button>
-                        </Form.Item>
-                    </div>
-                </Form>
+    const populateAllGroups = () => {
+        getAllServerCall('groups').then(async allGroupsAsync => {
+            let allGroupsRes = await allGroupsAsync.json();
+            let tempItrObj: GroupNameInterface[] = [];
+            if (allGroupsRes) {
+                allGroupsRes.forEach((itr: any) => {
+                    tempItrObj.push({...itr, key: itr.id});
+                    setGroupId(itr.id);
+                });
+            }
+            setGroupNameDS(tempItrObj);
+            setGroupNameDSOps(tempItrObj);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
+    };
+
+    const onSearchGroups = (searchParam: string) => {
+        setGroupNameDS(groupNameDSOps.filter(value => {
+            return value.groupName.includes(searchParam);
+        }));
+    };
+
+    return (
+        <div className={'pageLayout'}>
+            <div className="secondNav">
+                <Title level={4}>All Groups</Title>
             </div>
-        </Modal>
-        <div className="thirdNav" style={{height: 'calc(100vh - 222px)'}}>
-            <Table scroll={{y: 'calc(100vh - 320px)'}} rowSelection={{...contactRowSelection}} dataSource={groupNameDS}
-                   columns={columns} bordered/>
+            <div className="firstNav">
+                <div className="leftPlacement">
+                    <div className="searchInput">
+                        <Search placeholder="input search text" onSearch={onSearchGroups} enterButton/>
+                    </div>
+                </div>
+                <div className="rightPlacement">
+                    {selectedGroups.length > 0 ?
+                        <Button style={{marginRight: 8}} className={'deleteBtn'} key="delGroup" type="primary" danger
+                                icon={<DeleteOutlined/>}>
+                            Delete
+                        </Button> : null}
+                    <Button key="addGroup" type="primary" style={{width: 100}}
+                            onClick={() => setAmendGroupModal(true)}
+                            icon={<PlusOutlined/>}>
+                        Add New
+                    </Button>
+                </div>
+            </div>
+            <Modal title="Add Unsubscribe Group" centered visible={amendGroupModal} width={500} footer={null}
+                   closable={false} destroyOnClose={true}
+                   onCancel={cancelUnsubscribeAmend}>
+                <div className='columnFlex'>
+                    <Form form={unsubscribeForm} layout={'vertical'} onFinish={amendGroupService}>
+                        <Form.Item label="Group Name" required>
+                            <Form.Item name={['formObj', 'groupName']}
+                                       noStyle rules={[{required: true, message: 'Email Address required'}]}>
+                                <Input placeholder="Text Only" type={"text"}/>
+                            </Form.Item>
+                        </Form.Item>
+                        <Form.Item label="Group Description">
+                            <Form.Item name={['formObj', 'groupDesc']} noStyle>
+                                <TextArea placeholder="Text Only"/>
+                            </Form.Item>
+                        </Form.Item>
+                        <Form.Item label={null}>
+                            <Form.Item noStyle>
+                                <div className={'flexEqualSpacing'}>
+                                    <Switch defaultChecked={switchCheck}
+                                            onChange={(checked => setSwitchCheck(checked))}/>
+                                    <Paragraph>Display this group in global subscription preferences</Paragraph></div>
+                            </Form.Item>
+                        </Form.Item>
+                        <div className='reverseFlex'>
+                            <Form.Item>
+                                <Button key="cancel" htmlType={'reset'} onClick={cancelUnsubscribeAmend}
+                                        icon={<CloseOutlined/>}>
+                                    Cancel
+                                </Button>
+                            </Form.Item>
+                            <Form.Item>
+                                <Button style={{marginRight: 8}} key="quickAdd" htmlType={'submit'} type="primary"
+                                        icon={groupObj.id ? <CheckOutlined/> : <PlusOutlined/>}>
+                                    {groupObj.id ? 'Save' : 'Add'}
+                                </Button>
+                            </Form.Item>
+                        </div>
+                    </Form>
+                </div>
+            </Modal>
+            <div className="thirdNav">
+                <Table rowSelection={{...contactRowSelection}} dataSource={groupNameDS} columns={columns} bordered/>
+            </div>
         </div>
-    </div>
+    )
 }

@@ -4,6 +4,15 @@
     flex-direction: column;
   }
 
+  .formItemWidth {
+    width: 50%;
+    min-width: 238.78px;
+
+    .treatmentMargin {
+      margin-left: 4px;
+    }
+  }
+
   @extend .flexColumn;
 
   .cancelNav {
@@ -13,18 +22,26 @@
   }
 
   .screenBifurcation {
-    //border: 2px solid #141414;
     display: grid;
-    grid-template-columns: 14% auto;
+    grid-template-columns: 21% auto;
     padding: 8px;
-    .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-description {
-      color: rgba(0, 0, 0, 0.85);
-      font-weight: 500;
-      font-size: 16px;
+
+    .antSteps {
+      .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-description {
+        color: rgba(0, 0, 0, 0.85);
+        font-weight: 500;
+        font-size: 18px;
+      }
+
+      .ant-steps-item-active {
+        background: #f0f2f5;
+      }
     }
 
     .contentDisplay {
       padding: 24px;
+      background: #f0f2f5;
+
 
       .nextBtn {
         width: 70px;
@@ -43,10 +60,81 @@
         @extend .flexColumn;
         padding-top: 16px;
       }
+
+      .abFirstNav {
+        display: grid;
+        grid-template-columns: 50% 12px auto;
+        grid-column-gap: 24px;
+
+        .ant-form-item .ant-select, .ant-form-item .ant-cascader-picker {
+          width: 100%
+        }
+
+        .createNew {
+          width: 160px;
+          margin-bottom: 24px;
+          display: flex;
+          flex-direction: column-reverse;
+
+          .ant-btn {
+            border-radius: 0;
+            padding: 0;
+          }
+
+          .ant-btn > .anticon + span, .ant-btn > span + .anticon {
+            margin-left: 4px;
+          }
+        }
+
+        .orContent {
+          @extend .createNew;
+
+          .ant-typography {
+            margin-bottom: 0;
+          }
+        }
+      }
+
+      .ant-tabs-tab + .ant-tabs-tab {
+        margin: 0 32px 0 0;
+      }
     }
   }
 
   .ant-steps-vertical {
-    height: calc(100vh - 228px);
+    height: calc(100vh - 262px);
+  }
+
+
+  .treatmentSection {
+    .treatmentInp {
+      border-left: 4px solid;
+
+      .content {
+        margin-left: 4px;
+        display: grid;
+        grid-template-columns: 24% 13% auto;
+        grid-column-gap: 4px;
+        margin-bottom: 16px;
+
+        .ant-tag {
+          padding-top: 6px;
+        }
+
+        .desc {
+          margin-top: 6px;
+
+          .anticon svg {
+            width: 32px;
+            height: 24px;
+          }
+
+          span {
+            cursor: pointer;
+            margin-right: 8px;
+          }
+        }
+      }
+    }
   }
 }

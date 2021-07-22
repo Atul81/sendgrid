@@ -23,4 +23,349 @@
     @extend .leftMargin;
     background: darkgreen;
   }
+
+  .sidebar {
+    border-right: 1px solid #eee;
+    padding: 15px 10px;
+    font-size: 12px;
+    background: #fcfcfc;
+
+    .description {
+      margin-bottom: 10px;
+    }
+
+    .nodeBox {
+      height: 48px;
+      padding: 4px;
+      border: 1px solid #1a192b;
+      border-radius: 2px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: grab;
+      margin-bottom: 4px;
+    }
+
+    .input {
+      border-color: #0041d0;
+    }
+
+    .output {
+      border-color: #ff0072;
+    }
+
+    .customNodeTwo {
+      border-color: greenyellow;
+    }
+
+    .custom {
+      border-color: #531dab;
+    }
+  }
+
+  .gridDisplay {
+    height: calc(100vh - 212px);
+
+    .reactflow-wrapper {
+      flex-grow: 1;
+      height: 100%;
+    }
+  }
+
+  .react-flow__node-default, .react-flow__node-input, .react-flow__node-output, .react-flow__node-multiBranchNode, .react-flow__node-emptyCardNode {
+    padding: 0;
+    width: 196px;
+    border-radius: 0;
+    border-color: #000c17;
+
+    .ant-typography {
+      font-size: 10px;
+    }
+
+    .ant-card-bordered {
+      border: 0 solid #f0f0f0;
+      height: 76px;
+
+      .ant-card-head {
+        background: rgba(0, 0, 0, 0.25);
+        padding: 0 4px;
+        background: #f0f2f5;
+        height: 28px;
+        min-height: 24px;
+
+        .titleContent {
+          display: flex;
+
+          img {
+            margin-right: 4px;
+          }
+        }
+
+        .ant-card-head-wrapper {
+          height: 28px;
+          min-height: 24px;
+
+          .ant-card-head-title {
+            padding: 0;
+          }
+
+        }
+      }
+
+      .ant-card-body {
+        padding: 0 2px;
+        height: 48px;
+        display: flex;
+        justify-content: center;
+
+        .ant-typography {
+          margin-bottom: 0;
+          font-size: 8px;
+          display: flex;
+          justify-content: center;
+        }
+
+        .ant-btn {
+          width: 150px;
+          height: 24px;
+          padding: 0 12px;
+          border-radius: 0;
+          align-self: center;
+          font-size: 10px;
+        }
+
+        .ant-divider-horizontal {
+          margin: 0 0 4px;
+          padding: 0;
+        }
+
+        .dot {
+          height: 4px;
+          width: 4px;
+          border-radius: 50%;
+          display: inline-block;
+          margin-top: 4px;
+          margin-right: 1px;
+        }
+      }
+    }
+  }
+}
+
+.journeyModal {
+  .ant-modal-content {
+    background: white;
+    width: 50rem;
+    max-height: calc(100vh - 150px);
+    box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.25);
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .ant-form-item {
+    margin-bottom: 8px;
+  }
+
+  .closeIcon {
+    .anticon svg {
+      margin-top: 20px;
+      margin-bottom: 0;
+    }
+  }
+
+  .formListHeader {
+    margin-bottom: 8px;
+  }
+}
+
+.activitySelection {
+  .closeIcon {
+    .anticon svg {
+      margin-bottom: 24px;
+    }
+  }
+
+  .dot {
+    height: 20px;
+    width: 20px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .selectDiv {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .info {
+    color: #1890ff;
+    cursor: pointer;
+  }
+
+  .colFlex {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .removeBtnRad {
+    .ant-btn {
+      border-radius: 0;
+    }
+  }
+
+  .waitForm {
+    .timeAmount {
+      margin-top: 4px;
+      display: flex;
+
+      .ant-form-item {
+        min-width: 315px;
+        margin-right: 22px;
+      }
+    }
+
+    .radioForm {
+      .ant-form-vertical .ant-form-item-label, .ant-col-24.ant-form-item-label, .ant-col-xl-24.ant-form-item-label {
+        padding: 0;
+      }
+    }
+  }
+
+  .sendEmail {
+    .firstDiv {
+      .ant-typography {
+        margin: 0;
+      }
+
+      .ant-btn {
+        margin-left: -16px;
+      }
+    }
+
+    .inlineFlexContent {
+      display: flex;
+      justify-content: space-around;
+      @extend .removeBtnRad;
+    }
+  }
+
+  .condition {
+    width: 171px;
+    margin-bottom: 8px;
+    margin-left: -18px;
+  }
+
+  .multiVariateSplit {
+    .variableForm {
+      .anticon svg {
+        margin-bottom: 0;
+      }
+
+      .btn {
+        .anticon svg {
+          margin-bottom: 4px;
+        }
+      }
+
+      .branchName {
+        display: flex;
+
+        .dot {
+          height: 8px;
+          width: 8px;
+          border-radius: 50%;
+          display: inline-block;
+          margin-top: 8px;
+          margin-right: 8px;
+        }
+      }
+    }
+
+    .ant-divider-horizontal {
+      margin: 0 0 4px;
+    }
+
+    .conBtn {
+      @extend .condition;
+    }
+  }
+
+
+  .yesNoSplit {
+    .addCon {
+      @extend .condition;
+      width: 150px;
+    }
+
+    .remove {
+      @extend .closeIcon;
+    }
+  }
+
+  .randomSplit {
+    .ant-space-item {
+      width: 620px;
+
+      .ant-form-item-label {
+        margin-right: 60%;
+      }
+
+      .closeIcon {
+        .anticon svg {
+          margin-bottom: 20px;
+          margin-top: 0;
+        }
+      }
+    }
+
+    .conPer {
+      .btn {
+        @extend .condition;
+      }
+
+      .ant-form-item-control-input-content {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+
+      strong {
+        align-self: center;
+      }
+    }
+  }
+}
+
+.antSelect {
+  .selectionBox {
+    display: flex;
+
+    img {
+      width: 48px;
+      height: 48px;
+    }
+
+    span {
+      margin-top: 4px;
+    }
+
+    .text {
+      margin-left: 8px;
+      display: flex;
+      flex-direction: column;
+
+      .ant-typography {
+        margin: 0;
+      }
+    }
+  }
+}
+
+.plusWrapper {
+  margin-top: 29px;
+
+  .anticon svg {
+    margin-bottom: 0;
+  }
 }

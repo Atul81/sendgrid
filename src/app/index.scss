@@ -34,12 +34,45 @@
   height: calc(100vh - 176px);
   @extend .columnFlex;
   justify-content: space-between;
+
+  .del {
+  }
+
+  .edit {
+  }
+
+  .del:hover {
+    color: red;
+  }
+
+  .edit:hover {
+    color: green;
+  }
+
+  .view {
+  }
+
+  .view:hover {
+    opacity: 1;
+  }
+
+  .copy {
+  }
+
+  .copy:hover {
+    color: #00A3FF;
+  }
 }
 
 .flexEqualSpacing {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+
+  div.ant-typography, .ant-typography p {
+    margin-bottom: 0;
+    margin-top: 4px;
+  }
 }
 
 .firstNav {
@@ -70,12 +103,12 @@
     }
 
     .exportBtn {
-      width: 100px;
+      width: 104px;
       margin-right: 8px;
     }
 
     .addBtn {
-      width: 125px;
+      width: 128px;
     }
   }
 }
@@ -153,7 +186,29 @@
   max-width: 100vw;
 }
 
-/* customize ant styles */
+.site-layout .site-layout-background {
+  padding: 0;
+  margin: 0;
+  max-width: 100vw;
+}
+
+.siderUncollapse {
+  flex: 0 0 240px !important;
+  max-width: 240px !important;
+  min-width: 240px !important;
+  width: 240px !important;
+
+  .ant-layout-sider-trigger {
+    width: 240px !important;
+  }
+}
+
+.siderCollapse {
+  flex: 0 0 80px;
+  max-width: 80px;
+  min-width: 80px;
+  width: 80px;
+}
 
 .ant-layout-sider, .ant-layout-sider-trigger, .ant-menu-dark {
   background: #5C18FF;
@@ -163,6 +218,7 @@
   &.ant-menu-dark {
     background: #5C18FF;
   }
+
   &.ant-menu-inline {
     &.ant-menu-sub {
       background: #4300E4;
@@ -184,4 +240,19 @@
 
 .ant-menu-horizontal {
   border-bottom: 0;
+}
+
+.ant-table-column-sorters-with-tooltip {
+  .ant-table-column-sorters {
+    display: flex;
+    justify-content: space-between;
+
+    .anticon svg {
+      margin-bottom: 2px;
+    }
+  }
+}
+
+.ant-btn {
+  border-radius: 40px;
 }

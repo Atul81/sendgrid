@@ -1,0 +1,49 @@
+[
+  {
+    "id": 3,
+    "5-sendEmail": {
+      "senderEmailAddress": "test-example1@gmail.com",
+      "description": "testDesc"
+    },
+    "1-journeyEntry": {
+      "testName": 1,
+      "event": "Event Web Hook Requests Three",
+      "attributes": [
+        {
+          "attr": "4354556",
+          "value": "64564"
+        }
+      ],
+      "metrics": [
+        {
+          "attr": "4656456",
+          "operator": "546456",
+          "value": "645645"
+        }
+      ],
+      "segments": "The Xennials",
+      "description": "vsdrtrtsdvt"
+    },
+    "42-holdOut": {
+      "holdOutPercentage": "436",
+      "description": "ergrgrgrg"
+    },
+    "412-multiVariateSplit": {
+      "branch": {
+        "A": "Evaluate Monthly",
+        "B": "Evaluate Periodically",
+        "C": "Evaluate Monthly"
+      },
+      "evaluation": "Evaluate Periodically",
+      "description": "gtmmtmotomt"
+    },
+    "411117-sendEmail": {
+      "sender": "test-example2@gmail.com",
+      "description": "brtqwggrg"
+    },
+    "411115-holdOut": {
+      "holdOutPercentage": "323",
+      "description": "regbr"
+    }
+  }
+]

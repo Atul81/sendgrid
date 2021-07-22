@@ -1,66 +1,60 @@
-import React, {useState} from "react";
-import {Button, message, Popconfirm, Space, Table} from "antd";
+import React, {useEffect, useState} from "react";
+import {Button, Input, message, Modal, Popconfirm, Space, Table} from "antd";
 import {CopyOutlined, DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import Search from "antd/lib/input/Search";
 import {AmendCampaignsPage} from "./amendCampaigns/AmendCampaignsLoadable";
 import {CampaignInterface} from "../campaignInterface";
+import {addNewObject, deleteObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
+import {updateBreadcrumb} from "../../../store/actions/root";
+import {useDispatch} from "react-redux";
+import {GET_SERVER_ERROR, POST_SERVER_ERROR, PUT_SERVER_ERROR} from "../../../utils/common";
 
 export const CampaignPage: any = () => {
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        populateAllCampaigns();
+    }, []);
+
     const [openAutomationAmend, setOpenAutomationAmend] = useState(false);
-    const [automationOpenType, setOpenType] = useState('view');
-    const [automationObj, setAutomationObj] = useState({});
-    const [customFieldsDS, setCustomFieldsDS] = useState<CampaignInterface[]>([
-        {
-            key: '1',
-            name: 'Name of the automation',
-            status: 'Scheduled'
-        },
-        {
-            key: '2',
-            name: 'Exit Intent Flow',
-            status: 'Sent'
-        }
-    ]);
-    const [customFieldsDSOps, setCustomFieldsDSOps] = useState<CampaignInterface[]>([
-        {
-            key: '1',
-            name: 'Name of the automation',
-            status: 'Scheduled'
-        },
-        {
-            key: '2',
-            name: 'Exit Intent Flow',
-            status: 'Sent'
-        }
-    ]);
+    const [campaignObj, setCampaignObj] = useState({
+        name: ''
+    });
+    const [campaignsDS, setCampaignsDS] = useState<CampaignInterface[]>([]);
+    const [campaignsDSOps, setCampaignsDSOps] = useState<CampaignInterface[]>([]);
     const [selectedAutomationKeys, setAutomationKeys] = useState<string[]>([]);
+    const [newCampaignModal, setNewCampaignModal] = useState(false);
+    const [campaignId, setCampaignId] = useState(3);
 
     const columns = [
         {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
+            sorter: (a: any, b: any) => a.name.length - b.name.length
         },
         {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
+            sorter: (a: any, b: any) => a.status.length - b.status.length
         },
         {
-            title: 'Action',
             dataIndex: '',
             key: 'action',
             width: '75px',
             render: ((text: string, record: any) => {
                 return <Space size="small">
                     <p className={"actionColumn"} onClick={() => openAutomationRow(record, 'view')}><EyeOutlined/></p>
-                    <p className={"actionColumn"} onClick={() => openAutomationRow(record, 'copy')}><CopyOutlined/></p>
+                    <p className={"actionColumn"} onClick={() => addNewCampaign(true, record)}><CopyOutlined/></p>
                     <p className={"actionColumn"} onClick={() => openAutomationRow(record, 'edit')}><EditOutlined/></p>
                     <Popconfirm overlayClassName="ant-popover-audience" placement="left"
                                 title={<p><Title level={5}>Are you sure you want to delete?</Title>
                                     This will permanently delete these records and all associated data from your
-                                    account. Deleting and re-adding records can alter your monthly contact limits. <a>Learn
+                                    account. Deleting and re-adding records can alter your monthly contact limits.
+                                    <a href={'https://www.google.com'} target={'_blank'} rel={'noreferrer'}>Learn
                                         More</a></p>}
                                 okText="Delete" cancelText="Cancel"
                                 onConfirm={() => deleteCustomFields(record)}>
@@ -75,15 +69,22 @@ export const CampaignPage: any = () => {
 
     const openAutomationRow = (record: any, openType: string) => {
         setOpenAutomationAmend(true);
-        setAutomationObj(record);
-        setOpenType(openType);
+        dispatch(updateBreadcrumb(['Campaign', 'Campaigns', `Edit: ${record.name}`]));
+        setCampaignObj({...record, openType: openType});
     };
 
     const deleteCustomFields = (record: any) => {
-        console.log(record);
-    }
+        deleteObjectById(record.key, 'campaigns').then(async deleteRes => {
+            let deleteData = await deleteRes.json();
+            if (deleteData) {
+                message.success(`Campaign of name ${record.name} has been successfully deleted`, 0.7);
+                populateAllCampaigns();
+            }
+        });
+    };
+
     const onSearch = (searchParam: string) => {
-        setCustomFieldsDS(customFieldsDSOps.filter(value => {
+        setCampaignsDS(campaignsDSOps.filter(value => {
             return value.name.includes(searchParam);
         }));
     };
@@ -102,42 +103,99 @@ export const CampaignPage: any = () => {
         if (selectedAutomationKeys.length === 0) {
             message.warning("Please use the checkbox to select contact for deletion", 0.8).then(() => {
             });
+        } else {
+            message.error("Bulk Delete not supported", 0.7).then(() => {
+            });
         }
-        console.log(selectedAutomationKeys);
     };
 
     const navigateToLandingPage = () => {
         setOpenAutomationAmend(false);
-        setAutomationObj({});
-        setOpenType('view');
+        setCampaignObj({name: ''});
+        dispatch(updateBreadcrumb(['Campaign', 'Campaigns']));
+        populateAllCampaigns();
     };
+
+    const populateAllCampaigns = () => {
+        getAllServerCall('campaigns').then(async res => {
+            let data = await res.json();
+            let tempObj: CampaignInterface[] = [];
+            if (data && Array.isArray(data)) {
+                data.forEach((itr: any) => {
+                    tempObj.push({...itr, key: itr.id})
+                });
+            }
+            setCampaignsDS(tempObj);
+            setCampaignsDSOps(tempObj);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
+    };
+
+    const addNewCampaign = (copied: boolean, existingCampaign: any) => {
+        if (campaignObj.name || (copied && existingCampaign.name)) {
+            addNewObject({
+                name: (copied && null !== existingCampaign) ? existingCampaign.name.concat(` - 
+                Copied ${existingCampaign.key}`) : campaignObj.name,
+                status: (copied && null !== existingCampaign) ? existingCampaign.status : 'Un-scheduled',
+                id: campaignId
+            }, 'campaigns').then(async newAutRes => {
+                let autRes = await newAutRes.json();
+                if (autRes) {
+                    openAutomationRow(campaignObj, 'create')
+                    setCampaignId(campaignId + 1);
+                    setNewCampaignModal(false);
+                    populateAllCampaigns();
+                }
+            }).catch(reason => {
+                console.log(reason);
+                message.error(POST_SERVER_ERROR, 0.8).then(() => {
+                });
+            });
+        } else {
+            message.error("Automation Name required", 0.5).then(() => {
+            });
+        }
+    };
+
 
     return !openAutomationAmend ? (
         <div className="pageLayout">
+            <div className="secondNav">
+                <Title level={4}>Campaigns</Title>
+            </div>
             <div className="firstNav">
                 <div className="leftPlacement">
                     <Search placeholder="Search Custom field" onSearch={onSearch} enterButton/>
                 </div>
                 <div className="rightPlacement">
-                    <Popconfirm overlayClassName="ant-popover-audience" placement="left"
-                                title={<p><Title level={5}>Are you sure you want to delete?</Title>
-                                    This will permanently delete these records and all associated data from your
-                                    account. Deleting and re-adding records can alter your monthly contact
-                                    limits. <a href={"https://www.google.com"} target={'_blank'} rel={'noreferrer'}>Learn
-                                        More</a></p>}
-                                okText="Delete" cancelText="Cancel"
-                                onConfirm={deleteSelectFields}>
-                        <Button className="deleteBtn" icon={<DeleteOutlined/>} type="primary"
-                                danger>Delete</Button>
-                    </Popconfirm>
-                    <Button style={{width: 90}} icon={<PlusOutlined/>} onClick={() => openAutomationRow(null, 'create')}
+                    {selectedAutomationKeys.length > 0 ?
+                        <Popconfirm overlayClassName="ant-popover-audience" placement="left"
+                                    title={<p><Title level={5}>Are you sure you want to delete?</Title>
+                                        This will permanently delete these records and all associated data from your
+                                        account. Deleting and re-adding records can alter your monthly contact
+                                        limits. <a href={"https://www.google.com"}
+                                                   target={'_blank'} rel={'noreferrer'}>Learn More</a></p>}
+                                    okText="Delete" cancelText="Cancel" onConfirm={deleteSelectFields}>
+                            <Button className="deleteBtn" icon={<DeleteOutlined/>} type="primary"
+                                    danger>Delete</Button>
+                        </Popconfirm> : null}
+                    <Button style={{width: 90}} icon={<PlusOutlined/>} onClick={() => setNewCampaignModal(true)}
                             type={'primary'}>Add New</Button>
                 </div>
             </div>
-            <div className="thirdNav" style={{height: 'calc(100vh - 228px)'}}>
-                <Table rowSelection={{...customFieldRowSelection}} dataSource={customFieldsDS} columns={columns}
+            <Modal title="Add New Campaign" centered visible={newCampaignModal}
+                   onOk={() => addNewCampaign(false, null)} destroyOnClose={true}
+                   onCancel={() => setNewCampaignModal(false)} width={300}>
+                <Input placeholder="New Campaign Name"
+                       onChange={(inpEvent) => setCampaignObj({name: inpEvent.target.value})}/>
+            </Modal>
+            <div className="thirdNav">
+                <Table rowSelection={{...customFieldRowSelection}} dataSource={campaignsDS} columns={columns}
                        bordered/>
             </div>
         </div>
-    ) : <AmendCampaignsPage amendObj={automationObj} routeToOverview={navigateToLandingPage}/>;
+    ) : <AmendCampaignsPage key={campaignId} amendObj={campaignObj} routeToOverview={navigateToLandingPage}/>;
 }

@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "fileName": "Chicago_contacts.csv",
+    "importTimestamp": 1620305037,
+    "rowsFraction": "143/167",
+    "status": "Uploaded"
+  },
+  {
+    "id": 2,
+    "fileName": "omni_campaign_subscribers_list.csv",
+    "importTimestamp": 1620301197,
+    "rowsFraction": "2451/3839",
+    "status": "In Progress"
+  }
+]

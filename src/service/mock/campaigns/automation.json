@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "name": "Name of the automation",
+    "status": "Scheduled"
+  },
+  {
+    "id": 2,
+    "name": "Exit Intent Flow",
+    "status": "Sent"
+  },
+  {
+    "id": 3,
+    "name": "Refactor",
+    "status": "Scheduled"
+  }
+]

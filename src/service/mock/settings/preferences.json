@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "quietTimeHours": [
+      "2021-05-10T18:35:09.842Z",
+      "2021-05-10T18:36:06.432Z"
+    ],
+    "maxMsg24Hr": "6",
+    "maxMsgCampRec": "7",
+    "maxMsgCampSend": "9",
+    "maxSecEachCamp": "8",
+    "campaignsRelated": "customDNS",
+    "trackingDomainType": "anotherdomain.com",
+    "trackingSubDomain": "dkms.ser.anotherdomain.com"
+  }
+]

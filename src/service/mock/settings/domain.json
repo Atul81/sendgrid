@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "domain": "mydomain.com",
+    "status": "Active",
+    "dkimSettings": false
+  },
+  {
+    "id": 2,
+    "domain": "anotherdomain.com",
+    "status": "Pending",
+    "dkimSettings": false
+  },
+  {
+    "id": 3,
+    "domain": "domainjohn",
+    "status": "John3",
+    "dkimSettings": false
+  },
+  {
+    "id": 4,
+    "domain": "domaincname4",
+    "status": "John4",
+    "dkimSettings": false
+  },
+  {
+    "id": 5,
+    "domain": "domaincname5",
+    "status": "John5",
+    "dkimSettings": false
+  },
+  {
+    "id": 6,
+    "domain": "domaincname6",
+    "status": "John6",
+    "dkimSettings": false
+  },
+  {
+    "id": 7,
+    "domain": "domaincname7",
+    "status": "John7",
+    "dkimSettings": false
+  },
+  {
+    "id": 8,
+    "domain": "domaincname8",
+    "status": "John8",
+    "dkimSettings": false
+  },
+  {
+    "id": 9,
+    "domain": "domaincname9",
+    "status": "John9",
+    "dkimSettings": false
+  },
+  {
+    "id": 10,
+    "domain": "domaincname10",
+    "status": "John10",
+    "dkimSettings": false
+  },
+  {
+    "id": 11,
+    "domain": "domaincname11",
+    "status": "John11",
+    "dkimSettings": false
+  }
+]

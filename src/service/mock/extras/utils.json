@@ -1,0 +1,123 @@
+{
+  "dnsHosts": [
+    {
+      "label": "One",
+      "value": "1",
+      "children": null
+    },
+    {
+      "label": "Two",
+      "value": "2",
+      "children": null
+    },
+    {
+      "label": "Three",
+      "value": "3",
+      "children": null
+    },
+    {
+      "label": "Four",
+      "value": "4",
+      "children": null
+    }
+  ],
+  "userRoles": [
+    {
+      "label": "Admin",
+      "value": "admin",
+      "children": null
+    },
+    {
+      "label": "Standard",
+      "value": "std",
+      "children": null
+    },
+    {
+      "label": "Viewer",
+      "value": "view",
+      "children": null
+    },
+    {
+      "label": "Auditor",
+      "value": "audit",
+      "children": null
+    },
+    {
+      "label": "Custom",
+      "value": "custom",
+      "children": null
+    }
+  ],
+  "tags": [
+    {
+      "label": "Prospect",
+      "value": "1",
+      "children": null
+    },
+    {
+      "label": "Campaign",
+      "value": "2",
+      "children": null
+    },
+    {
+      "label": "Soft-care",
+      "value": "3",
+      "children": null
+    },
+    {
+      "label": "Boat",
+      "value": "4",
+      "children": null
+    }
+  ],
+  "accordionHeader": [
+    {
+      "id": "1",
+      "name": "Background Color",
+      "btnName": "Customize"
+    },
+    {
+      "id": "2",
+      "name": "Social Button",
+      "btnName": "Customize"
+    },
+    {
+      "id": "3",
+      "name": "Banner",
+      "btnName": "Customize"
+    },
+    {
+      "id": "4",
+      "name": "Text Descriptions",
+      "btnName": "Customize"
+    },
+    {
+      "id": "5",
+      "name": "Error Messages",
+      "btnName": "Customize"
+    },
+    {
+      "id": "6",
+      "name": "Test Descriptions",
+      "btnName": "Customize"
+    }
+  ],
+  "domainSettings": {
+    "verificationRecord": {
+      "type": "TXT",
+      "value": "IslB4DWhasIdGJAuAJK5H6"
+    },
+    "records": [
+      {
+        "name": "hSA7gy895Bnwe.",
+        "type": "CNAME",
+        "value": "dkms.ser."
+      },
+      {
+        "name": "hSA7gy895Bnwe.",
+        "type": "CNAME",
+        "value": "dkms2.ser."
+      }
+    ]
+  }
+}

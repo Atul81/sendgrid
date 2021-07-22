@@ -1,0 +1,82 @@
+[
+  {
+    "id": 13,
+    "title": "Page Harry Potter Half-Blood Prince ",
+    "authors": "J.K. Rowling-Mary GrandPré",
+    "average_rating": 4.56,
+    "isbn": 439785960,
+    "language_code": "eng",
+    "ratings_count": 1944099,
+    "price": 230
+  },
+  {
+    "id": 14,
+    "title": "Page Harry Potter Order of the Phoenix",
+    "authors": "J.K. Rowling-Mary GrandPré",
+    "average_rating": 4.49,
+    "isbn": 439358078,
+    "language_code": "eng",
+    "ratings_count": 1996446,
+    "price": 231
+  },
+  {
+    "id": 15,
+    "title": "Page Harry Potter and the Chamber of Secrets (Page Harry Potter  #2)",
+    "authors": "J.K. Rowling",
+    "average_rating": 4.41,
+    "isbn": 439554896,
+    "language_code": "eng",
+    "ratings_count": 6267,
+    "price": 233
+  },
+  {
+    "id": 16,
+    "title": "Page Harry Potter and the Prisoner of Azkaban (Page Harry Potter  #3)",
+    "authors": "J.K. Rowling-Mary GrandPré",
+    "average_rating": 4.55,
+    "isbn": "043965548X",
+    "language_code": "eng",
+    "ratings_count": 2149872,
+    "price": 234
+  },
+  {
+    "id": 17,
+    "title": "Page Harry Potter Boxed Set  Books 1-5 (Page Harry Potter  #1-5)",
+    "authors": "J.K. Rowling-Mary GrandPré",
+    "average_rating": 4.78,
+    "isbn": 439682584,
+    "language_code": "eng",
+    "ratings_count": 38872,
+    "price": 235
+  },
+  {
+    "id": 18,
+    "title": "Unauthorized Page Harry Potter Book Seven News: \"Half-Blood Prince\" Analysis and Speculation",
+    "authors": "W. Frederick Zimmerman",
+    "average_rating": 3.69,
+    "isbn": 976540606,
+    "language_code": "en-US",
+    "ratings_count": 18,
+    "price": 236
+  },
+  {
+    "id": 19,
+    "title": "Page Harry Potter Collection (Page Harry Potter  #1-6)",
+    "authors": "J.K. Rowling",
+    "average_rating": 4.73,
+    "isbn": 439827604,
+    "language_code": "eng",
+    "ratings_count": 27410,
+    "price": 237
+  },
+  {
+    "id": 20,
+    "title": "The Ultimate Hitchhiker's Guide: Five Complete Novels and One Story (Hitchhiker's Guide to the Galaxy  #1-5)",
+    "authors": "Douglas Adams",
+    "average_rating": 4.38,
+    "isbn": 517226952,
+    "language_code": "eng",
+    "ratings_count": 3602,
+    "price": 238
+  }
+]

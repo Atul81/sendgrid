@@ -1,38 +1,31 @@
-import React, {useState} from "react";
-import {ExportContactInterface} from "../contactInterface";
-import {Space, Table} from "antd";
-import {DeleteOutlined, DownloadOutlined} from "@ant-design/icons";
+import React, {useEffect, useState} from "react";
+import {ExportContactInterface} from "../audienceInterface";
+import {message, Space, Table} from "antd";
+import {DownloadOutlined} from "@ant-design/icons";
+import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
+import {GET_SERVER_ERROR, getTimeFromUnix} from "../../../utils/common";
+import Title from "antd/lib/typography/Title";
+import Search from "antd/es/input/Search";
 
 export const ExportPage: any = () => {
 
-    const [exportContactDS, setExportContactDS] = useState<ExportContactInterface[]>([
-        {
-            key: '1',
-            fileName: 'Chicago_contacts.csv',
-            exportTimestamp: new Date().toLocaleTimeString('kok-IN', {
-                hour12: false,
-                day: '2-digit',
-                month: '2-digit',
-                year: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            })
-        },
-        {
-            key: '2',
-            fileName: 'omni_campaign_subscribers_list.csv',
-            exportTimestamp: new Date().toLocaleTimeString('kok-IN', {
-                hour12: false,
-                day: '2-digit',
-                month: '2-digit',
-                year: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            })
-        }
-    ]);
+    useEffect(() => {
+        getAllServerCall('exportsData').then(async response => {
+            let tempObj: ExportContactInterface[] = [];
+            let res = await response.json();
+            res.forEach((itr: any) => {
+                tempObj.push({...itr, exportTimestamp: getTimeFromUnix(itr.exportTimestamp), key: itr.id});
+            });
+            setExportContactDS(tempObj);
+            setExportContactDSOps(tempObj);
+        }).catch(reason => {
+            console.error(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
+    }, []);
+    const [exportContactDS, setExportContactDS] = useState<ExportContactInterface[]>([]);
+    const [exportContactDSOps, setExportContactDSOps] = useState<ExportContactInterface[]>([]);
 
     const downloadFile = (record: any) => {
         console.log('Make the server call', record);
@@ -42,15 +35,16 @@ export const ExportPage: any = () => {
         {
             title: 'File Name',
             dataIndex: 'fileName',
-            key: 'fileName'
+            key: 'fileName',
+            sorter: (a: any, b: any) => a.fileName.length - b.fileName.length
         },
         {
             title: 'Export Date & Time',
             dataIndex: 'exportTimestamp',
             key: 'exportTimestamp',
+            sorter: (a: any, b: any) => a.exportTimestamp - b.exportTimestamp
         },
         {
-            title: 'Action',
             dataIndex: '',
             key: 'action',
             width: '75px',
@@ -62,7 +56,28 @@ export const ExportPage: any = () => {
             }),
         },
     ];
-    return <div className="thirdNav" style={{height: 'calc(100vh - 228px)'}}>
-        <Table columns={columns} dataSource={exportContactDS} bordered/>
-    </div>
+
+    const onSearchExports = (searchParam: string) => {
+        setExportContactDS(exportContactDSOps.filter(value => {
+            return value.fileName.includes(searchParam);
+        }));
+    };
+
+    return (
+        <div className='pageLayout'>
+            <div className="secondNav">
+                <Title level={4}>All Exports</Title>
+            </div>
+            <div className="firstNav">
+                <div className="leftPlacement">
+                    <div className="searchInput">
+                        <Search placeholder="input search text" onSearch={onSearchExports} enterButton/>
+                    </div>
+                </div>
+            </div>
+            <div className="thirdNav">
+                <Table columns={columns} dataSource={exportContactDS} bordered/>
+            </div>
+        </div>
+    )
 }

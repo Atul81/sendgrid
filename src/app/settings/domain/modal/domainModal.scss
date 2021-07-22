@@ -1,0 +1,34 @@
+.modalWrapper {
+
+  .ant-descriptions-row > th, .ant-descriptions-row > td {
+    padding-bottom: 4px;
+  }
+
+  .ant-modal-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .ant-typography {
+      margin-top: 0.5em;
+    }
+
+    .ant-typography + h5.ant-typography {
+      margin-top: 0;
+    }
+
+    .ant-alert {
+      .anticon svg {
+        margin-bottom: 0;
+      }
+
+      font-size: 18px;
+    }
+  }
+
+  .copyText {
+    color: red;
+    cursor: pointer;
+  }
+
+}

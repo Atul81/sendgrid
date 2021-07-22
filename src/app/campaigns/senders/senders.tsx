@@ -1,72 +1,47 @@
-import React, {useState} from "react";
-import {Button, Popconfirm, Space, Table, Typography} from "antd";
+import React, {useEffect, useState} from "react";
+import {Button, message, Popconfirm, Space, Table, Typography} from "antd";
 import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import {SendersInterface} from "../campaignInterface";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
 import {AmendSendersPage} from "./amendSenders/AmendSendersLoadable";
+import {deleteObjectById, getAllServerCall} from "../../../service/serverCalls/mockServerRest";
+import Search from "antd/es/input/Search";
+import {GET_SERVER_ERROR} from "../../../utils/common";
 
 export const SendersPage: any = () => {
     const {Title} = Typography;
     const dispatch = useDispatch();
 
-    const [segmentNameSelected, setSegmentNameSelected] = useState<string[]>([]);
-    const [segmentDS, setSegmentDS] = useState<SendersInterface[]>([
-        {
-            key: '1',
-            email: 'test+email@gmail.com',
-            firstName: 'John',
-            lastName: 'Pandey',
-            domainVerified: 'Yes'
-        },
-        {
-            key: '2',
-            email: 'John.pandey@solulever.com',
-            firstName: 'John Kumar',
-            lastName: 'Pandey',
-            domainVerified: 'No'
-        }
-    ]);
-    const [segmentDSOps, setSegmentDSOps] = useState<SendersInterface[]>([
-        {
-            key: '1',
-            email: 'test+email@gmail.com',
-            firstName: 'John',
-            lastName: 'Pandey',
-            domainVerified: 'Yes'
-        },
-        {
-            key: '2',
-            email: 'John.pandey@solulever.com',
-            firstName: 'John Kumar',
-            lastName: 'Pandey',
-            domainVerified: 'No'
-        }
-    ]);
+    useEffect(() => {
+        populateAllSenders();
+    }, []);
+
+    const [segmentNamesSelected, setSegmentNamesSelected] = useState<string[]>([]);
+    const [segmentDS, setSegmentDS] = useState<SendersInterface[]>([]);
+    const [segmentDSOps, setSegmentDSOps] = useState<SendersInterface[]>([]);
+    const [senderId, setSenderId] = useState<number>(5);
+
     const columns = [
         {
             title: 'Email Address',
             dataIndex: 'email',
             key: 'email',
+            sorter: (a: any, b: any) => a.email.length - b.email.length
         },
         {
             title: 'First Name',
             dataIndex: 'firstName',
             key: 'firstName',
+            sorter: (a: any, b: any) => a.firstName.length - b.firstName.length
         },
         {
             title: 'Last Name',
             dataIndex: 'lastName',
             key: 'lastName',
+            sorter: (a: any, b: any) => a.lastName.length - b.lastName.length
         },
         {
-            title: 'Domain Verified',
-            dataIndex: 'domainVerified',
-            key: 'domainVerified',
-            width: '140px',
-        },
-        {
-            title: 'Action',
             dataIndex: '',
             key: 'action',
             width: '75px',
@@ -81,7 +56,7 @@ export const SendersPage: any = () => {
                                         More</a></p>}
                                 okText="Delete" cancelText="Cancel"
                                 onConfirm={() => deleteContact(record)}>
-                        <p><DeleteOutlined/></p>
+                        <p className={"actionColumn"}><DeleteOutlined/></p>
                     </Popconfirm>
                 </Space>
             }),
@@ -97,32 +72,75 @@ export const SendersPage: any = () => {
             selectedRows.forEach(segItr => {
                 rowsSelected.push(segItr.email);
             });
-            setSegmentNameSelected(rowsSelected);
+            setSegmentNamesSelected(rowsSelected);
         }
     };
 
     const openSegmentEdit = (record: any) => {
-        setSendersObj(record);
+        setSendersObj({...record, generatedId: senderId});
+        setSenderId(senderId + 1);
         setModifySendersPage(true);
     };
 
     const deleteContact = (record: any) => {
-        console.log(record);
+        deleteObjectById(record.key, 'senders').then(async deleteResAsync => {
+            let delRes = await deleteResAsync.json();
+            if (delRes) {
+                message.success(`Sender of email ${record.email} has been successfully deleted`, 0.6);
+                populateAllSenders();
+            }
+        })
     };
 
     const navigateToLandingPage = () => {
-        dispatch(updateBreadcrumb(['Audience', 'Contacts']));
+        populateAllSenders();
+        dispatch(updateBreadcrumb(['Campaigns', 'Senders']));
         setSendersObj({});
         setModifySendersPage(false);
     };
 
+    const populateAllSenders = () => {
+        getAllServerCall('senders').then(async allSendersAsync => {
+            let allSendersRes = await allSendersAsync.json();
+            let tempItrObj: SendersInterface[] = [];
+            if (allSendersRes) {
+                allSendersRes.forEach((itr: any) => {
+                    tempItrObj.push({...itr, key: itr.id});
+                });
+            }
+            setSegmentDS(tempItrObj);
+            setSegmentDSOps(tempItrObj);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
+    };
+
+    const onSearchSenders = (searchParam: string) => {
+        setSegmentDS(segmentDSOps.filter(value => {
+            return value.email.includes(searchParam);
+        }));
+    };
+
     return !modifySendersPage ? (
         <div className="pageLayout">
-            <div className="reverseFlex">
-                <Button type={'primary'} icon={<PlusOutlined/>} className="addBtn"
-                        onClick={() => openSegmentEdit(true)}>Add New</Button>
+            <div className="secondNav">
+                <Title level={4}>All Senders</Title>
             </div>
-            <div className="thirdNav" style={{height: 'calc(100vh - 240px'}}>
+            <div className="firstNav">
+                <div className="leftPlacement">
+                    <div className="searchInput">
+                        <Search placeholder="input search text" onSearch={onSearchSenders} enterButton/>
+                    </div>
+                </div>
+                <div className="rightPlacement">
+                    <Button type={'primary'} icon={<PlusOutlined/>} className="addBtn"
+                            onClick={() => openSegmentEdit(true)}>Add New</Button>
+                </div>
+            </div>
+
+            <div className="thirdNav">
                 <Table rowSelection={{...segmentRowSelection}} columns={columns} dataSource={segmentDS} bordered/>
             </div>
         </div>

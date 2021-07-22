@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "fieldName": "First Name",
+    "fieldType": "Text"
+  },
+  {
+    "id": 2,
+    "fieldName": "Last Name",
+    "fieldType": "Text"
+  },
+  {
+    "id": 3,
+    "fieldName": "Email",
+    "fieldType": "Text"
+  },
+  {
+    "id": 4,
+    "fieldName": "Alternate Number",
+    "fieldType": "Number"
+  },
+  {
+    "id": 5,
+    "fieldName": "Alternate Address",
+    "fieldType": "List of Strings"
+  }
+]

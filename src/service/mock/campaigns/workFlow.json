@@ -1,0 +1,1849 @@
+[
+  {
+    "id": 1,
+    "data": [
+      {
+        "id": "4",
+        "type": "input",
+        "position": {
+          "x": 242.3891843767089,
+          "y": -243.2686876478748
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "Inp Test1",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "id": "5",
+        "type": "default",
+        "position": {
+          "x": 480.02517296805604,
+          "y": -49.11904897330163
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "Default Test1",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "id": "6",
+        "type": "output",
+        "position": {
+          "x": 365.3637320056391,
+          "y": 340.4604891891966
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "Out Test1",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "4",
+        "sourceHandle": null,
+        "target": "5",
+        "targetHandle": null,
+        "id": "reactflow__edge-4null-5null",
+        "label": "Input1 To Default1 Edge"
+      },
+      {
+        "source": "5",
+        "sourceHandle": null,
+        "target": "6",
+        "targetHandle": null,
+        "id": "reactflow__edge-5null-6null",
+        "label": "Default1 To Output1 Edge"
+      },
+      {
+        "id": "7",
+        "type": "default",
+        "position": {
+          "x": 660,
+          "y": 165
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "New One",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "5",
+        "sourceHandle": null,
+        "target": "7",
+        "targetHandle": null,
+        "id": "reactflow__edge-5null-7null"
+      },
+      {
+        "source": "7",
+        "sourceHandle": null,
+        "target": "6",
+        "targetHandle": null,
+        "id": "reactflow__edge-7null-6null"
+      },
+      {
+        "id": "8",
+        "type": "default",
+        "position": {
+          "x": 210,
+          "y": -15
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "Def2",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "4",
+        "sourceHandle": null,
+        "target": "8",
+        "targetHandle": null,
+        "id": "reactflow__edge-4null-8null"
+      },
+      {
+        "source": "8",
+        "sourceHandle": null,
+        "target": "6",
+        "targetHandle": null,
+        "id": "reactflow__edge-8null-6null"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "data": [
+      {
+        "id": "4",
+        "type": "input",
+        "position": {
+          "x": 0.38918437670889716,
+          "y": -246.2686876478748
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "Inp Test1",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "id": "5",
+        "type": "default",
+        "position": {
+          "x": 226.02517296805604,
+          "y": -18.11904897330163
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "Default Test1",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "id": "6",
+        "type": "output",
+        "position": {
+          "x": 70.36373200563912,
+          "y": 359.4604891891966
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "Out Test1",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "4",
+        "sourceHandle": null,
+        "target": "5",
+        "targetHandle": null,
+        "id": "reactflow__edge-4null-5null",
+        "label": "Input1 To Default1 Edge"
+      },
+      {
+        "source": "5",
+        "sourceHandle": null,
+        "target": "6",
+        "targetHandle": null,
+        "id": "reactflow__edge-5null-6null",
+        "label": "Default1 To Output1 Edge"
+      },
+      {
+        "id": "7",
+        "type": "default",
+        "position": {
+          "x": 416,
+          "y": 132
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "New One",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "5",
+        "sourceHandle": null,
+        "target": "7",
+        "targetHandle": null,
+        "id": "reactflow__edge-5null-7null"
+      },
+      {
+        "source": "7",
+        "sourceHandle": null,
+        "target": "6",
+        "targetHandle": null,
+        "id": "reactflow__edge-7null-6null"
+      },
+      {
+        "id": "8",
+        "type": "default",
+        "position": {
+          "x": 4,
+          "y": 27
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "Def2",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "4",
+        "sourceHandle": null,
+        "target": "8",
+        "targetHandle": null,
+        "id": "reactflow__edge-4null-8null"
+      },
+      {
+        "source": "8",
+        "sourceHandle": null,
+        "target": "6",
+        "targetHandle": null,
+        "id": "reactflow__edge-8null-6null"
+      },
+      {
+        "id": "9",
+        "type": "input",
+        "position": {
+          "x": 897,
+          "y": -97
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "Inp",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "id": "10",
+        "type": "default",
+        "position": {
+          "x": 724,
+          "y": -42
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "d",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "id": "11",
+        "type": "output",
+        "position": {
+          "x": 470,
+          "y": 470
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "O/P",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "id": "12",
+        "type": "customNodeTwo",
+        "position": {
+          "x": 1159.6779680126458,
+          "y": 212.7557843192106
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "Test",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "9",
+        "sourceHandle": null,
+        "target": "12",
+        "targetHandle": "aT",
+        "id": "reactflow__edge-9null-12aT"
+      },
+      {
+        "source": "12",
+        "sourceHandle": "cS",
+        "target": "11",
+        "targetHandle": null,
+        "id": "reactflow__edge-12cS-11null"
+      },
+      {
+        "id": "13",
+        "type": "input",
+        "position": {
+          "x": 366.42804365360735,
+          "y": -287.1945172270908
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "erf",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "id": "14",
+        "type": "customNode",
+        "position": {
+          "x": 559.1793946419309,
+          "y": -155.1172363579443
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "15",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "id": "15",
+        "type": "default",
+        "position": {
+          "x": 1084.0641866528536,
+          "y": -61.522998553682754
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "size": "small",
+              "title": "hy\\",
+              "bordered": false,
+              "children": "Card content"
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "14",
+        "sourceHandle": "a",
+        "target": "15",
+        "targetHandle": null,
+        "id": "reactflow__edge-14a-15null"
+      },
+      {
+        "source": "13",
+        "sourceHandle": null,
+        "target": "14",
+        "targetHandle": null,
+        "id": "reactflow__edge-13null-14null"
+      },
+      {
+        "source": "14",
+        "sourceHandle": "b",
+        "target": "10",
+        "targetHandle": null,
+        "id": "reactflow__edge-14b-10null"
+      },
+      {
+        "source": "12",
+        "sourceHandle": "bS",
+        "target": "11",
+        "targetHandle": null,
+        "id": "reactflow__edge-12bS-11null"
+      },
+      {
+        "source": "7",
+        "sourceHandle": null,
+        "target": "11",
+        "targetHandle": null,
+        "id": "reactflow__edge-7null-11null"
+      },
+      {
+        "source": "10",
+        "sourceHandle": null,
+        "target": "7",
+        "targetHandle": null,
+        "id": "reactflow__edge-10null-7null"
+      },
+      {
+        "source": "10",
+        "sourceHandle": null,
+        "target": "12",
+        "targetHandle": "bT",
+        "id": "reactflow__edge-10null-12bT"
+      }
+    ]
+  },
+  {
+    "data": [
+      {
+        "id": "1-journeyEntry",
+        "type": "input",
+        "position": {
+          "x": -287.3139406232911,
+          "y": -665.7686876478748
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "title": {
+                "type": "div",
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "titleContent",
+                  "children": [
+                    {
+                      "type": "img",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "style": {
+                          "width": 20
+                        },
+                        "src": "/assets/icons/icon-timer.svg",
+                        "alt": "icon"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "type": "span",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": "Journey Entry"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              "children": {
+                "type": {
+                  "Link": {}
+                },
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "columnFlex",
+                  "children": [
+                    {
+                      "type": "strong",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "style": {
+                          "fontSize": 10
+                        },
+                        "children": "Evaluate every: 3 hours"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "key": null,
+                      "ref": null,
+                      "props": {},
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": "Segment: all"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "id": "2-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -204.1655031232911,
+          "y": -588.2686876478748
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "title": {
+                "type": "div",
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "titleContent",
+                  "children": [
+                    {
+                      "type": "img",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "style": {
+                          "width": 20
+                        },
+                        "src": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
+                        "alt": "icon"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "type": "span",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": "Journey Entry"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              "children": {
+                "type": {
+                  "Link": {}
+                },
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "columnFlex",
+                  "children": [
+                    {
+                      "type": "strong",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "style": {
+                          "fontSize": 10
+                        },
+                        "children": "Evaluate every: 3 hours"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "key": null,
+                      "ref": null,
+                      "props": {},
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": "Segment: all"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "1-journeyEntry",
+        "sourceHandle": null,
+        "target": "2-addActivity",
+        "targetHandle": "actToJourney",
+        "id": "reactflow__edge-1null-2actToJourney"
+      },
+      {
+        "id": "5-sendEmail",
+        "type": "default",
+        "position": {
+          "x": -296,
+          "y": -518
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "title": {
+                "type": "div",
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "titleContent",
+                  "children": [
+                    {
+                      "type": "img",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "style": {
+                          "width": 20
+                        },
+                        "src": "/assets/icons/icon-send-email.svg",
+                        "alt": "icon"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "type": "span",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": "Send an Email"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              "extra": {
+                "type": {},
+                "key": null,
+                "ref": null,
+                "props": {},
+                "_owner": null,
+                "_store": {}
+              },
+              "children": {
+                "type": "div",
+                "key": null,
+                "ref": null,
+                "props": {
+                  "style": {
+                    "display": "flex",
+                    "justifyContent": "center",
+                    "flexDirection": "column"
+                  },
+                  "children": [
+                    {
+                      "type": {
+                        "__ANT_BUTTON": true
+                      },
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": "Configure Message"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": [
+                          "Sender Address: ",
+                          "test-example2@gmail.com"
+                        ]
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "2-addActivity",
+        "sourceHandle": null,
+        "target": "5-sendEmail",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src2-addActivity-tr5-sendEmail",
+        "label": null
+      },
+      {
+        "id": "5-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -352,
+          "y": -449
+        },
+        "data": null
+      },
+      {
+        "source": "5-sendEmail",
+        "sourceHandle": null,
+        "target": "5-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src5-sendEmail-tr5-addActivity",
+        "label": null
+      },
+      {
+        "id": "42-holdOut",
+        "type": "multiBranchNode",
+        "position": {
+          "x": -499,
+          "y": -370
+        },
+        "data": {
+          "nodeTitle": "HoldOut",
+          "nodeSvg": "/assets/icons/icon-holdout.svg",
+          "branchCount": 2,
+          "nodeContent": {
+            "type": "div",
+            "key": null,
+            "ref": null,
+            "props": {
+              "style": {
+                "display": "flex",
+                "justifyContent": "center",
+                "flexDirection": "column"
+              },
+              "children": {
+                "key": null,
+                "ref": null,
+                "props": {
+                  "level": 5,
+                  "children": [
+                    "Holdout: ",
+                    "43",
+                    "%"
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "5-addActivity",
+        "sourceHandle": null,
+        "target": "42-holdOut",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src5-addActivity-tr42-holdOut",
+        "label": null
+      },
+      {
+        "id": "42-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -618,
+          "y": -297
+        },
+        "data": null
+      },
+      {
+        "source": "42-holdOut",
+        "sourceHandle": "srcToAct0",
+        "target": "42-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src42-holdOut-tr42-addActivity",
+        "label": null
+      },
+      {
+        "id": "43-emptyCardNode",
+        "type": "emptyCardNode",
+        "position": {
+          "x": -448,
+          "y": -247
+        },
+        "data": {
+          "id": "43-emptyCardNode"
+        }
+      },
+      {
+        "source": "42-holdOut",
+        "sourceHandle": "srcToAct1",
+        "target": "43-emptyCardNode",
+        "targetHandle": "emptyCardVoid",
+        "id": "reactflow__edge-src42-holdOut-tr43-emptyCardNode",
+        "label": "Holdout"
+      },
+      {
+        "id": "412-multiVariateSplit",
+        "type": "multiBranchNode",
+        "position": {
+          "x": -837,
+          "y": -209
+        },
+        "data": {
+          "nodeTitle": "Multivariate Split",
+          "nodeSvg": "/assets/icons/icon-multivariate-split.svg",
+          "branchCount": 4,
+          "nodeContent": {
+            "type": "div",
+            "key": null,
+            "ref": null,
+            "props": {
+              "style": {
+                "display": "flex",
+                "justifyContent": "center",
+                "flexDirection": "column"
+              },
+              "children": [
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "children": [
+                      " ",
+                      {
+                        "type": "span",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "className": "dot",
+                          "style": {
+                            "backgroundColor": "orange"
+                          }
+                        },
+                        "_owner": null,
+                        "_store": {}
+                      },
+                      "Branch ",
+                      "A"
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
+                },
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "children": [
+                      " ",
+                      {
+                        "type": "span",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "className": "dot",
+                          "style": {
+                            "backgroundColor": "blue"
+                          }
+                        },
+                        "_owner": null,
+                        "_store": {}
+                      },
+                      "Branch ",
+                      "B"
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
+                },
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "children": [
+                      " ",
+                      {
+                        "type": "span",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "className": "dot",
+                          "style": {
+                            "backgroundColor": "green"
+                          }
+                        },
+                        "_owner": null,
+                        "_store": {}
+                      },
+                      "Branch ",
+                      "C"
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
+                }
+              ]
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "42-addActivity",
+        "sourceHandle": null,
+        "target": "412-multiVariateSplit",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src42-addActivity-tr412-multiVariateSplit",
+        "label": null
+      },
+      {
+        "id": "412-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -819,
+          "y": -82
+        },
+        "data": null
+      },
+      {
+        "source": "412-multiVariateSplit",
+        "sourceHandle": "srcToAct0",
+        "target": "412-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src412-multiVariateSplit-tr412-addActivity",
+        "label": "Branch A"
+      },
+      {
+        "id": "413-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -763,
+          "y": -83
+        },
+        "data": null
+      },
+      {
+        "source": "412-multiVariateSplit",
+        "sourceHandle": "srcToAct1",
+        "target": "413-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src412-multiVariateSplit-tr413-addActivity",
+        "label": "Branch B"
+      },
+      {
+        "id": "414-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -718,
+          "y": -85
+        },
+        "data": null
+      },
+      {
+        "source": "412-multiVariateSplit",
+        "sourceHandle": "srcToAct2",
+        "target": "414-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src412-multiVariateSplit-tr414-addActivity",
+        "label": "Branch C"
+      },
+      {
+        "id": "415-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -665,
+          "y": -80
+        },
+        "data": null
+      },
+      {
+        "source": "412-multiVariateSplit",
+        "sourceHandle": "srcToAct3",
+        "target": "415-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src412-multiVariateSplit-tr415-addActivity",
+        "label": "Else"
+      },
+      {
+        "id": "4112-wait",
+        "type": "default",
+        "position": {
+          "x": -172,
+          "y": -348
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "title": {
+                "type": "div",
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "titleContent",
+                  "children": [
+                    {
+                      "type": "img",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "style": {
+                          "width": 20
+                        },
+                        "src": "/assets/icons/icon-wait.svg",
+                        "alt": "icon"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "type": "span",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": "Wait"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              "extra": {
+                "type": {},
+                "key": null,
+                "ref": null,
+                "props": {},
+                "_owner": null,
+                "_store": {}
+              },
+              "children": {
+                "type": "div",
+                "key": null,
+                "ref": null,
+                "props": {
+                  "style": {
+                    "display": "flex",
+                    "justifyContent": "center",
+                    "flexDirection": "column"
+                  },
+                  "children": {
+                    "key": null,
+                    "ref": null,
+                    "props": {
+                      "children": [
+                        "Wait for: ",
+                        "6",
+                        " ",
+                        "hour"
+                      ]
+                    },
+                    "_owner": null,
+                    "_store": {}
+                  }
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "5-addActivity",
+        "sourceHandle": null,
+        "target": "4112-wait",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src5-addActivity-tr4112-wait",
+        "label": null
+      },
+      {
+        "id": "4112-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -38,
+          "y": -269
+        },
+        "data": null
+      },
+      {
+        "source": "4112-wait",
+        "sourceHandle": null,
+        "target": "4112-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src4112-wait-tr4112-addActivity",
+        "label": null
+      },
+      {
+        "id": "41112-yesNoSplit",
+        "type": "multiBranchNode",
+        "position": {
+          "x": -85,
+          "y": -206
+        },
+        "data": {
+          "nodeTitle": "Yes/No Split",
+          "nodeSvg": "/assets/icons/icon-yes-no-split.svg",
+          "branchCount": 2,
+          "nodeContent": {
+            "type": "div",
+            "key": null,
+            "ref": null,
+            "props": {
+              "style": {
+                "display": "flex",
+                "justifyContent": "center",
+                "flexDirection": "column"
+              },
+              "children": [
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "level": 5,
+                    "children": [
+                      "Event: ",
+                      "Soft bounce"
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
+                },
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {},
+                  "_owner": null,
+                  "_store": {}
+                },
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "children": [
+                      "Event: ",
+                      "Soft bounce"
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
+                }
+              ]
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "4112-addActivity",
+        "sourceHandle": null,
+        "target": "41112-yesNoSplit",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src4112-addActivity-tr41112-yesNoSplit",
+        "label": null
+      },
+      {
+        "id": "41112-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -50,
+          "y": -100
+        },
+        "data": null
+      },
+      {
+        "source": "41112-yesNoSplit",
+        "sourceHandle": "srcToAct0",
+        "target": "41112-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src41112-yesNoSplit-tr41112-addActivity",
+        "label": "Yes"
+      },
+      {
+        "id": "41113-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": 67,
+          "y": -93
+        },
+        "data": null
+      },
+      {
+        "source": "41112-yesNoSplit",
+        "sourceHandle": "srcToAct1",
+        "target": "41113-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src41112-yesNoSplit-tr41113-addActivity",
+        "label": "No"
+      },
+      {
+        "id": "411112-randomSplit",
+        "type": "multiBranchNode",
+        "position": {
+          "x": -182,
+          "y": -38
+        },
+        "data": {
+          "nodeTitle": "Random Split",
+          "nodeSvg": "/assets/icons/icon-random-split.svg",
+          "branchCount": 3,
+          "nodeContent": {
+            "type": "div",
+            "key": null,
+            "ref": null,
+            "props": {
+              "style": {
+                "display": "flex",
+                "justifyContent": "center",
+                "flexDirection": "column"
+              },
+              "children": [
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "children": [
+                      " ",
+                      {
+                        "type": "span",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "className": "dot",
+                          "style": {
+                            "backgroundColor": "orange"
+                          }
+                        },
+                        "_owner": null,
+                        "_store": {}
+                      },
+                      "Branch ",
+                      "A"
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
+                },
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "children": [
+                      " ",
+                      {
+                        "type": "span",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "className": "dot",
+                          "style": {
+                            "backgroundColor": "blue"
+                          }
+                        },
+                        "_owner": null,
+                        "_store": {}
+                      },
+                      "Branch ",
+                      "B"
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
+                },
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "children": [
+                      " ",
+                      {
+                        "type": "span",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "className": "dot",
+                          "style": {
+                            "backgroundColor": "green"
+                          }
+                        },
+                        "_owner": null,
+                        "_store": {}
+                      },
+                      "Branch ",
+                      "C"
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
+                }
+              ]
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "41112-addActivity",
+        "sourceHandle": null,
+        "target": "411112-randomSplit",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src41112-addActivity-tr411112-randomSplit",
+        "label": null
+      },
+      {
+        "id": "411112-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -124,
+          "y": 91
+        },
+        "data": null
+      },
+      {
+        "source": "411112-randomSplit",
+        "sourceHandle": "srcToAct0",
+        "target": "411112-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src411112-randomSplit-tr411112-addActivity",
+        "label": "Branch A"
+      },
+      {
+        "id": "411113-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -59,
+          "y": 93
+        },
+        "data": null
+      },
+      {
+        "source": "411112-randomSplit",
+        "sourceHandle": "srcToAct1",
+        "target": "411113-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src411112-randomSplit-tr411113-addActivity",
+        "label": "Branch B"
+      },
+      {
+        "id": "411114-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": 7,
+          "y": 95
+        },
+        "data": null
+      },
+      {
+        "source": "411112-randomSplit",
+        "sourceHandle": "srcToAct2",
+        "target": "411114-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src411112-randomSplit-tr411114-addActivity",
+        "label": "Branch C"
+      },
+      {
+        "id": "411115-holdOut",
+        "position": {
+          "x": -635,
+          "y": 18
+        },
+        "type": "multiBranchNode",
+        "data": {
+          "nodeTitle": "HoldOut",
+          "nodeSvg": "/assets/icons/icon-holdout.svg",
+          "branchCount": 2,
+          "nodeContent": {
+            "type": "div",
+            "key": null,
+            "ref": null,
+            "props": {
+              "style": {
+                "display": "flex",
+                "justifyContent": "center",
+                "flexDirection": "column"
+              },
+              "children": {
+                "key": null,
+                "ref": null,
+                "props": {
+                  "level": 5,
+                  "children": [
+                    "Holdout: ",
+                    "34",
+                    "%"
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "415-addActivity",
+        "sourceHandle": null,
+        "target": "411115-holdOut",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src415-addActivity-tr411115-holdOut",
+        "label": null
+      },
+      {
+        "id": "411115-addActivity",
+        "position": {
+          "x": -618,
+          "y": 127
+        },
+        "type": "plusNode",
+        "data": null
+      },
+      {
+        "source": "411115-holdOut",
+        "sourceHandle": "srcToAct0",
+        "target": "411115-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src411115-holdOut-tr411115-addActivity",
+        "label": null
+      },
+      {
+        "id": "411116-emptyCardNode",
+        "type": "emptyCardNode",
+        "position": {
+          "x": -483,
+          "y": 165
+        },
+        "data": {
+          "id": "411116-emptyCardNode"
+        }
+      },
+      {
+        "source": "411115-holdOut",
+        "sourceHandle": "srcToAct1",
+        "target": "411116-emptyCardNode",
+        "targetHandle": "emptyCardVoid",
+        "id": "reactflow__edge-src411115-holdOut-tr411116-emptyCardNode",
+        "label": "Holdout"
+      },
+      {
+        "id": "411117-sendEmail",
+        "type": "default",
+        "position": {
+          "x": -714,
+          "y": 195
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "title": {
+                "type": "div",
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "titleContent",
+                  "children": [
+                    {
+                      "type": "img",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "style": {
+                          "width": 20
+                        },
+                        "src": "/assets/icons/icon-send-email.svg",
+                        "alt": "icon"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "type": "span",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": "Send an email"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              "extra": {
+                "type": {},
+                "key": null,
+                "ref": null,
+                "props": {},
+                "_owner": null,
+                "_store": {}
+              },
+              "children": {
+                "type": "div",
+                "key": null,
+                "ref": null,
+                "props": {
+                  "style": {
+                    "display": "flex",
+                    "justifyContent": "center",
+                    "flexDirection": "column"
+                  },
+                  "children": [
+                    {
+                      "type": {
+                        "__ANT_BUTTON": true
+                      },
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": "Configure Message"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": [
+                          "Sender Address: ",
+                          "test-example2@gmail.com"
+                        ]
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "411115-addActivity",
+        "sourceHandle": null,
+        "target": "411117-sendEmail",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src411115-addActivity-tr411117-sendEmail",
+        "label": null
+      },
+      {
+        "id": "411117-addActivity",
+        "position": {
+          "x": -583,
+          "y": 291
+        },
+        "type": "plusNode",
+        "data": null
+      },
+      {
+        "source": "411117-sendEmail",
+        "sourceHandle": null,
+        "target": "411117-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src411117-sendEmail-tr411117-addActivity",
+        "label": null
+      },
+      {
+        "id": "4111162-wait",
+        "type": "default",
+        "position": {
+          "x": 376,
+          "y": -123
+        },
+        "data": {
+          "label": {
+            "key": null,
+            "ref": null,
+            "props": {
+              "title": {
+                "type": "div",
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "titleContent",
+                  "children": [
+                    {
+                      "type": "img",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "style": {
+                          "width": 20
+                        },
+                        "src": "/assets/icons/icon-wait.svg",
+                        "alt": "icon"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    {
+                      "type": "span",
+                      "key": null,
+                      "ref": null,
+                      "props": {
+                        "children": "Wait"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              "extra": {
+                "type": {},
+                "key": null,
+                "ref": null,
+                "props": {},
+                "_owner": null,
+                "_store": {}
+              },
+              "children": {
+                "type": "div",
+                "key": null,
+                "ref": null,
+                "props": {
+                  "style": {
+                    "display": "flex",
+                    "justifyContent": "center",
+                    "flexDirection": "column"
+                  },
+                  "children": {
+                    "key": null,
+                    "ref": null,
+                    "props": {
+                      "children": [
+                        "Wait for: ",
+                        "4",
+                        " ",
+                        null
+                      ]
+                    },
+                    "_owner": null,
+                    "_store": {}
+                  }
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            },
+            "_owner": null,
+            "_store": {}
+          }
+        }
+      },
+      {
+        "source": "4112-addActivity",
+        "sourceHandle": null,
+        "target": "4111162-wait",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src4112-addActivity-tr4111162-wait",
+        "label": null
+      },
+      {
+        "id": "4111162-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": 486,
+          "y": 43
+        },
+        "data": null
+      },
+      {
+        "source": "4111162-wait",
+        "sourceHandle": null,
+        "target": "4111162-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src4111162-wait-tr4111162-addActivity",
+        "label": null
+      }
+    ],
+    "id": 3
+  }
+]

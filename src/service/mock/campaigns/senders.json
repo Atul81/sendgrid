@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "email": "test-example1@gmail.com",
+    "firstName": "Test",
+    "lastName": "Example1",
+    "domainVerified": "Yes"
+  },
+  {
+    "id": 2,
+    "email": "test-example2@gmail.com",
+    "firstName": "Test",
+    "lastName": "Example2",
+    "domainVerified": "No"
+  },
+  {
+    "id": 3,
+    "email": "test-example3@gmail.com",
+    "firstName": "Test",
+    "lastName": "Example3",
+    "domainVerified": "Yes"
+  },
+  {
+    "id": 4,
+    "email": "test-example4@gmail.com",
+    "firstName": "Test",
+    "lastName": "Example4",
+    "domainVerified": "No"
+  }
+]

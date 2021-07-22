@@ -2,7 +2,7 @@
 
   .tableAndReserved {
     display: grid;
-    grid-template-columns: 70% auto;
+    grid-template-columns: 75% auto;
     grid-column-gap: 24px;
   }
 
@@ -13,12 +13,28 @@
   }
 
   .reservedBox {
-    display: grid;
-    grid-template-columns: 70% auto;
-    grid-column-gap: 16px;
+    display: flex;
+    flex-direction: column;
 
-    .value {
-      justify-self: end;
+    .boxValue {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      .ant-typography, .ant-typography p {
+        margin-bottom: 8px;
+        margin-top: 0;
+      }
     }
+  }
+}
+
+.editModal {
+  .ant-form-vertical .ant-form-item {
+    margin-bottom: 4px;
+  }
+
+  .ant-form-item-label {
+    padding: 0;
   }
 }

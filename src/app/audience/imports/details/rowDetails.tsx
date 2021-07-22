@@ -1,32 +1,33 @@
-import React, {useState} from "react";
-import {Button, Table, Typography} from "antd";
-import {useDispatch} from "react-redux";
-import {ImportsDetailsInterface} from "../../contactInterface";
-import Title from "antd/lib/typography/Title";
+import React, {useEffect, useState} from "react";
+import {Button, message, Table, Typography} from "antd";
+import {ImportsDetailsInterface} from "../../audienceInterface";
 import {DownOutlined, StepBackwardOutlined} from "@ant-design/icons";
-import {exportCSVFile} from "../../../../utils/common";
+import {exportCSVFile, GET_SERVER_ERROR} from "../../../../utils/common";
+import {getAllServerCall} from "../../../../service/serverCalls/mockServerRest";
+import {useDispatch} from "react-redux";
+import {updateBreadcrumb} from "../../../../store/actions/root";
 
 export const RowDetailsPage: any = (props: any) => {
     const {Title} = Typography;
     const dispatch = useDispatch();
-    const [uploadDetailsDS, setUploadDetailsDS] = useState<ImportsDetailsInterface[]>([
-        {
-            key: '1',
-            email: 'test+email@gmail.com',
-            firstName: 'John',
-            lastName: 'Pandey',
-            city: 'Subscribed',
-            postalCode: 'Prospect'
-        },
-        {
-            key: '2',
-            email: 'John.pandey@solulever.com',
-            firstName: 'John Kumar',
-            lastName: 'Pandey',
-            city: 'Not Subscribed',
-            postalCode: 'Zoho Campaign'
-        }
-    ]);
+    useEffect(() => {
+        getAllServerCall('importsRow').then(async getFailedRowsAsync => {
+            let failedRowsRes = await getFailedRowsAsync.json();
+            if (failedRowsRes) {
+                let tempObj: ImportsDetailsInterface[] = [];
+                failedRowsRes.forEach((itr: any) => {
+                    tempObj.push({...itr})
+                });
+                setUploadDetailsDS(tempObj);
+                dispatch(updateBreadcrumb(['Audience', 'Imports', props.rowObj.fileName]))
+            }
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
+    }, [])
+    const [uploadDetailsDS, setUploadDetailsDS] = useState<ImportsDetailsInterface[]>([]);
     const columns = [
         {
             title: 'Email',
@@ -51,7 +52,7 @@ export const RowDetailsPage: any = (props: any) => {
         {
             title: 'Postal Code',
             dataIndex: 'postalCode',
-            key: 'postalCode',
+            key: 'postalCode'
         },
     ];
 
@@ -79,7 +80,9 @@ export const RowDetailsPage: any = (props: any) => {
                 </div>
             </div>
             <div className="thirdNav" style={{height: 'calc(100vh - 228px)'}}>
-                <Table columns={columns} dataSource={uploadDetailsDS} bordered/>
+                <Table columns={columns} dataSource={uploadDetailsDS} expandable={{
+                    expandedRowRender: record => <p style={{margin: 0}}>{record.failureReason}</p>
+                }} bordered/>
             </div>
         </div>
     )

@@ -1,67 +1,85 @@
-import React, {useState} from "react";
-import {Table, Typography} from "antd";
-import {ImportsInterface} from "../contactInterface";
+import React, {useEffect, useState} from "react";
+import {message, Space, Table, Typography} from "antd";
+import {ImportsInterface} from "../audienceInterface";
 import {RowDetailsPage} from "./details/RowDetailsLoadable";
 import {updateBreadcrumb} from "../../../store/actions/root";
 import {useDispatch} from "react-redux";
+import {getAllServerCall} from "../../../service/serverCalls/mockServerRest";
+import {GET_SERVER_ERROR, getTimeFromUnix} from "../../../utils/common";
+import Search from "antd/es/input/Search";
+import {DownloadOutlined} from "@ant-design/icons";
 
 export const ImportsPage: any = () => {
     const {Title} = Typography;
     const dispatch = useDispatch();
-    const [importContactDS, setImportContactDS] = useState<ImportsInterface[]>([
-        {
-            key: '1',
-            fileName: 'Chicago_contacts.csv',
-            importTimestamp: new Date().toLocaleTimeString('kok-IN', {
-                hour12: false,
-                day: '2-digit',
-                month: '2-digit',
-                year: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            }),
-            rowsFraction: '143/167',
-            status: 'Uploaded'
-        },
-        {
-            key: '2',
-            fileName: 'omni_campaign_subscribers_list.csv',
-            importTimestamp: new Date().toLocaleTimeString('kok-IN', {
-                hour12: false,
-                day: '2-digit',
-                month: '2-digit',
-                year: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            }),
-            rowsFraction: '2451/2839',
-            status: 'In progress'
-        }
-    ]);
+
+    useEffect(() => {
+        getAllServerCall('imports').then(async response => {
+            let tempObj: ImportsInterface[] = [];
+            let res = await response.json();
+            res.forEach((itr: any) => {
+                tempObj.push({...itr, importTimestamp: getTimeFromUnix(itr.importTimestamp), key: itr.id});
+            });
+            setImportContactDS(tempObj);
+            setImportContactOps(tempObj);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
+    }, []);
+
+
+    const [importContactDS, setImportContactDS] = useState<ImportsInterface[]>([]);
+    const [importContactOps, setImportContactOps] = useState<ImportsInterface[]>([]);
+    const showDownloadIcon = (rowCounts: string) => {
+        let rowCountsSplit = rowCounts.split("/");
+        return ((Number(rowCountsSplit[1]) - Number(rowCountsSplit[0])) <= 1000);
+    };
+
+    const downloadResults = (record: any) => {
+        console.log(record);
+    };
     const columns = [
         {
             title: 'File Name',
             dataIndex: 'fileName',
             key: 'fileName',
-            render: (text: string, record: any) => <span style={{cursor: "pointer", color: "#1890FF"}}
-                                                         onClick={() => openRowDetails(record)}>{text}</span>,
+            sorter: (a: any, b: any) => a.fileName.length - b.fileName.length,
+            render: (text: string, record: any) => <span style={showDownloadIcon(record.rowsFraction) ? {
+                cursor: "pointer",
+                color: "#1890FF"
+            } : {cursor: "not-allowed", fontWeight: 500}}
+                                                         onClick={showDownloadIcon(record.rowsFraction) ? () => openRowDetails(record) : undefined}>{text}</span>
         },
         {
             title: 'Import Date & Time',
             dataIndex: 'importTimestamp',
             key: 'importTimestamp',
+            sorter: (a: any, b: any) => a.importTimestamp.length - b.importTimestamp.length,
         },
         {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
+            sorter: (a: any, b: any) => a.status.length - b.status.length,
         },
         {
             title: 'Row Imported/Total Rows',
             dataIndex: 'rowsFraction',
             key: 'rowsFraction',
+            sorter: (a: any, b: any) => a.rowsFraction.length - b.rowsFraction.length
+        },
+        {
+            dataIndex: '',
+            key: 'action',
+            width: '75px',
+            render: ((text: string, record: any) => {
+                return (<Space size="small">
+                    <p className={"actionColumn noMarginIcon"}>
+                        <DownloadOutlined onClick={() => downloadResults(record)}/></p></Space>)
+
+            }),
         }
     ];
     const [uploadObj, setUploadObj] = useState({});
@@ -75,12 +93,24 @@ export const ImportsPage: any = () => {
         setUploadObj({});
         openRowDetailsPage(false);
     };
+    const onSearchImports = (searchParam: string) => {
+        setImportContactDS(importContactOps.filter(value => {
+            return value.fileName.includes(searchParam);
+        }));
+    };
     return !rowDetailsPage ? (
         <div className="pageLayout">
             <div className="secondNav">
-                <Title level={4}>All Uploads</Title>
+                <Title level={4}>All Imports</Title>
             </div>
-            <div className="thirdNav" style={{height: 'calc(100vh - 228px)'}}>
+            <div className="firstNav">
+                <div className="leftPlacement">
+                    <div className="searchInput">
+                        <Search placeholder="input search text" onSearch={onSearchImports} enterButton/>
+                    </div>
+                </div>
+            </div>
+            <div className="thirdNav">
                 <Table columns={columns} dataSource={importContactDS} bordered/>
             </div>
         </div>

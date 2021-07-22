@@ -26,9 +26,6 @@ export const routes = [
                 key: 'contacts'
             },
             {
-                key: 'customField'
-            },
-            {
                 key: 'segments'
             },
             {
@@ -36,14 +33,17 @@ export const routes = [
             },
             {
                 key: 'exports'
+            },
+            {
+                key: 'custom-field'
             }
         ]
     },
     {
         key: '3',
-        name: 'campaigns',
+        name: 'campaign',
         icon: <CompassOutlined/>,
-        route: '/campaigns/',
+        route: '/campaign/',
         children: [
             {
                 key: 'automation'
@@ -64,9 +64,6 @@ export const routes = [
         children: [
             {
                 key: 'templates'
-            },
-            {
-                key: 'template-editor'
             },
             {
                 key: 'delivery-testing'
@@ -97,7 +94,7 @@ export const routes = [
                 key: 'domain'
             },
             {
-                key: 'dedicated-ip'
+                key: 'dedicated-ips'
             },
             {
                 key: 'custom-events'

@@ -1,0 +1,38 @@
+.preference {
+  display: grid;
+  grid-template-columns: 50% auto;
+  grid-column-gap: 16px;
+
+  .ant-form-item-control {
+    max-width: 40%;
+    width: 262px;
+  }
+
+  .ant-picker-range {
+    width: 262px;
+    max-width: 100%;
+  }
+
+  .ant-picker-suffix {
+    .anticon svg {
+      margin-bottom: 0;
+    }
+  }
+
+  .marginBtm1 {
+    margin-bottom: 1%;
+  }
+
+  .trackingContainer {
+    display: flex;
+    flex-wrap: wrap;
+
+    .ant-form-item-control {
+      max-width: 100%;
+      width: 262px;
+    }
+    .ant-form-item {
+      margin-right: 2%;
+    }
+  }
+}
