@@ -257,12 +257,8 @@ export const AmendAutomationPage = (props) => {
                 okType: 'danger',
                 cancelText: 'No',
                 onOk() {
-                    setElements((els) => removeElements(elementsToRemove, els));
-                    orphanChildIds.current.forEach(itr => {
-                        let orphanEls = new Array({id: itr});
-                        setElements((els) => removeElements(orphanEls, els));
-                    });
-                    orphanChildIds.current = [];
+                    triggerDownStream(elementsToRemove[0]);
+                    deleteNodeLogic(elementsToRemove);
                 },
                 onCancel() {
                     console.log('Node deletion cancelled');
@@ -270,6 +266,33 @@ export const AmendAutomationPage = (props) => {
             });
         }
     };
+
+    const triggerDownStream = (elementDeleted) => {
+        let parentElement = null;
+        debugger
+        elements.forEach(itr => {
+            if (itr.source === elementDeleted.id) {
+                parentElement = elements.filter(itrOne => itrOne.id === itr.target);
+            }
+        });
+        createAddActivityNode(parentElement.id, null, elementSelected.position, 1, null, 'plusNode');
+    }
+
+    const deleteNodeLogic = (elementsToRemove) => {
+        setElements((els) => removeElements(elementsToRemove, els));
+        elementsTemp = [...elements].filter(itr => {
+            return itr.id !== elementSelected.id && itr.target !== elementSelected.id;
+        });
+        setElements(elementsTemp);
+        orphanChildIds.current.forEach(itr => {
+            let orphanEls = new Array({id: itr});
+            setElements((els) => removeElements(orphanEls, els));
+            elementsTemp = [...elements].filter(itrOne => {
+                return itrOne.id !== orphanEls.id && itrOne.target !== orphanEls.id;
+            });
+        });
+        orphanChildIds.current = [];
+    }
 
     const onConnect = (params) => setElements((els) => addEdge(params, els));
 
@@ -422,6 +445,7 @@ export const AmendAutomationPage = (props) => {
         }
     };
 
+
     useEffect(() => {
         if (Object.keys(nodeForDelete).length > 0) {
             deleteNodeClick(nodeForDelete.event, nodeForDelete.nodeId, nodeForDelete.nodeTitle, nodeForDelete.isRedux);
@@ -449,12 +473,22 @@ export const AmendAutomationPage = (props) => {
 
     }, [nodeForDelete, workFlowCardDataRedux]);
 
+    const getParentElement = () => {
+        elements.forEach(itr => {
+            if (itr.target === elementSelected.id) {
+                return itr.target;
+            }
+        })
+    };
+
     const createNodeFromActivity = (nodeContent, nodeType, nodeTitle, nodeSvg, branchCount, existingNodeId, formData) => {
         const position = existingNodeId ? modalData.currentElement.position : {
             x: Math.floor(modalData.currentElement.position.x + Math.random() * 40),
             y: Math.floor(modalData.currentElement.position.y + Math.random() * 150)
         };
         let newNodeId = existingNodeId ? existingNodeId : getId().concat(`-${nodeType}`);
+        deleteNodeLogic(new Array({id: elementSelected.id}));
+        getParentElement(newNodeId);
         const newNode = {
             id: newNodeId,
             position,
@@ -476,7 +510,6 @@ export const AmendAutomationPage = (props) => {
         };
         setElements((es) => es.concat(newNode));
         elementsTemp = [...elements];
-        elements.push(newNode);
         if (!existingNodeId) {
             createTargetEdgeNode(newNodeId, elementSelected.id, null, null);
             createSourceEdgeNode(newNodeId, nodeType, branchCount, position);
