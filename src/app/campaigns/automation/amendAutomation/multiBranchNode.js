@@ -28,7 +28,7 @@ export default memo(({data}) => {
     }
 
     const deleteNodeClick = (event, id, title) => {
-        dispatch(updateIdForDelete({event:event, nodeId: id, nodeTitle: title, isRedux: true}));
+        dispatch(updateIdForDelete({event: event, nodeId: id, nodeTitle: title, isRedux: true}));
     }
     return (
         <div key={data.id}>
@@ -40,43 +40,48 @@ export default memo(({data}) => {
                 onConnect={(params) => console.log('handle onConnect', params)}
             />
             <div style={{borderStyle: 'solid', borderWidth: 1}}>
-                <Card title={<div className='titleContent'>
+                <Card key={data.id} title={<div className='titleContent'>
                     <img style={{width: 20}} src={data.nodeSvg} alt="icon"/><span>{data.nodeTitle}</span></div>}
                       extra={<CloseOutlined onClick={(e) => deleteNodeClick(e, data.id, data.nodeTitle)}/>}>
                     {data.nodeContent}
                 </Card>
             </div>
             <div style={{width: 338}}>
-                {data.branchCount > 0 ? <Handle
-                    type="source"
-                    position="bottom"
-                    id={`srcToAct0`}
-                    style={{left: getLeftLocation(), background: '#555'}}
-                /> : null}
-                {data.branchCount > 1 ? <Handle
-                    type="source"
-                    position="bottom"
-                    id={`srcToAct1`}
-                    style={{left: getLeftLocation() * 3, background: '#555'}}
-                /> : null}
-                {data.branchCount > 2 ? <Handle
-                    type="source"
-                    position="bottom"
-                    id={`srcToAct2`}
-                    style={{left: getLeftLocation() * 5, background: '#555'}}
-                /> : null}
-                {data.branchCount > 3 ? <Handle
-                    type="source"
-                    position="bottom"
-                    id={`srcToAct3`}
-                    style={{left: getLeftLocation() * 7, background: '#555'}}
-                /> : null}
-                {data.branchCount > 4 ? <Handle
-                    type="source"
-                    position="bottom"
-                    id={`srcToAct4`}
-                    style={{left: getLeftLocation() * 9, background: '#555'}}
-                /> : null}
+                {data.branchCount > 0 ?
+                    <Handle key={1}
+                            type="source"
+                            position="bottom"
+                            id={`srcToAct0`}
+                            style={{left: getLeftLocation(), background: '#555'}}
+                    /> : null}
+                {data.branchCount > 1 ?
+                    <Handle key={2}
+                            type="source"
+                            position="bottom"
+                            id={`srcToAct1`}
+                            style={{left: getLeftLocation() * 3, background: '#555'}}
+                    /> : null}
+                {data.branchCount > 2 ?
+                    <Handle key={3}
+                            type="source"
+                            position="bottom"
+                            id={`srcToAct2`}
+                            style={{left: getLeftLocation() * 5, background: '#555'}}
+                    /> : null}
+                {data.branchCount > 3 ?
+                    <Handle key={4}
+                            type="source"
+                            position="bottom"
+                            id={`srcToAct3`}
+                            style={{left: getLeftLocation() * 7, background: '#555'}}
+                    /> : null}
+                {data.branchCount > 4 ?
+                    <Handle key={5}
+                            type="source"
+                            position="bottom"
+                            id={`srcToAct4`}
+                            style={{left: getLeftLocation() * 9, background: '#555'}}
+                    /> : null}
             </div>
         </div>
     );

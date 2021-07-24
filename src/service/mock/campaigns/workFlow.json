@@ -1847,7 +1847,6 @@
     "id": 3
   },
   {
-    "id": 4,
     "data": [
       {
         "id": "1-journeyEntry",
@@ -1930,7 +1929,10 @@
                       "key": null,
                       "ref": null,
                       "props": {
-                        "children": "Segment: all"
+                        "children": [
+                          "Segment: ",
+                          "The Xennials"
+                        ]
                       },
                       "_owner": null,
                       "_store": {}
@@ -1947,109 +1949,233 @@
         }
       },
       {
-        "id": "2-addActivity",
-        "type": "plusNode",
+        "id": "22-multiVariateSplit",
+        "type": "multiBranchNode",
         "position": {
-          "x": -204.1655031232911,
-          "y": -588.2686876478748
+          "x": -254,
+          "y": -568
         },
         "data": {
-          "label": {
+          "nodeContent": {
+            "type": "div",
             "key": null,
             "ref": null,
             "props": {
-              "title": {
-                "type": "div",
-                "key": null,
-                "ref": null,
-                "props": {
-                  "className": "titleContent",
-                  "children": [
-                    {
-                      "type": "img",
-                      "key": null,
-                      "ref": null,
-                      "props": {
-                        "style": {
-                          "width": 20
-                        },
-                        "src": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
-                        "alt": "icon"
-                      },
-                      "_owner": null,
-                      "_store": {}
-                    },
-                    {
-                      "type": "span",
-                      "key": null,
-                      "ref": null,
-                      "props": {
-                        "children": "Journey Entry"
-                      },
-                      "_owner": null,
-                      "_store": {}
-                    }
-                  ]
-                },
-                "_owner": null,
-                "_store": {}
+              "style": {
+                "display": "flex",
+                "justifyContent": "center",
+                "flexDirection": "column"
               },
-              "children": {
-                "type": {
-                  "Link": {}
-                },
-                "key": null,
-                "ref": null,
-                "props": {
-                  "className": "columnFlex",
-                  "children": [
-                    {
-                      "type": "strong",
-                      "key": null,
-                      "ref": null,
-                      "props": {
-                        "style": {
-                          "fontSize": 10
+              "children": [
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "children": [
+                      " ",
+                      {
+                        "type": "span",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "className": "dot",
+                          "style": {
+                            "backgroundColor": "orange"
+                          }
                         },
-                        "children": "Evaluate every: 3 hours"
+                        "_owner": null,
+                        "_store": {}
                       },
-                      "_owner": null,
-                      "_store": {}
-                    },
-                    {
-                      "key": null,
-                      "ref": null,
-                      "props": {},
-                      "_owner": null,
-                      "_store": {}
-                    },
-                    {
-                      "key": null,
-                      "ref": null,
-                      "props": {
-                        "children": "Segment: all"
-                      },
-                      "_owner": null,
-                      "_store": {}
-                    }
-                  ]
+                      "Branch ",
+                      "A"
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
                 },
-                "_owner": null,
-                "_store": {}
-              }
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "children": [
+                      " ",
+                      {
+                        "type": "span",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "className": "dot",
+                          "style": {
+                            "backgroundColor": "blue"
+                          }
+                        },
+                        "_owner": null,
+                        "_store": {}
+                      },
+                      "Branch ",
+                      "B"
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
+                },
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "children": [
+                      " ",
+                      {
+                        "type": "span",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "className": "dot",
+                          "style": {
+                            "backgroundColor": "green"
+                          }
+                        },
+                        "_owner": null,
+                        "_store": {}
+                      },
+                      "Branch ",
+                      "C"
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
+                },
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "children": [
+                      " ",
+                      {
+                        "type": "span",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "className": "dot",
+                          "style": {
+                            "backgroundColor": "red"
+                          }
+                        },
+                        "_owner": null,
+                        "_store": {}
+                      },
+                      "Branch ",
+                      "D"
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
+                }
+              ]
             },
             "_owner": null,
             "_store": {}
-          }
+          },
+          "nodeTitle": "Multivariate Split",
+          "nodeSvg": "/assets/icons/icon-multivariate-split.svg",
+          "branchCount": 5,
+          "id": "22-multiVariateSplit"
         }
+      },
+      {
+        "id": "22-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -241,
+          "y": -472
+        },
+        "data": null
+      },
+      {
+        "source": "22-multiVariateSplit",
+        "sourceHandle": "srcToAct0",
+        "target": "22-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src22-multiVariateSplit-tr22-addActivity",
+        "label": "Branch A"
+      },
+      {
+        "id": "23-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -199,
+          "y": -469
+        },
+        "data": null
+      },
+      {
+        "source": "22-multiVariateSplit",
+        "sourceHandle": "srcToAct1",
+        "target": "23-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src22-multiVariateSplit-tr23-addActivity",
+        "label": "Branch B"
+      },
+      {
+        "id": "24-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -159,
+          "y": -472
+        },
+        "data": null
+      },
+      {
+        "source": "22-multiVariateSplit",
+        "sourceHandle": "srcToAct2",
+        "target": "24-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src22-multiVariateSplit-tr24-addActivity",
+        "label": "Branch C"
+      },
+      {
+        "id": "25-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -118,
+          "y": -469
+        },
+        "data": null
+      },
+      {
+        "source": "22-multiVariateSplit",
+        "sourceHandle": "srcToAct3",
+        "target": "25-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src22-multiVariateSplit-tr25-addActivity",
+        "label": "Branch D"
+      },
+      {
+        "id": "26-addActivity",
+        "type": "plusNode",
+        "position": {
+          "x": -84,
+          "y": -462
+        },
+        "data": null
+      },
+      {
+        "source": "22-multiVariateSplit",
+        "sourceHandle": "srcToAct4",
+        "target": "26-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src22-multiVariateSplit-tr26-addActivity",
+        "label": "Else"
       },
       {
         "source": "1-journeyEntry",
         "sourceHandle": null,
-        "target": "2-addActivity",
-        "targetHandle": "actToJourney",
-        "id": "reactflow__edge-1null-2actToJourney"
+        "target": "22-multiVariateSplit",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src1-journeyEntry-tr22-multiVariateSplit",
+        "label": null
       }
-    ]
+    ],
+    "id": 4
   }
 ]

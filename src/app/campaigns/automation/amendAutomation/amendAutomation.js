@@ -28,7 +28,7 @@ export const AmendAutomationPage = (props) => {
     const [elements, setElements] = useState([]);
     const dispatch = useDispatch();
     const openType = (props.amendObj && (props.amendObj.viewType === 'edit' || props.amendObj.viewType === 'create'));
-    let elementsTemp = [];
+    const tempElements = useRef([]);
     const nodeForDelete = useSelector((state) => state.root.nodeForDelete);
     const workFlowCardDataRedux = useSelector((state) => state.root.workFlowData);
     const journeyData = useRef(null);
@@ -257,42 +257,39 @@ export const AmendAutomationPage = (props) => {
                 okType: 'danger',
                 cancelText: 'No',
                 onOk() {
-                    triggerDownStream(elementsToRemove[0]);
-                    deleteNodeLogic(elementsToRemove);
+                    let sourceObj = tempElements.current.filter(itr => itr.target === elementsToRemove[0].id);
+                    let tempElementsObj = removeElements(tempElements.current.filter(itr => itr.id === elementsToRemove[0].id), tempElements.current);
+                    orphanChildIds.current.forEach(itr => {
+                        tempElementsObj = removeElements(tempElementsObj.filter(itrOne => itr === itrOne.id), tempElementsObj);
+                    });
+                    orphanChildIds.current = [];
+                    tempElements.current = tempElementsObj;
+                    setElements(tempElementsObj);
+                    triggerDownStream(elementsToRemove[0], sourceObj);
                 },
                 onCancel() {
                     console.log('Node deletion cancelled');
                 },
             });
+        } else {
+            message.warning("No element selected for deletion", 0.6).then(_ => {
+            });
         }
     };
 
-    const triggerDownStream = (elementDeleted) => {
-        let parentElement = null;
-        debugger
-        elements.forEach(itr => {
-            if (itr.source === elementDeleted.id) {
-                parentElement = elements.filter(itrOne => itrOne.id === itr.target);
+    const triggerDownStream = (elementRemoved, sourceObj) => {
+        if (sourceObj.length > 0) {
+            sourceObj = sourceObj[0];
+            let allEdgeElements = tempElements.current.filter(itr => itr.source === sourceObj.source);
+            let label;
+            if (allEdgeElements.length > 0) {
+                label = allEdgeElements.filter(itr => itr.sourceHandle === sourceObj.sourceHandle)[0].label;
+            } else {
+                label = allEdgeElements.length > 0 ? allEdgeElements[0].sourceHandle : null;
             }
-        });
-        createAddActivityNode(parentElement.id, null, elementSelected.position, 1, null, 'plusNode');
-    }
-
-    const deleteNodeLogic = (elementsToRemove) => {
-        setElements((els) => removeElements(elementsToRemove, els));
-        elementsTemp = [...elements].filter(itr => {
-            return itr.id !== elementSelected.id && itr.target !== elementSelected.id;
-        });
-        setElements(elementsTemp);
-        orphanChildIds.current.forEach(itr => {
-            let orphanEls = new Array({id: itr});
-            setElements((els) => removeElements(orphanEls, els));
-            elementsTemp = [...elements].filter(itrOne => {
-                return itrOne.id !== orphanEls.id && itrOne.target !== orphanEls.id;
-            });
-        });
-        orphanChildIds.current = [];
-    }
+            createAddActivityNode(sourceObj.source, sourceObj.sourceHandle, elementRemoved.position, 0, label, 'plusNode', tempElements.current)
+        }
+    };
 
     const onConnect = (params) => setElements((els) => addEdge(params, els));
 
@@ -384,7 +381,7 @@ export const AmendAutomationPage = (props) => {
 
     const saveJson = () => {
         editObjectById({
-            data: elements,
+            data: tempElements.current,
             id: props.amendObj.key ? props.amendObj.key : props.amendObj.id
         }, 'workFlow').then(async editElementsRes => {
             let elementsJson = await editElementsRes.json();
@@ -422,11 +419,16 @@ export const AmendAutomationPage = (props) => {
         if (reactFlowInstance && elements.length > 0) {
             reactFlowInstance.fitView();
         }
-        if (elementsTemp.length > 0) {
-            setElements(elementsTemp);
+        if (elements.length > 0 && tempElements.current.length === 0) {
+            tempElements.current = elements;
         }
-    }, [reactFlowInstance, elements.length, elementsTemp, orphanChildIds]);
+    }, [reactFlowInstance, elements.length, elements, orphanChildIds]);
 
+    useEffect(() => {
+        if (tempElements.current && tempElements.current.length > 0) {
+            setElements(tempElements.current);
+        }
+    }, [tempElements.current.length])
     const nodeTypes = {
         multiBranchNode: multiBranchNode,
         plusNode: plusNode,
@@ -435,21 +437,33 @@ export const AmendAutomationPage = (props) => {
 
     const deleteNodeClick = (event, nodeId, nodeTitle, isRedux) => {
         handleCancel();
-        onElementsRemove(new Array({id: nodeId, nodeTitle: nodeTitle}));
-        orphanChildIds.current = elements.filter(value => {
-            return value.source && value.source === nodeId;
-        }).map(val => val.target);
+        onElementsRemove(tempElements.current.filter(itr => itr.id === nodeId));
         dispatch(updateIdForDelete({}));
         if (!isRedux) {
             event.stopPropagation();
         }
+        getAllChildNodes(nodeId, []);
     };
 
+    const getAllChildNodes = (nodeId, allNodeIds) => {
+        let childNodes = tempElements.current.filter(itr => itr.source === nodeId);
+        if (childNodes.length > 0) {
+            childNodes.forEach(itr => {
+                allNodeIds.push(itr.target);
+                return getAllChildNodes(itr.target, allNodeIds);
+            });
+        } else {
+            orphanChildIds.current = allNodeIds;
+        }
+    };
 
     useEffect(() => {
         if (Object.keys(nodeForDelete).length > 0) {
             deleteNodeClick(nodeForDelete.event, nodeForDelete.nodeId, nodeForDelete.nodeTitle, nodeForDelete.isRedux);
         }
+    }, [nodeForDelete])
+
+    useEffect(() => {
         if (journeyData.current && workFlowCardDataRedux[journeyData.current.id]) {
             let newJourneyNode = {
                 ...journeyData.current, data: {
@@ -470,64 +484,106 @@ export const AmendAutomationPage = (props) => {
             }
             setElements((es) => es.concat(newJourneyNode));
         }
-
-    }, [nodeForDelete, workFlowCardDataRedux]);
-
-    const getParentElement = () => {
-        elements.forEach(itr => {
-            if (itr.target === elementSelected.id) {
-                return itr.target;
-            }
-        })
-    };
+    }, [workFlowCardDataRedux]);
 
     const createNodeFromActivity = (nodeContent, nodeType, nodeTitle, nodeSvg, branchCount, existingNodeId, formData) => {
-        const position = existingNodeId ? modalData.currentElement.position : {
+        let tempElementsObj = tempElements.current;
+        let multiBranchNode = (nodeType === 'randomSplit' || nodeType === 'multiVariateSplit');
+        const position = (existingNodeId) ? modalData.currentElement.position : {
             x: Math.floor(modalData.currentElement.position.x + Math.random() * 40),
             y: Math.floor(modalData.currentElement.position.y + Math.random() * 150)
         };
-        let newNodeId = existingNodeId ? existingNodeId : getId().concat(`-${nodeType}`);
-        deleteNodeLogic(new Array({id: elementSelected.id}));
-        getParentElement(newNodeId);
-        const newNode = {
-            id: newNodeId,
-            position,
-            type: (nodeType === 'randomSplit' || nodeType === 'yesNoSplit' || nodeType === 'multiVariateSplit' || nodeType === 'holdOut') ? 'multiBranchNode' : 'default',
-            data: (nodeType === 'randomSplit' || nodeType === 'yesNoSplit' || nodeType === 'multiVariateSplit' || nodeType === 'holdOut') ? {
-                nodeContent: nodeContent,
-                nodeTitle: nodeTitle,
-                nodeSvg: nodeSvg,
-                branchCount: branchCount,
-                id: newNodeId
-            } : {
-                label:
-                    <Card title={<div className='titleContent'>
-                        <img style={{width: 20}} src={nodeSvg} alt="icon"/><span>{nodeTitle}</span></div>}
-                          extra={<CloseOutlined onClick={(e) => deleteNodeClick(e, newNodeId, nodeTitle, false)}/>}>
-                        {nodeContent}
-                    </Card>
+        let previousEdge = [...tempElementsObj].filter(itr => itr.target === elementSelected.id);
+        tempElementsObj = removeElements(new Array(elementSelected), tempElementsObj);
+        if (previousEdge.length > 0) {
+            let newNodeId = existingNodeId && !multiBranchNode ? existingNodeId : getId().concat(`-${nodeType}`);
+            const newNode = {
+                id: newNodeId,
+                position,
+                type: (multiBranchNode || nodeType === 'yesNoSplit' || nodeType === 'multiVariateSplit') ? 'multiBranchNode' : 'default',
+                data: (multiBranchNode || nodeType === 'yesNoSplit' || nodeType === 'multiVariateSplit') ? {
+                    nodeContent: nodeContent,
+                    nodeTitle: nodeTitle,
+                    nodeSvg: nodeSvg,
+                    branchCount: branchCount,
+                    id: newNodeId
+                } : {
+                    label:
+                        <Card title={<div className='titleContent'>
+                            <img style={{width: 20}} src={nodeSvg} alt="icon"/><span>{nodeTitle}</span></div>}
+                              extra={<CloseOutlined onClick={(e) => deleteNodeClick(e, newNodeId, nodeTitle, false)}/>}>
+                            {nodeContent}
+                        </Card>
+                }
+            };
+            tempElementsObj.push(newNode);
+            if (!existingNodeId && !multiBranchNode) {
+                createSourceEdgeNode(newNodeId, nodeType, branchCount, position, tempElementsObj);
+            } else if (!multiBranchNode) {
+                let targetEdgeObj = [...tempElementsObj].filter(itr => itr.source === elementSelected.id)[0];
+                createTargetEdgeNode(targetEdgeObj.target, newNodeId, targetEdgeObj.sourceHandle, targetEdgeObj.label, tempElementsObj);
+            } else {
+                let childNodes = tempElements.current.filter(itr => itr.source === elementSelected.id);
+                let tempObj = [];
+                if (childNodes.length > 0) {
+                    childNodes.forEach(itr => {
+                        tempObj.push(itr);
+                    });
+                    orphanChildIds.current = tempObj;
+                }
+                createSourceEdgeNode(newNodeId, nodeType, branchCount, position, tempElementsObj);
             }
-        };
-        setElements((es) => es.concat(newNode));
-        elementsTemp = [...elements];
-        if (!existingNodeId) {
-            createTargetEdgeNode(newNodeId, elementSelected.id, null, null);
-            createSourceEdgeNode(newNodeId, nodeType, branchCount, position);
+            createTargetEdgeNode(newNodeId, previousEdge[0].source, previousEdge[0].sourceHandle, previousEdge[0].label, tempElementsObj);
+            if (nodeType === 'randomSplit' || nodeType === 'multiVariateSplit') {
+                let oldSourceNode = null;
+                orphanChildIds.current.forEach(itr => {
+                    let found = false;
+                    let nodeToDelete = [];
+                    let oldNodeType = itr.target.split("-")[1];
+                    if (oldNodeType !== 'addActivity') {
+                        tempElementsObj.forEach(itrOne => {
+                            if (!found && itrOne.source === newNodeId && itrOne.label === itr.label) {
+                                nodeToDelete.push({id: itr.id});
+                                nodeToDelete.push({id: itrOne.target});
+                                itrOne.target = itr.target;
+                                found = true;
+                            }
+                        });
+                    } else {
+                        tempElementsObj = removeElements(tempElementsObj.filter(itrOne => itr.target === itrOne.id), tempElementsObj);
+                    }
+                    oldSourceNode = itr.source;
+                    if (found) {
+                        tempElementsObj = removeElements(nodeToDelete, tempElementsObj);
+                    }
+                });
+                orphanChildIds.current = [];
+                tempElements.current = tempElementsObj;
+                tempElementsObj = removeElements(new Array({id: oldSourceNode}), tempElementsObj);
+                setModalData({...modalData, cardId: newNodeId});
+            }
+            setNodeTitle("");
+            saveAutomationData(formData, newNodeId, elementSelected.id);
+            saveJson();
+            setElementSelected({id: ''});
+        } else {
+            message.error("Unable to get previous node details", 0.8).then(_ => {
+            });
         }
-        setNodeTitle("");
-        saveAutomationData(formData, newNodeId);
     };
 
-    const saveAutomationData = (formData, newNodeId) => {
+    const saveAutomationData = (formData, newNodeId, oldId) => {
         editObjectById({
             id: newNodeId,
             ...workFlowCardDataRedux,
-            [newNodeId]: formData
+            [newNodeId]: formData,
+            [oldId]: undefined
         }, 'cardData').then(async nodeDataAsync => {
             let nodeDataRes = await nodeDataAsync.json();
             if (nodeDataRes) {
                 message.success('Node data has been successfully captured', 0.6).then(_ => {
                 });
+                dispatch(updateWorkFlowCardData(nodeDataRes));
             }
         }).catch(reason => {
             console.log(reason);
@@ -536,8 +592,7 @@ export const AmendAutomationPage = (props) => {
         });
     };
 
-
-    const createSourceEdgeNode = (sourceId, nodeType, branchCount, position) => {
+    const createSourceEdgeNode = (sourceId, nodeType, branchCount, position, tempObj) => {
         if (nodeType === 'multiVariateSplit' || nodeType === 'randomSplit' || nodeType === 'yesNoSplit' || nodeType === 'holdOut') {
             let counter = 0;
             let edgeLabel = null;
@@ -552,16 +607,16 @@ export const AmendAutomationPage = (props) => {
                         edgeLabel = 'Else';
                     }
                 }
-                edgeLabel !== 'Holdout' ? createAddActivityNode(sourceId, `srcToAct${counter}`, position, counter, edgeLabel, 'plusNode') :
-                    createAddActivityNode(sourceId, `srcToAct${counter}`, position, counter, edgeLabel, 'emptyCardNode');
+                edgeLabel !== 'Holdout' ? createAddActivityNode(sourceId, `srcToAct${counter}`, position, counter, edgeLabel, 'plusNode', tempObj) :
+                    createAddActivityNode(sourceId, `srcToAct${counter}`, position, counter, edgeLabel, 'emptyCardNode', tempObj);
                 counter++;
             }
         } else {
-            createAddActivityNode(sourceId, null, position, 0, null, 'plusNode');
+            createAddActivityNode(sourceId, null, position, 0, null, 'plusNode', tempObj);
         }
     };
 
-    const createAddActivityNode = (sourceId, sourceHandler, oldPosition, counter, label, cardType) => {
+    const createAddActivityNode = (sourceId, sourceHandler, oldPosition, counter, label, cardType, tempObj) => {
         const position = {
             x: Math.floor(oldPosition.x + Math.random() * 40),
             y: Math.floor(oldPosition.y + Math.random() * 150)
@@ -573,13 +628,12 @@ export const AmendAutomationPage = (props) => {
             type: cardType,
             data: cardType === 'emptyCardNode' ? {id: newNodeId} : null
         };
-        setElements((es) => es.concat(activityNode));
-        elementsTemp = [...elements];
-        elements.push(activityNode);
-        createTargetEdgeNode(newNodeId, sourceId, sourceHandler, label)
+        tempObj.push(activityNode);
+        tempElements.current = tempObj;
+        createTargetEdgeNode(newNodeId, sourceId, sourceHandler, label, tempObj)
     };
 
-    const createTargetEdgeNode = (targetId, sourceId, sourceHandler, label) => {
+    const createTargetEdgeNode = (targetId, sourceId, sourceHandler, label, tempObj) => {
         let edgeNode = {
             "source": sourceId,
             "sourceHandle": sourceHandler,
@@ -588,10 +642,10 @@ export const AmendAutomationPage = (props) => {
             "id": `reactflow__edge-src${sourceId}-tr${targetId}`,
             "label": label
         }
-        setElements((es) => es.concat(edgeNode));
-        elementsTemp = [...elements];
-        elements.push(edgeNode);
+        tempObj.push(edgeNode);
+        tempElements.current = tempObj;
     };
+
     return (
         <div className='amendAutomation pageLayout'>
             <div className={'firstNav'}>
@@ -618,7 +672,8 @@ export const AmendAutomationPage = (props) => {
             <div className='gridDisplay'>
                 <ReactFlowProvider>
                     <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-                        <ReactFlow onElementClick={openType ? onElementClick : undefined} elements={elements}
+                        <ReactFlow onElementClick={openType ? onElementClick : undefined}
+                                   elements={tempElements.current.length === 0 ? elements : tempElements.current}
                                    nodeTypes={nodeTypes} nodesDraggable={openType} nodesConnectable={openType}
                                    ref={reactFlowInstance} paneMoveable={openType}
                                    onNodeDragStop={openType ? onNodeDragStop : undefined}

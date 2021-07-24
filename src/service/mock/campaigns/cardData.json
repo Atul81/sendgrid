@@ -91,6 +91,15 @@
       ],
       "segments": "The Xennials",
       "description": "vsdrtrtsdvt"
+    },
+    "22-multiVariateSplit": {
+      "branch": {
+        "A": "Evaluate Periodically",
+        "B": "Evaluate Immediately",
+        "C": "Evaluate Monthly",
+        "D": "Evaluate Periodically"
+      },
+      "evaluation": "Evaluate Periodically"
     }
   }
 ]
