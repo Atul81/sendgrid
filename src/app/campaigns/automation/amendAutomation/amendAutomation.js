@@ -248,11 +248,11 @@ export const AmendAutomationPage = (props) => {
         return '#fff';
     };
 
-    const onElementsRemove = (elementsToRemove) => {
+    const onElementsRemove = (elementsToRemove, title) => {
         if (elementsToRemove[0]) {
             deleteConfirm({
                 title: 'Are you sure delete following node?',
-                content: elementsToRemove[0].nodeTitle,
+                content: title,
                 okText: 'Yes',
                 okType: 'danger',
                 cancelText: 'No',
@@ -280,14 +280,7 @@ export const AmendAutomationPage = (props) => {
     const triggerDownStream = (elementRemoved, sourceObj) => {
         if (sourceObj.length > 0) {
             sourceObj = sourceObj[0];
-            let allEdgeElements = tempElements.current.filter(itr => itr.source === sourceObj.source);
-            let label;
-            if (allEdgeElements.length > 0) {
-                label = allEdgeElements.filter(itr => itr.sourceHandle === sourceObj.sourceHandle)[0].label;
-            } else {
-                label = allEdgeElements.length > 0 ? allEdgeElements[0].sourceHandle : null;
-            }
-            createAddActivityNode(sourceObj.source, sourceObj.sourceHandle, elementRemoved.position, 0, label, 'plusNode', tempElements.current)
+            createAddActivityNode(sourceObj.source, sourceObj.sourceHandle, elementRemoved.position, 0, sourceObj.label, 'plusNode', tempElements.current)
         }
     };
 
@@ -437,12 +430,12 @@ export const AmendAutomationPage = (props) => {
 
     const deleteNodeClick = (event, nodeId, nodeTitle, isRedux) => {
         handleCancel();
-        onElementsRemove(tempElements.current.filter(itr => itr.id === nodeId));
+        getAllChildNodes(nodeId, []);
+        onElementsRemove(tempElements.current.filter(itr => itr.id === nodeId), nodeTitle);
         dispatch(updateIdForDelete({}));
         if (!isRedux) {
             event.stopPropagation();
         }
-        getAllChildNodes(nodeId, []);
     };
 
     const getAllChildNodes = (nodeId, allNodeIds) => {
@@ -487,6 +480,7 @@ export const AmendAutomationPage = (props) => {
     }, [workFlowCardDataRedux]);
 
     const createNodeFromActivity = (nodeContent, nodeType, nodeTitle, nodeSvg, branchCount, existingNodeId, formData) => {
+        debugger
         let tempElementsObj = tempElements.current;
         let multiBranchNode = (nodeType === 'randomSplit' || nodeType === 'multiVariateSplit');
         const position = (existingNodeId) ? modalData.currentElement.position : {
@@ -494,6 +488,7 @@ export const AmendAutomationPage = (props) => {
             y: Math.floor(modalData.currentElement.position.y + Math.random() * 150)
         };
         let previousEdge = [...tempElementsObj].filter(itr => itr.target === elementSelected.id);
+        let targetEdgeObj = [...tempElementsObj].filter(itr => itr.source === elementSelected.id)[0];
         tempElementsObj = removeElements(new Array(elementSelected), tempElementsObj);
         if (previousEdge.length > 0) {
             let newNodeId = existingNodeId && !multiBranchNode ? existingNodeId : getId().concat(`-${nodeType}`);
@@ -520,7 +515,6 @@ export const AmendAutomationPage = (props) => {
             if (!existingNodeId && !multiBranchNode) {
                 createSourceEdgeNode(newNodeId, nodeType, branchCount, position, tempElementsObj);
             } else if (!multiBranchNode) {
-                let targetEdgeObj = [...tempElementsObj].filter(itr => itr.source === elementSelected.id)[0];
                 createTargetEdgeNode(targetEdgeObj.target, newNodeId, targetEdgeObj.sourceHandle, targetEdgeObj.label, tempElementsObj);
             } else {
                 let childNodes = tempElements.current.filter(itr => itr.source === elementSelected.id);
@@ -563,7 +557,7 @@ export const AmendAutomationPage = (props) => {
                 setModalData({...modalData, cardId: newNodeId});
             }
             setNodeTitle("");
-            saveAutomationData(formData, newNodeId, elementSelected.id);
+            newNodeId === elementSelected.id ? saveAutomationData(formData, newNodeId, null) : saveAutomationData(formData, newNodeId, elementSelected.id);
             saveJson();
             setElementSelected({id: ''});
         } else {

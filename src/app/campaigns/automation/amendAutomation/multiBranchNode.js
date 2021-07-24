@@ -48,35 +48,35 @@ export default memo(({data}) => {
             </div>
             <div style={{width: 338}}>
                 {data.branchCount > 0 ?
-                    <Handle key={1}
+                    <Handle key={0}
                             type="source"
                             position="bottom"
                             id={`srcToAct0`}
                             style={{left: getLeftLocation(), background: '#555'}}
                     /> : null}
                 {data.branchCount > 1 ?
-                    <Handle key={2}
+                    <Handle key={1}
                             type="source"
                             position="bottom"
                             id={`srcToAct1`}
                             style={{left: getLeftLocation() * 3, background: '#555'}}
                     /> : null}
                 {data.branchCount > 2 ?
-                    <Handle key={3}
+                    <Handle key={2}
                             type="source"
                             position="bottom"
                             id={`srcToAct2`}
                             style={{left: getLeftLocation() * 5, background: '#555'}}
                     /> : null}
                 {data.branchCount > 3 ?
-                    <Handle key={4}
+                    <Handle key={3}
                             type="source"
                             position="bottom"
                             id={`srcToAct3`}
                             style={{left: getLeftLocation() * 7, background: '#555'}}
                     /> : null}
                 {data.branchCount > 4 ?
-                    <Handle key={5}
+                    <Handle key={4}
                             type="source"
                             position="bottom"
                             id={`srcToAct4`}

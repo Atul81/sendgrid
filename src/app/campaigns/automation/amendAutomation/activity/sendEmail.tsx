@@ -21,6 +21,7 @@ export const SendEmail = (props: any) => {
     };
 
     const [allSenders, setAllSenders] = useState<DropDown[]>([]);
+    const [allTemplates, setAllTemplates] = useState<DropDown[]>([]);
 
     const filterCountryOption = (input: string, option: any) => {
         return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -33,6 +34,7 @@ export const SendEmail = (props: any) => {
                     sentEmailRes = sentEmailRes[props.modalData.cardId];
                     sendEmailForm.setFieldsValue({
                         sendEmailObj: {
+                            template: sentEmailRes.template,
                             sender: sentEmailRes.sender,
                             description: sentEmailRes.description
                         }
@@ -58,6 +60,20 @@ export const SendEmail = (props: any) => {
             message.error(GET_SERVER_ERROR, 0.8).then(() => {
             });
         });
+        getAllServerCall('templates').then(async allTemplatesAsync => {
+            let allTemplatesRes = await allTemplatesAsync.json();
+            let tempItrObj: DropDown[] = [];
+            if (allTemplatesRes) {
+                allTemplatesRes.forEach((itr: any) => {
+                    tempItrObj.push({label: itr.title, value: itr.id, children: null});
+                });
+            }
+            setAllTemplates(tempItrObj);
+        }).catch(reason => {
+            console.log(reason);
+            message.error(GET_SERVER_ERROR, 0.8).then(() => {
+            });
+        });
     }, []);
 
     const sendTextMsg = () => {
@@ -70,14 +86,18 @@ export const SendEmail = (props: any) => {
 
     return <Form className={'sendEmail'} name="sendEmailForm" form={sendEmailForm} layout={'vertical'}
                  onFinish={saveSendEmailForm} autoComplete={'off'}>
-        <div className='firstDiv'>
-            <Paragraph>Select an email template to use for this activity</Paragraph>
-            <Button type={'link'}>Create template</Button>
-        </div>
-        <Form.Item className='removeBtnRad'>
-            <Button style={{marginRight: 8}} key="save" onClick={sendTextMsg}>
-                Choose an email template
-            </Button>
+        <Form.Item
+            label={<div><strong>Select an email template to use for this activity </strong><span
+                className={'info'}>Info</span></div>}>
+            <Form.Item name={['sendEmailObj', 'template']} noStyle>
+                <Select showSearch placeholder="Select Sender's Email" suffixIcon={<SearchOutlined/>}
+                        optionFilterProp="children" allowClear={true}
+                        filterOption={(input, option) => filterCountryOption(input, option)}>
+                    {allTemplates.map(value => {
+                        return <Option value={value.label} key={value.value}>{value.label}</Option>
+                    })}
+                </Select>
+            </Form.Item>
         </Form.Item>
         <div className='inlineFlexContent'>
             <Form.Item>
