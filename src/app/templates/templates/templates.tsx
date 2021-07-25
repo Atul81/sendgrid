@@ -125,7 +125,7 @@ export const TemplatesPage: any = () => {
                         )
                     })}
                 </div>
-                <div className='reverseFlex'>
+                <div className='reverseFlex' style={{marginTop: 4}}>
                     <Pagination defaultPageSize={8} current={currentPage} total={templatesDS.length * 2}
                                 onChange={handlePagination}
                                 showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}/>
@@ -134,7 +134,7 @@ export const TemplatesPage: any = () => {
         </div>
     ) : <Modal className={'fullScreenModal'} title={'Add/Edit Template'} visible={true} width={'100%'} footer={null}
                onCancel={exitTemplate}>
-        <div style={{width: '100%', height: 'calc(100vh - 104px)'}}>
+        <div style={{width: '100%', height: 'calc(100vh - 56px)'}}>
             <BeeTemplatePage existingTemplate={templateObj} requestType={beeOpenType}
                              templateContent={getEmailTemplate}/>
         </div>

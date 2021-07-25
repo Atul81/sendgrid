@@ -108,8 +108,7 @@ export const AmendAutomationPage = (props) => {
                                                         justifyContent: 'center',
                                                         flexDirection: 'column'
                                                     }}>
-                                                        <Paragraph>Wait
-                                                            for: {displayData.children[1]} {displayData.children[3]}</Paragraph>
+                                                        <Paragraph>{displayData.children}</Paragraph>
                                                     </div>
                                                 </Card>
                                             }
@@ -136,6 +135,7 @@ export const AmendAutomationPage = (props) => {
                                         break;
                                     }
                                     case 'yesNoSplit': {
+                                        let propsData = itr.data.nodeContent.props.children;
                                         tempObj.push({
                                             ...itr, type: 'multiBranchNode', data: {
                                                 "nodeTitle": itr.data.nodeTitle,
@@ -148,9 +148,9 @@ export const AmendAutomationPage = (props) => {
                                                     flexDirection: 'column'
                                                 }}>
                                                     <Title
-                                                        level={5}>{itr.data.nodeContent.props.children[2].props.children}</Title>
+                                                        level={5}>{propsData[0].props.children ? propsData[0].props.children : ''}</Title>
                                                     <Divider/>
-                                                    <Paragraph>Event: {itr.data.nodeContent.props.children[2].props.children[1]}</Paragraph>
+                                                    <Paragraph>{propsData[2].props.children[2]}</Paragraph>
                                                 </div>
                                             }
                                         });
@@ -480,7 +480,6 @@ export const AmendAutomationPage = (props) => {
     }, [workFlowCardDataRedux]);
 
     const createNodeFromActivity = (nodeContent, nodeType, nodeTitle, nodeSvg, branchCount, existingNodeId, formData) => {
-        debugger
         let tempElementsObj = tempElements.current;
         let multiBranchNode = (nodeType === 'randomSplit' || nodeType === 'multiVariateSplit');
         const position = (existingNodeId) ? modalData.currentElement.position : {
@@ -488,15 +487,15 @@ export const AmendAutomationPage = (props) => {
             y: Math.floor(modalData.currentElement.position.y + Math.random() * 150)
         };
         let previousEdge = [...tempElementsObj].filter(itr => itr.target === elementSelected.id);
-        let targetEdgeObj = [...tempElementsObj].filter(itr => itr.source === elementSelected.id)[0];
+        let targetEdgeObj = [...tempElementsObj].filter(itr => itr.source === elementSelected.id);
         tempElementsObj = removeElements(new Array(elementSelected), tempElementsObj);
         if (previousEdge.length > 0) {
             let newNodeId = existingNodeId && !multiBranchNode ? existingNodeId : getId().concat(`-${nodeType}`);
             const newNode = {
                 id: newNodeId,
                 position,
-                type: (multiBranchNode || nodeType === 'yesNoSplit' || nodeType === 'multiVariateSplit') ? 'multiBranchNode' : 'default',
-                data: (multiBranchNode || nodeType === 'yesNoSplit' || nodeType === 'multiVariateSplit') ? {
+                type: (multiBranchNode || nodeType === 'yesNoSplit' || nodeType === 'holdOut') ? 'multiBranchNode' : 'default',
+                data: (multiBranchNode || nodeType === 'yesNoSplit' || nodeType === 'holdOut') ? {
                     nodeContent: nodeContent,
                     nodeTitle: nodeTitle,
                     nodeSvg: nodeSvg,
@@ -515,7 +514,10 @@ export const AmendAutomationPage = (props) => {
             if (!existingNodeId && !multiBranchNode) {
                 createSourceEdgeNode(newNodeId, nodeType, branchCount, position, tempElementsObj);
             } else if (!multiBranchNode) {
-                createTargetEdgeNode(targetEdgeObj.target, newNodeId, targetEdgeObj.sourceHandle, targetEdgeObj.label, tempElementsObj);
+                createTargetEdgeNode(targetEdgeObj[0].target, newNodeId, targetEdgeObj[0].sourceHandle, targetEdgeObj[0].label, tempElementsObj);
+                if (targetEdgeObj.length > 0) {
+                    createTargetEdgeNode(targetEdgeObj[1].target, newNodeId, targetEdgeObj[1].sourceHandle, targetEdgeObj[1].label, tempElementsObj);
+                }
             } else {
                 let childNodes = tempElements.current.filter(itr => itr.source === elementSelected.id);
                 let tempObj = [];

@@ -1,6 +1,6 @@
 .templates {
   .cardContainer {
-    height: calc(100vh - 288px);
+    height: calc(100vh - 284px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -9,6 +9,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
       grid-column-gap: 2%;
+      overflow: auto;
 
       .ant-card {
         border: 1px solid #F0F0F0;

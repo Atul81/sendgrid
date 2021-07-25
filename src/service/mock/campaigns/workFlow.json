@@ -1956,6 +1956,10 @@
           "y": -568
         },
         "data": {
+          "nodeTitle": "Multivariate Split",
+          "nodeSvg": "/assets/icons/icon-multivariate-split.svg",
+          "branchCount": 5,
+          "id": "22-multiVariateSplit",
           "nodeContent": {
             "type": "div",
             "key": null,
@@ -2075,11 +2079,7 @@
             },
             "_owner": null,
             "_store": {}
-          },
-          "nodeTitle": "Multivariate Split",
-          "nodeSvg": "/assets/icons/icon-multivariate-split.svg",
-          "branchCount": 5,
-          "id": "22-multiVariateSplit"
+          }
         }
       },
       {
@@ -2151,29 +2151,183 @@
         "label": "Branch D"
       },
       {
-        "id": "26-addActivity",
-        "type": "plusNode",
-        "position": {
-          "x": -84,
-          "y": -462
-        },
-        "data": null
-      },
-      {
-        "source": "22-multiVariateSplit",
-        "sourceHandle": "srcToAct4",
-        "target": "26-addActivity",
-        "targetHandle": "plusToNode",
-        "id": "reactflow__edge-src22-multiVariateSplit-tr26-addActivity",
-        "label": "Else"
-      },
-      {
         "source": "1-journeyEntry",
         "sourceHandle": null,
         "target": "22-multiVariateSplit",
         "targetHandle": "plusToNode",
         "id": "reactflow__edge-src1-journeyEntry-tr22-multiVariateSplit",
         "label": null
+      },
+      {
+        "id": "27-addActivity",
+        "position": {
+          "x": -61,
+          "y": -327
+        },
+        "type": "plusNode",
+        "data": null
+      },
+      {
+        "id": "27-yesNoSplit",
+        "position": {
+          "x": -70,
+          "y": -426
+        },
+        "type": "multiBranchNode",
+        "data": {
+          "nodeContent": {
+            "type": "div",
+            "key": null,
+            "ref": null,
+            "props": {
+              "style": {
+                "display": "flex",
+                "justifyContent": "center",
+                "flexDirection": "column"
+              },
+              "children": [
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "level": 5,
+                    "children": "Unconfigured Message"
+                  },
+                  "_owner": null,
+                  "_store": {}
+                },
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {},
+                  "_owner": null,
+                  "_store": {}
+                },
+                {
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "children": [
+                      "Event",
+                      " ",
+                      "Hard bounce, Soft bounce"
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
+                }
+              ]
+            },
+            "_owner": null,
+            "_store": {}
+          },
+          "nodeTitle": "Yes/No Split",
+          "nodeSvg": "/assets/icons/icon-yes-no-split.svg",
+          "branchCount": 2,
+          "id": "27-yesNoSplit"
+        }
+      },
+      {
+        "source": "27-yesNoSplit",
+        "sourceHandle": "srcToAct0",
+        "target": "27-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src27-yesNoSplit-tr27-addActivity",
+        "label": "Yes"
+      },
+      {
+        "source": "22-multiVariateSplit",
+        "sourceHandle": "srcToAct4",
+        "target": "27-yesNoSplit",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src22-multiVariateSplit-tr27-yesNoSplit",
+        "label": "Else"
+      },
+      {
+        "id": "28-addActivity",
+        "position": {
+          "x": -8,
+          "y": -109
+        },
+        "type": "plusNode",
+        "data": null
+      },
+      {
+        "id": "29-emptyCardNode",
+        "position": {
+          "x": 5,
+          "y": -104
+        },
+        "type": "emptyCardNode",
+        "data": {
+          "id": "29-emptyCardNode"
+        }
+      },
+      {
+        "id": "28-holdOut",
+        "position": {
+          "x": 37,
+          "y": -250
+        },
+        "type": "multiBranchNode",
+        "data": {
+          "nodeContent": {
+            "type": "div",
+            "key": null,
+            "ref": null,
+            "props": {
+              "style": {
+                "display": "flex",
+                "justifyContent": "center",
+                "flexDirection": "column"
+              },
+              "children": {
+                "key": null,
+                "ref": null,
+                "props": {
+                  "level": 5,
+                  "children": [
+                    "Holdout: ",
+                    "34",
+                    "%"
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            },
+            "_owner": null,
+            "_store": {}
+          },
+          "nodeTitle": "HoldOut",
+          "nodeSvg": "/assets/icons/icon-holdout.svg",
+          "branchCount": 2,
+          "id": "28-holdOut"
+        }
+      },
+      {
+        "source": "28-holdOut",
+        "sourceHandle": "srcToAct0",
+        "target": "28-addActivity",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src28-holdOut-tr28-addActivity",
+        "label": null
+      },
+      {
+        "source": "28-holdOut",
+        "sourceHandle": "srcToAct1",
+        "target": "29-emptyCardNode",
+        "targetHandle": "emptyCardVoid",
+        "id": "reactflow__edge-src28-holdOut-tr29-emptyCardNode",
+        "label": "Holdout"
+      },
+      {
+        "source": "27-yesNoSplit",
+        "sourceHandle": "srcToAct1",
+        "target": "28-holdOut",
+        "targetHandle": "plusToNode",
+        "id": "reactflow__edge-src27-yesNoSplit-tr28-holdOut",
+        "label": "No"
       }
     ],
     "id": 4
